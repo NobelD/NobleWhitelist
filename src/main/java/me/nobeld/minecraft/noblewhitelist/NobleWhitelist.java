@@ -72,12 +72,12 @@ public class NobleWhitelist extends JavaPlugin {
     }
     @Override
     public void onDisable() {
+        configManager().reloadConfig();
+        consoleMsg().sendMessage(convertMsg("<prefix><red>Plugin disabled, see you later!"));
         if(this.adventure != null) {
             this.adventure.close();
             this.adventure = null;
         }
-        configManager().reloadConfig();
-        consoleMsg().sendMessage(convertMsg("<prefix><red>Plugin disabled, see you later!"));
     }
     public @NonNull BukkitAudiences adventure() {
         if (this.adventure == null) {
