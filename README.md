@@ -10,6 +10,10 @@ Also, you can place if you want to make some of these as optional, required or d
 - **[Spigot Page](https://www.spigotmc.org/resources/noble-whitelist.113107/)**
 - **[Hangar Page](https://hangar.papermc.io/NobelD/NobleWhitelist)**
 
+## Versions:
+- This plugin support all spigot base software (paper is recommended)
+- This plugin only support versions from 1.17+
+
 ## Commands:
 
 **Base command:** /nwl `(alias: noblewl, nwhitelist)`
