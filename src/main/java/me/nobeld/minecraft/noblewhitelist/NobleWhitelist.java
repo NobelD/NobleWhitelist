@@ -55,7 +55,9 @@ public class NobleWhitelist extends JavaPlugin {
             command.setExecutor(new NWLCommand(this));
             command.setTabCompleter(new NWLCommand(this));
         }
+        int registered = whitelistData().loadWhitelist();
         consoleMsg().sendMessage(convertMsg("<prefix><green>Plugin activated, thanks for using it ^^"));
+        consoleMsg().sendMessage(convertMsg("<prefix><green>Loaded <yellow>" + registered + " <green>players."));
         checker = new UpdateChecker(this, version);
         if (checker.canUpdate(false)) {
             consoleMsg().sendMessage(convertMsg("<prefix><#F1B65C>There is a new version available: <#C775FF>" + checker.getLatest(), null));

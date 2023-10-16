@@ -6,6 +6,7 @@ import org.bukkit.entity.Player;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import static me.nobeld.minecraft.noblewhitelist.util.ServerUtil.*;
@@ -16,23 +17,27 @@ public class WhitelistData {
     private final ArrayList<SuccessData> successList = new ArrayList<>();
     public WhitelistData(NobleWhitelist plugin) {
         this.plugin = plugin;
-        loadWhitelist();
     }
-    public void loadWhitelist() {
+    public int loadWhitelist() {
         whitelist.clear();
+        List<String> garbage = new ArrayList<>();
         for (String line : plugin.whitelistFile().getSection("whitelist").singleLayerKeySet()) {
-            if (line == null) return;
-            if (line.startsWith("example$")) {
-                plugin.whitelistFile().remove("whitelist." + line);
-                return;
+            boolean doNothing = line == null;
+            if (!doNothing && line.startsWith("example$")) {
+                garbage.add(line);
+                doNothing = true;
             }
-            if (!(plugin.whitelistFile().getSection("whitelist").get(line) instanceof String)) {
-                plugin.whitelistFile().remove("whitelist." + line);
-                return;
+            if (!doNothing && plugin.whitelistFile().getSection("whitelist").get(line) instanceof Boolean) {
+                garbage.add(line);
+                doNothing = true;
             }
-            String uuid = plugin.whitelistFile().getSection("whitelist").getString(line);
-            new PlayerData(line, uuid).addData();
+            if (!doNothing) {
+                String uuid = plugin.whitelistFile().getSection("whitelist").getString(line);
+                new PlayerData(line, uuid).addData();
+            }
         }
+        garbage.forEach(line -> plugin.whitelistFile().remove("whitelist." + line));
+        return whitelist.size();
     }
     public Map<String, String> getWhitelist() {
         Map<String, String> playersList = new HashMap<>();

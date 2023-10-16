@@ -49,6 +49,21 @@ public class NWLCommand implements CommandExecutor, TabCompleter {
                 }
                 Map<String, String> list = plugin.whitelistData().getWhitelist();
                 if (list != null && !list.isEmpty()) {
+                    if (list.size() > 70) {
+                        sendMsg(sender, plugin.messages().listExced(list.size()));
+                        return true;
+                    }
+                    if (list.size() >= 12) {
+                        List<String> total = new ArrayList<>();
+                        list.forEach((name, uuid) -> {
+                            if (name.equals("none")) return;
+                            total.add(name);
+                        });
+                        int ouuid = list.size() - total.size();
+                        sendMsg(sender, plugin.messages().listSkip(ouuid));
+                        sendMsg(sender, plugin.messages().listName(total));
+                        return true;
+                    }
                     sendMsg(sender, plugin.messages().listAmount(list.size()));
                     list.forEach((name, uuid) -> sendMsg(sender, plugin.messages().listString(name, uuid)));
                     return true;

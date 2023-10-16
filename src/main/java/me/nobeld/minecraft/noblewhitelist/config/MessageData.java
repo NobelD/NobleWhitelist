@@ -3,6 +3,9 @@ package me.nobeld.minecraft.noblewhitelist.config;
 import me.nobeld.minecraft.noblewhitelist.NobleWhitelist;
 import net.kyori.adventure.text.Component;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import static me.nobeld.minecraft.noblewhitelist.util.ServerUtil.convertMsg;
 
 @SuppressWarnings("SpellCheckingInspection")
@@ -41,8 +44,21 @@ public class MessageData {
     public Component listAmount(int size) {
         return convertMsg("<prefix><#FF3A6F>Players whitelisted <#F1B65C>(<#75CDFF>name <#F46C4E>: <#C775FF>uuid<#F1B65C>) (<#75CDFF>Total<#F46C4E>: <#C775FF>" + size + "<#F1B65C>)", null);
     }
+    public Component listSkip(int size) {
+        return convertMsg("<prefix><#FF3A6F>Players whitelisted by name <#F1B65C>(<#C775FF>" + size + " <#F46C4E>name not defined, aka only uuid<#F1B65C>)", null);
+    }
+    public Component listExced(int size) {
+        return convertMsg("<prefix><#FF3A6F>The whitelist is so big, try viewing from the whitelist file. <#75CDFF>(Total<#F46C4E>: <#C775FF>" + size + "<#75CDFF>)", null);
+    }
     public Component listString(String name, String uuid) {
         return convertMsg("<#75CDFF>" + name + " <#F46C4E>: <#C775FF>" + uuid, null);
+    }
+    public Component listName(List<String> names) {
+        List<String> total = new ArrayList<>();
+        for (String name : names) {
+            total.add("<#75CDFF>" + name + "<#F46C4E>");
+        }
+        return convertMsg("<#C775FF>Players: <#F46C4E>" + total, null);
     }
     public Component whitelistEmpty() {
         return convertMsg("<prefix><#F1B65C>The whitelist is empty.", null);
