@@ -51,7 +51,7 @@ public class NWExpansion extends PlaceholderExpansion {
                 return "yes";
             } else return "no";
         }
-        if (params.equalsIgnoreCase("by_pass")) {
+        if (params.equalsIgnoreCase("bypass")) {
             if (plugin.api().hasByPass((Player) player)) {
                 return "yes";
             } else return "no";
