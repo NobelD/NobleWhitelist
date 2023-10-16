@@ -59,7 +59,7 @@ public class NobleWhitelist extends JavaPlugin {
         checker = new UpdateChecker(this, version);
         if (checker.canUpdate(false)) {
             consoleMsg().sendMessage(convertMsg("<prefix><#F1B65C>There is a new version available: <#C775FF>" + checker.getLatest(), null));
-            consoleMsg().sendMessage(convertMsg("<prefix><#F1B65C>Download it at #75CDFF>https://www.github.com/NobelD/NobleWhitelist/releases", null));
+            consoleMsg().sendMessage(convertMsg("<prefix><#F1B65C>Download it at <#75CDFF>https://www.github.com/NobelD/NobleWhitelist/releases", null));
         }
 
         Metrics metrics = new Metrics(this, 20050);

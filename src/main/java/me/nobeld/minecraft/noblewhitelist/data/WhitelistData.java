@@ -178,11 +178,6 @@ public class WhitelistData {
             if (plugin.fileData().get(name) != null) return;
             plugin.fileData().set(name, uuid);
         }
-        /**
-         Checks the player data and returns with numbers the result
-         @param player to compare the data
-         @return The name check result.
-         */
         protected CheckDataType checkData(Player player) {
             if (notHasName()) return CheckDataType.NO_NAME;
             if (uuid.equalsIgnoreCase("none")) {
@@ -191,8 +186,14 @@ public class WhitelistData {
                 return CheckDataType.NO_UUID;
             }
             if (plugin.fileData().skipName()) return CheckDataType.NAME_SKIP;
-            if (name.equals(player.getName())) return CheckDataType.NORMAL;
-            if (name.equalsIgnoreCase(player.getName())) return CheckDataType.NAME_CAPS;
+            if (name.equals(player.getName())) {
+                if (!uuid.equalsIgnoreCase(player.getUniqueId().toString())) return CheckDataType.NAME_DIFFERENT_UUID;
+                return CheckDataType.NORMAL;
+            }
+            if (name.equalsIgnoreCase(player.getName())) {
+                if (!uuid.equalsIgnoreCase(player.getUniqueId().toString())) return CheckDataType.NAME_DIFFERENT_UUID;
+                return CheckDataType.NAME_CAPS;
+            }
             if (uuid.equalsIgnoreCase(player.getUniqueId().toString())) return CheckDataType.UUID_NO_NAME;
             return CheckDataType.NORMAL;
         }
@@ -235,7 +236,7 @@ public class WhitelistData {
             return uuid;
         }
         public enum CheckDataType {
-            NORMAL, NO_UUID, NAME_CAPS, NO_NAME, NAME_SKIP, NO_UUID_NAME_CAPS, UUID_NO_NAME
+            NORMAL, NO_UUID, NAME_CAPS, NO_NAME, NAME_SKIP, NO_UUID_NAME_CAPS, UUID_NO_NAME, NAME_DIFFERENT_UUID
         }
     }
 }

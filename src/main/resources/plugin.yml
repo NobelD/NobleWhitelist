@@ -1,5 +1,5 @@
 name: NobleWhitelist
-version: 1.0.0
+version: 1.0.1
 main: me.nobeld.minecraft.noblewhitelist.NobleWhitelist
 description: A simple plugin for whitelist management.
 author: NobelD

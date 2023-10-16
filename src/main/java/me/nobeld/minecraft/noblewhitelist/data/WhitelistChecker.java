@@ -28,6 +28,9 @@ public class WhitelistChecker {
     }
     public boolean canPass(Player player) {
         WhitelistData.SuccessData data = plugin.whitelistData().registerSuccess(player);
+        WhitelistData.PlayerData data2 = plugin.whitelistData().getByPlayer(player);
+        if (data2.checkData(player) == WhitelistData.PlayerData.CheckDataType.NAME_DIFFERENT_UUID &&
+        plugin.fileData().enforceNameDiffID()) return false;
         if (plugin.fileData().checkName() == 2 && !data.onlyName()) return false;
         if (plugin.fileData().checkUUID() == 2 && !data.onlyUuid()) return false;
         if (plugin.fileData().checkPerm() == 2 && !data.onlyPerm()) return false;

@@ -44,7 +44,7 @@ public class PlayerListener implements Listener {
         if (player.isOp()) {
             if (plugin.getUptChecker().canUpdate(true)) {
                 plugin.playerMsg(player).sendMessage(convertMsg("<prefix><#F1B65C>There is a new version available: <#C775FF>" + plugin.getUptChecker().getLatest(), null));
-                plugin.playerMsg(player).sendMessage(convertMsg("<prefix><#F1B65C>Download it at #75CDFF>https://www.github.com/NobelD/NobleWhitelist/releases", null));
+                plugin.playerMsg(player).sendMessage(convertMsg("<prefix><#F1B65C>Download it at <#75CDFF>https://www.github.com/NobelD/NobleWhitelist/releases", null));
             }
         }
     }

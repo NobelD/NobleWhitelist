@@ -23,6 +23,9 @@ public class FileData {
     public void setConfig(String key, Object value) {
         configFile().set("whitelist." + key, value);
     }
+    public boolean enforceNameDiffID() {
+        return configFile().getBoolean("whitelist.enforce-uuid-if-different-name");
+    }
     public boolean notifyUpdate() {
         return configFile().getBoolean("version.notify-update");
     }
