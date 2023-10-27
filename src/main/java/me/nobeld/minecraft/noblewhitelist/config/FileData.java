@@ -44,6 +44,15 @@ public class FileData {
     public boolean skipName() {
         return configFile().getBoolean("whitelist.skip-name-change");
     }
+    public String charUse() {
+        return this.configFile().getString("incompatibilities.to-use");
+    }
+    public String charChange() {
+        return this.configFile().getString("incompatibilities.to-change");
+    }
+    public boolean checkChar() {
+        return this.configFile().getBoolean("incompatibilities.check-invalid-char");
+    }
     public int checkName() {
         return checkType(configFile().getString("whitelist.checking.name"));
     }

@@ -8,9 +8,7 @@ import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @SuppressWarnings({"SpellCheckingInspection"})
 public class NWLCommand implements CommandExecutor, TabCompleter {
@@ -21,7 +19,7 @@ public class NWLCommand implements CommandExecutor, TabCompleter {
 
     @Override
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args) {
-        if (!sender.isOp() || !sender.hasPermission("noblewhitelist.admin")) return false;
+        if (!sender.isOp() && !sender.hasPermission("noblewhitelist.admin")) return false;
         if (args.length >= 1) {
             if (args[0].equalsIgnoreCase("add")) {
                 if (args.length >= 2 && args[1].equalsIgnoreCase("allOnline")) {
@@ -50,14 +48,15 @@ public class NWLCommand implements CommandExecutor, TabCompleter {
                 Map<String, String> list = plugin.whitelistData().getWhitelist();
                 if (list != null && !list.isEmpty()) {
                     if (list.size() > 70) {
-                        sendMsg(sender, plugin.messages().listExced(list.size()));
+                        sendMsg(sender, plugin.messages().listExceed(list.size()));
                         return true;
                     }
                     if (list.size() >= 12) {
-                        List<String> total = new ArrayList<>();
+                        Map<String, String> total = new HashMap<>();
                         list.forEach((name, uuid) -> {
-                            if (name.equals("none")) return;
-                            total.add(name);
+                            if (!name.equals("none")) {
+                                total.put(name, uuid);
+                            }
                         });
                         int ouuid = list.size() - total.size();
                         sendMsg(sender, plugin.messages().listSkip(ouuid));
@@ -166,7 +165,7 @@ public class NWLCommand implements CommandExecutor, TabCompleter {
     }
     @Override
     public @Nullable List<String> onTabComplete(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args) {
-        if (!sender.isOp() || !sender.hasPermission("noblewhitelist.admin")) return null;
+        if (!sender.isOp() && !sender.hasPermission("noblewhitelist.admin")) return Collections.emptyList();
         if (args.length == 1) {
             List<String> completions = new ArrayList<>();
             List<String> commands = new ArrayList<>();
@@ -277,6 +276,6 @@ public class NWLCommand implements CommandExecutor, TabCompleter {
                 return completions;
             }
         }
-        return new ArrayList<>();
+        return Collections.emptyList();
     }
 }

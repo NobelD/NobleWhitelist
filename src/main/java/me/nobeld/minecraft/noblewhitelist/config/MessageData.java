@@ -1,14 +1,18 @@
-package me.nobeld.minecraft.noblewhitelist.config;
+//
+// Source code recreated from a .class file by IntelliJ IDEA
+// (powered by FernFlower decompiler)
+//
 
-import me.nobeld.minecraft.noblewhitelist.NobleWhitelist;
-import net.kyori.adventure.text.Component;
+package me.nobeld.minecraft.noblewhitelist.config;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import me.nobeld.minecraft.noblewhitelist.NobleWhitelist;
+import net.kyori.adventure.text.Component;
 
 import static me.nobeld.minecraft.noblewhitelist.util.ServerUtil.convertMsg;
 
-@SuppressWarnings("SpellCheckingInspection")
 public class MessageData {
     private final NobleWhitelist plugin;
     public MessageData(NobleWhitelist plugin) {
@@ -42,21 +46,28 @@ public class MessageData {
         return convertMsg("<prefix><#F1B65C>Use <#75CDFF>/nwl <#F1B65C>forceclear to proceed.", null);
     }
     public Component listAmount(int size) {
-        return convertMsg("<prefix><#FF3A6F>Players whitelisted <#F1B65C>(<#75CDFF>name <#F46C4E>: <#C775FF>uuid<#F1B65C>) (<#75CDFF>Total<#F46C4E>: <#C775FF>" + size + "<#F1B65C>)", null);
+        return convertMsg("<prefix><#FF618C>Players whitelisted <#F1B65C>(<#75CDFF>name <#F46C4E>: <#C775FF>uuid<#F1B65C>) (<#75CDFF>Total<#F46C4E>: <#C775FF>" + size + "<#F1B65C>)", null);
     }
     public Component listSkip(int size) {
-        return convertMsg("<prefix><#FF3A6F>Players whitelisted by name <#F1B65C>(<#C775FF>" + size + " <#F46C4E>name not defined, aka only uuid<#F1B65C>)", null);
+        return convertMsg("<prefix><#FF618C>Players whitelisted by name <#F46C4E>(<#C775FF>" + size + " <#F1B65C> only uuid<#F46C4E>)", null);
     }
-    public Component listExced(int size) {
-        return convertMsg("<prefix><#FF3A6F>The whitelist is so big, try viewing from the whitelist file. <#75CDFF>(Total<#F46C4E>: <#C775FF>" + size + "<#75CDFF>)", null);
+    public Component listExceed(int size) {
+        return convertMsg("<prefix><#FF618C>The whitelist is so big, try viewing it from the whitelist file. <#75CDFF>(Total<#F46C4E>: <#C775FF>" + size + "<#75CDFF>)", null);
     }
     public Component listString(String name, String uuid) {
-        return convertMsg("<#75CDFF>" + name + " <#F46C4E>: <#C775FF>" + uuid, null);
+        String uuidColor = "<#C775FF>";
+        if (uuid.equalsIgnoreCase("none")) {
+            uuidColor = "<#4A8FFF>";
+        }
+        return convertMsg("<#75CDFF>" + name + " <#F46C4E>: " + uuidColor + uuid, null);
     }
-    public Component listName(List<String> names) {
+    public Component listName(Map<String, String> map) {
         List<String> total = new ArrayList<>();
-        for (String name : names) {
-            total.add("<#75CDFF>" + name + "<#F46C4E>");
+        for (Map.Entry<String, String> list : map.entrySet()) {
+            String name = list.getKey();
+            String uuid = list.getValue();
+            String first = uuid.equalsIgnoreCase("none") ? "<#4A8FFF>" : "<#75CDFF>";
+            total.add(first + name + "<#F46C4E>");
         }
         return convertMsg("<#C775FF>Players: <#F46C4E>" + total, null);
     }
@@ -73,7 +84,7 @@ public class MessageData {
         return convertMsg("<prefix><#F1B65C>The Whitelist was cleared.", null);
     }
     public Component statusHeader() {
-        return convertMsg("<prefix><#FF3A6F>NWhitelist status:", null);
+        return convertMsg("<prefix><#FF618C>NWhitelist status:", null);
     }
     public Component statusVersion(String version) {
         return convertMsg("<prefix><#F1B65C>Version: <#C775FF>" + version, null);
@@ -94,13 +105,13 @@ public class MessageData {
         return convertMsg("<prefix><#F1B65C>Perm Check: <#75CDFF>" + check, null);
     }
     public Component invalidPlayerInput(String input) {
-        return convertMsg("<prefix><#F1B65C>Invalid input, insert the player's " + input +".", null);
+        return convertMsg("<prefix><#F1B65C>Invalid input, insert the player's " + input + ".", null);
     }
     public Component playerAdded(String player) {
-        return convertMsg("<prefix><#F1B65C>The player <#75CDFF>" + player +" <#F1B65C>was added to the whitelist", null);
+        return convertMsg("<prefix><#F1B65C>The player <#75CDFF>" + player + " <#F1B65C>was added to the whitelist", null);
     }
     public Component playerRemoved(String player) {
-        return convertMsg("<prefix><#F1B65C>The player <#75CDFF>" + player +" <#F1B65C>was removed from the whitelist.", null);
+        return convertMsg("<prefix><#F1B65C>The player <#75CDFF>" + player + " <#F1B65C>was removed from the whitelist.", null);
     }
     public Component playerAlready(String player) {
         return convertMsg("<prefix><#F1B65C>The player <#75CDFF>" + player + " <#F1B65C>is already in the whitelist.", null);
@@ -115,7 +126,7 @@ public class MessageData {
         return convertMsg("<prefix><#F1B65C>The whitelist was set to <#75CDFF>" + status, null);
     }
     public Component helpHeader() {
-        return convertMsg("<prefix><#FF3A6F>Basic commands list:", null);
+        return convertMsg("<prefix><#FF618C>Basic commands list:", null);
     }
     public Component helpAdd() {
         return convertMsg("<prefix><#F1B65C>/nwhitelist <#75CDFF>add <#C775FF><type> <value>", null);

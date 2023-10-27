@@ -24,6 +24,16 @@ whitelist:
   # This will block if a player joins with the same name as another registered player but with a different uuid.
   # If you have a server with online and offline uuid players at the same time, ensure that the online player is well registered.
   enforce-uuid-if-different-name: true
+  # The max number of players with uuid that will be showed when using the list command.
+  # If you exceed this number then the list will only show the players name.
+  max-uuid-list: 12
+incompatibilities:
+  # If disabled the plugin will not change the defined character to another.
+  # Disabling this can cause errors of using floodgate and geyser (usually ".")
+  # Its only visual and how the plugin handles the player, doesn't affect the actual player name.
+  check-invalid-char: true
+  to-use: "."
+  to-change: "spl$"
 messages:
   prefix: "<bold><#17B90C>N<#7FD024>Whitelist</bold> <grey>>"
   use-prefix: true

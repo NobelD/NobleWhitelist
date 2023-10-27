@@ -85,10 +85,15 @@ public class WhitelistData {
         createPlayerData(name, uuid);
     }
     public void createPlayerData(String name, String uuid) {
+        String realName = this.parseName(name);
+        new PlayerData(realName, uuid).addData();
+    }
+    private String parseName(String name) {
         String realName = name;
-        if (name == null) realName = randomName();
-        PlayerData data = new PlayerData(realName, uuid);
-        data.addData();
+        if (name == null) return randomName();
+        if (this.plugin.fileData().checkChar())
+            realName = name.replace(this.plugin.fileData().charUse(), this.plugin.fileData().charChange());
+        return realName;
     }
     public PlayerData getByName(String name) {
         for (PlayerData data : whitelist) {
@@ -205,16 +210,20 @@ public class WhitelistData {
         protected void replaceData(Player player) {
             CheckDataType type = checkData(player);
             String name2 = player.getName();
+            String realName = name2;
             String uuid2 = player.getUniqueId().toString();
+            if (plugin.fileData().checkChar() && name2.contains(plugin.fileData().charUse())) {
+                realName = name2.replace(plugin.fileData().charUse(), plugin.fileData().charChange());
+            }
             if (type == CheckDataType.UUID_NO_NAME) {
-                changeName(name2);
+                changeName(realName);
                 plugin.consoleMsg().sendMessage(plugin.messages().warningNameConsole(player.getName()));
                 plugin.playerMsg(player).sendMessage(plugin.messages().warningNamePlayer(player.getName()));
             }
-            if (type == CheckDataType.NO_UUID_NAME_CAPS) changeIDAndName(name2, uuid2);
+            if (type == CheckDataType.NO_UUID_NAME_CAPS) changeIDAndName(realName, uuid2);
             if (type == CheckDataType.NO_UUID) replaceUUID(uuid2);
-            if (type == CheckDataType.NO_NAME) changeName(name2);
-            if (type == CheckDataType.NAME_CAPS) changeName(name2);
+            if (type == CheckDataType.NO_NAME) changeName(realName);
+            if (type == CheckDataType.NAME_CAPS) changeName(realName);
         }
         protected void changeIDAndName(String name2, String uuid2) {
             plugin.fileData().remove(name);
@@ -235,7 +244,10 @@ public class WhitelistData {
             return name.startsWith("none$");
         }
         private String name() {
-            return name;
+            String realName = name;
+            if (plugin.fileData().checkChar() && name.contains(plugin.fileData().charChange()))
+                realName = name.replace(plugin.fileData().charChange(), plugin.fileData().charUse());
+            return realName;
         }
         private String uuid() {
             return uuid;

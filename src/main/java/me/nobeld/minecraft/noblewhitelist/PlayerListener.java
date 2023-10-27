@@ -26,27 +26,24 @@ public class PlayerListener implements Listener {
     public void onLogin(PlayerLoginEvent event) {
         WhitelistData.SuccessEnum type = WhitelistData.SuccessEnum.NOT_ACTIVE;
         Player player = event.getPlayer();
-        if (plugin.fileData().whitelistActive()) {
-            if (!plugin.whitelistChecker().canPass(player)) {
-                if (hasPaper()) {
-                    event.disallow(PlayerLoginEvent.Result.KICK_WHITELIST, plugin.messages().kickMsg(player.getName()));
-                } else {
-                    event.disallow(PlayerLoginEvent.Result.KICK_WHITELIST, getLegacy(plugin.messages().kickMsg(player.getName())));
-                }
-            }
-        }
         Bukkit.getPluginManager().callEvent(new WhitelistPassEvent(player, type));
+        if (!plugin.fileData().whitelistActive()) return;
+        if (plugin.whitelistChecker().canPass(player)) return;
+
+        if (hasPaper()) {
+            event.disallow(PlayerLoginEvent.Result.KICK_WHITELIST, plugin.messages().kickMsg(player.getName()));
+        } else {
+            event.disallow(PlayerLoginEvent.Result.KICK_WHITELIST, getLegacy(plugin.messages().kickMsg(player.getName())));
+        }
     }
     @EventHandler(priority = EventPriority.HIGHEST)
     public void onJoin(PlayerJoinEvent event) {
         Player player = event.getPlayer();
         plugin.whitelistChecker().changeData(player);
-        if (player.isOp()) {
-            if (plugin.getUptChecker().canUpdate(true)) {
-                plugin.playerMsg(player).sendMessage(convertMsg("<prefix><#F1B65C>There is a new version available: <#C775FF>" + plugin.getUptChecker().getLatest(), null));
-                plugin.playerMsg(player).sendMessage(convertMsg("<prefix><#F1B65C>Download it at <#75CDFF>https://www.github.com/NobelD/NobleWhitelist/releases", null));
-            }
-        }
+        if (!player.isOp() || !plugin.getUptChecker().canUpdate(true)) return;
+
+        plugin.playerMsg(player).sendMessage(convertMsg("<prefix><#F1B65C>There is a new version available: <#C775FF>" + plugin.getUptChecker().getLatest(), null));
+        plugin.playerMsg(player).sendMessage(convertMsg("<prefix><#F1B65C>Download it at <#75CDFF>https://www.github.com/NobelD/NobleWhitelist/releases", null));
     }
     @EventHandler(priority = EventPriority.HIGHEST)
     public void onLeave(PlayerQuitEvent event) {
