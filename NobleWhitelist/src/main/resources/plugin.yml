@@ -1,0 +1,16 @@
+name: NobleWhitelist
+version: $version
+main: me.nobeld.minecraft.noblewhitelist.NobleWhitelist
+description: $description
+author: NobelD
+website: https://github.com/NobelD/NobleWhitelist
+api-version: '$apiVersion'
+prefix: NobleWhitelist
+load: STARTUP
+permissions:
+  noblewhitelist.admin:
+    description: "Permission to manage the plugin"
+    default: op
+  noblewhitelist.bypass:
+    description: "Permits you to pass the whitelist"
+    default: false

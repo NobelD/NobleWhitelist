@@ -1,0 +1,125 @@
+discord:
+  bot-token: ""
+  server-id: ""
+# You can add more channels later with their respective id.
+# The channels id can be dynamically changed, but if you add or remove a channel you will need to restart the plugin.
+channel:
+  primary: 0000000000000000000
+  staff: 0000000000000000000
+special:
+  # Makes the commands only visible for users who have the server manage permission.
+  # If disabled all the users can see the commands and description (still can't be used without the necessary role)
+  # Restart the server to apply changes.
+  admin-only-server-manage: true
+role:
+  user:
+    - 0000000000000000000
+    - 0000000000000000000
+  staff:
+    - 0000000000000000000
+  admin:
+    - 0000000000000000000
+    - 0000000000000000000
+announce-channel:
+  start: none
+  stop: none
+  notify-self-register: staff
+  notify-self-remove: staff
+  notify-wl-auto: none
+  notify-wl-join: none
+  notify-wl-try: none
+command:
+  #/whitelist add
+  basic-add-self:
+    role:
+      - user
+      - staff
+      - admin
+    channel:
+      - primary
+      - staff
+  #/whitelist remove
+  basic-remove-self:
+    role:
+      - user
+      - staff
+      - admin
+    channel:
+      - primary
+      - staff
+  #/whitelist link
+  basic-link-self:
+    role:
+      -admin
+    channel:
+      - staff
+  #/whitelist accounts
+  basic-self-accounts:
+    role:
+      - user
+      - staff
+      - admin
+    channel:
+      - primary
+      - staff
+  #/wladmin add
+  admin-add:
+    role:
+      - staff
+      - admin
+    channel:
+      - staff
+  #/wladmin remove
+  admin-remove:
+    role:
+      - staff
+      - admin
+    channel:
+      - staff
+  #/wladmin on
+  admin-on:
+    role:
+      - staff
+      - admin
+    channel:
+      - staff
+  #/wladmin off
+  admin-off:
+    role:
+      - staff
+      - admin
+    channel:
+      - staff
+  #/wladmin find
+  admin-find:
+    role:
+      - staff
+      - admin
+    channel:
+      - staff
+  #/wladmin user
+  admin-find-user:
+    role:
+      - staff
+      - admin
+    channel:
+      - staff
+  #/wladmin link
+  admin-user-link:
+    role:
+      - admin
+    channel:
+      - staff
+  #/wladmin unlink
+  admin-user-unlink:
+    role:
+      - admin
+    channel:
+      - staff
+  #/wladmin toggle
+  admin-user-toggle:
+    role:
+      - staff
+      - admin
+    channel:
+      - staff

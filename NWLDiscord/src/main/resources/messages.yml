@@ -1,0 +1,226 @@
+placeholders:
+  optional-none: "Invalid Player!"
+  optional-name: "**Player name:** <name>"
+  optional-uuid: "**Player uuid:** <uuid>"
+  optional-id: "**User ID:** <user>"
+  player-data: "%row% **-** <name> **-** <uuid> **-** <user>"
+  toggled-true: true
+  toggled-false: false
+discord:
+  channel:
+    start:
+      type: message
+      content: ":sparkle: Server is now open!"
+    stop:
+      type: message
+      content: ":octagonal_sign: Server is now closed!"
+    notify-self-register:
+      type: embed
+      body:
+        color: 88FF8A
+        content: |-
+          An user has registered to the whitelist:
+          
+          <player-optional>
+    notify-self-remove:
+      type: embed
+      body:
+        color: FFC288
+        content: |-
+          An user has removed from the whitelist:
+          
+          **Player name:** <name>
+          **Player uuid:** <uuid>
+          **User ID:** <user>
+    notify-wl-join:
+      type: embed
+      body:
+        color: 88D7FF
+        content: |-
+          A player joined the server:
+          
+          **Player name:** <name>
+          **Player uuid:** <uuid>
+    notify-wl-try:
+      type: embed
+      body:
+        color: FFA287
+        content: |-
+          A player tried to enter the server:
+          
+          **Player name:** <name>
+          **Player uuid:** <uuid>
+    notify-wl-auto:
+      type: embed
+      body:
+        color: 88D7FF
+        content: |-
+          A player was auto registered to the whitelist:
+          
+          **Player name:** <name>
+          **Player uuid:** <uuid>
+  error:
+    no-permission:
+      type: message
+      ephemeral: true
+      content: You are not allowed to issue this command.
+    invalid-channel:
+      type: message
+      ephemeral: true
+      content: You are not allowed to issue this command on this channel.
+    user-self-already:
+      type: message
+      ephemeral: true
+      content: You already has an account registered.
+    user-already:
+      type: message
+      ephemeral: true
+      content: This user is already registered.
+    user-not-found:
+      type: message
+      ephemeral: true
+      content: No player was encountered.
+    insufficient-data:
+      type: message
+      ephemeral: true
+      content: You need to specify the necessary options to use this command.
+    invalid-uuid:
+      type: message
+      ephemeral: true
+      content: The provided uuid is invalid.
+    self-no-accounts:
+      type: message
+      ephemeral: true
+      content: You don't have any account registered.
+    user-no-accounts:
+      type: message
+      ephemeral: true
+      content: This user don't have any account registered.
+    already-self-linked:
+      type: message
+      ephemeral: true
+      content: You are already linked to a player.
+    already-user-linked:
+      type: message
+      ephemeral: true
+      content: This user is already linked to a player, unlink it before linking to another.
+    already-toggled:
+      type: message
+      ephemeral: true
+      content: "Nothing changed, the user toggle already was: <toggle>"
+  command:
+    self-accounts:
+      type: embed
+      body:
+        color: AFFF5A
+        content: |-
+          These are the accounts linked to you.
+          
+          <player-data>
+    user-accounts:
+      type: embed
+      body:
+        color: AFFF5A
+        content: |-
+          These are the accounts linked to the user.
+          
+          <player-data>
+    add-user:
+      type: embed
+      body:
+        color: AFFF5A
+        content: |-
+          You has been successfully registered this player to the whitelist.
+          
+          <player-optional>
+    self-add:
+      type: embed
+      body:
+        color: AFFF5A
+        content: |-
+          You has been successfully registered to the whitelist.
+          
+          <player-optional>
+    remove-user:
+      type: embed
+      body:
+        color: FF685E
+        content: |-
+          This account was removed.
+          
+          <player-optional>
+    self-remove:
+      type: embed
+      body:
+        color: FF685E
+        content: |-
+          This player was removed from the whitelist.
+          
+          <player-optional>
+    whitelist-off:
+      type: embed
+      body:
+        color: FF685E
+        content: |-
+          The whitelist was disabled.
+    already-off:
+      type: embed
+      body:
+        color: FF685E
+        content: |-
+          Nothing changed, the whitelist was already disabled.
+    whitelist-on:
+      type: embed
+      body:
+        color: AFFF5A
+        content: |-
+          The whitelist was enabled.
+    already-on:
+      type: embed
+      body:
+        color: AFFF5A
+        content: |-
+          Nothing changed, the whitelist was already enabled.
+    find-user:
+      type: embed
+      body:
+        color: FF72AC
+        content: |-
+          This player was found with the defined data.
+          
+          **Player name:** <name>
+          **Player uuid:** <uuid>
+          **User ID:** <user>
+          **Can Join:** <toggle>
+    self-link:
+      type: embed
+      body:
+        color: FF72AC
+        content: |-
+          You are now linked to this account.
+          
+          <player-optional>
+    user-link:
+      type: embed
+      body:
+        color: FF72AC
+        content: |-
+          This user is now linked to an account.
+          
+          <player-optional>
+    user-unlink:
+      type: embed
+      body:
+        color: FF72AC
+        content: |-
+          This user was unlinked.
+          
+          <player-optional>
+    user-toggled:
+      type: embed
+      body:
+        color: FF72AC
+        content: |-
+          The player join was toggled to: <toggle>
+          
+          <player-optional>

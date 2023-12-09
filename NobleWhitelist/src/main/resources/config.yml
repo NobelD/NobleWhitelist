@@ -1,0 +1,58 @@
+# All the config will dynamically be changed, is not necessary to reload the config.
+# The whitelist config is read only, if you change data is necessary make a reload.
+# Prefer to use the commands before editing the whitelist config.
+whitelist:
+  # Alternate the whitelist will dynamically be changed.
+  enabled: false
+  # Will disable the name change in the whitelist config if the player joins with the same uuid but different name.
+  # If you have a low-performance server this can help a little.
+  skip-name-change: false
+  # Posible values for checking:
+  # DISABLED - will not be used when checking.
+  # OPTIONAL - will be an option when checking.
+  # REQUIRED - will be necessary for the player
+  # if all disabled, then the whitelist will not block players even if its enabled.
+  # The bypass permission is "noblewhitelist.bypass" or had op.
+  # If name and uuid are required, then this will not allow adding players with the command if both the name and uuid are not specified.
+  checking:
+    name: OPTIONAL
+    uuid: OPTIONAL
+    perm: DISABLED
+  # If the player who is op is considered as a bypass player.
+  count-op-as-bypass: true
+  # If enabled and the whitelist is disabled, then will auto register the name and uuid of the player.
+  # Useful if you want to enable the whitelist time later and keep the players who joined in the whitelist.
+  auto-register: false
+  # This will block if a player joins with the same name as another registered player but with a different uuid.
+  # If you have a server with online and offline uuid players at the same time, ensure that the online player is well registered.
+  enforce-uuid-if-different-name: true
+storage:
+  # The storage type to be used, migration of data is made manually.
+  # It's necessary to restart the server to apply changes.
+  # mysql - Remote storage that can be used in multiple server.
+  # sqlite - Faster storage for easy management when expecting a lot of players.
+  # yaml - Simple editable storage and easy to use.
+  # json - Faster storage than yaml, a little confusing to read.
+  storage-type: sqlite
+  # It's not necessary to fill unless using remote databases.
+  host: ''
+  port: 3306
+  database: ''
+  user: ''
+  password: ''
+  # The server will be closed if the plugin cannot load the database, for security reasons.
+  close-if-failed: false
+messages:
+  prefix: "<bold><#17B90C>N<#7FD024>Whitelist</bold> <grey>>"
+  use-prefix: true
+  # Placeholders:
+  # <player> = Player name
+  # <prefix> = Message prefix (if disabled will not be showed)
+  not-whitelisted: "<red>You are not whitelisted on this server."
+  # This message will be sent to the console when a player joins with the same uuid but different name.
+  name-change-console: "<prefix><yellow><name> has joined with another name (probably a premium player)"
+  name-change-player: "<green>Successfully validated uuid, welcome back <name>!"
+version:
+  # Notify when there is a new update.
+  notify-update: true
+  version: 2
