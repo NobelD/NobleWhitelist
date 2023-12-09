@@ -16,6 +16,8 @@ Also this plugin has a discord integration plugin.
 - **[Hangar Page](https://hangar.papermc.io/NobelD/NobleWhitelist)**
 
 ## Discord Integration Links:
-- TODO
+- **[Modrinth Page](https://modrinth.com/plugin/noble-whitelist-discord-integration)**
+- **[Spigot Page](https://www.spigotmc.org/resources/noble-whitelist-discord-integration.113896/)**
+- **[Hangar Page](https://hangar.papermc.io/NobelD/NobleWhitelistDiscord)**
 
 **[For more information about the plugin refer to the project wiki](https://github.com/NobelD/NobleWhitelist/wiki)**
