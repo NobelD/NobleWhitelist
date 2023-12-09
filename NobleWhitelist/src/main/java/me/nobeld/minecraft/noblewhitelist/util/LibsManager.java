@@ -106,6 +106,20 @@ public class LibsManager {
 
         libraries.add(Library.builder()
                 .groupId("net{}kyori")
+                .artifactId("adventure-api")
+                .version("4.13.1")
+                .id("adventure-api")
+                .build());
+
+        libraries.add(Library.builder()
+                .groupId("net{}kyori")
+                .artifactId("adventure-key")
+                .version("4.13.1")
+                .id("adventure-key")
+                .build());
+
+        libraries.add(Library.builder()
+                .groupId("net{}kyori")
                 .artifactId("adventure-nbt")
                 .version("4.13.1")
                 .id("adventure-nbt")

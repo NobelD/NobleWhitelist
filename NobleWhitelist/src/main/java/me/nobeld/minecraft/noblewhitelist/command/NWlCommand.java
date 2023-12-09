@@ -78,7 +78,7 @@ public class NWlCommand {
         this.constructCommands();
     }
     public void sendMsg(CommandContext<CommandSender> ctx, Component msg) {
-        ctx.getSender().sendMessage(msg);
+        plugin.adventure().sender(ctx.getSender()).sendMessage(msg);
     }
     private void toggleStatus(CommandContext<CommandSender> ctx, boolean activate) {
         boolean actually = ConfigFile.getConfig(ConfigFile.whitelistActive);
