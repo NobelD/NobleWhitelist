@@ -21,3 +21,5 @@ Also this plugin has a discord integration plugin.
 - **[Hangar Page](https://hangar.papermc.io/NobelD/NobleWhitelistDiscord)**
 
 **[For more information about the plugin refer to the project wiki](https://github.com/NobelD/NobleWhitelist/wiki)**
+
+**Support on [Github](https://github.com/NobelD/NobleWhitelist/issues) and my [Discord Server](https://discord.com/invite/WywWcDymaN)** (is mainly spanish but english is supported :D)
