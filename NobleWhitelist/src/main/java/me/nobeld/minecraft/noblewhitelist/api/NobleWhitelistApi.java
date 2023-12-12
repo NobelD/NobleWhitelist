@@ -81,6 +81,6 @@ public class NobleWhitelistApi {
      */
     public List<PlayerWhitelisted> getIndex(int page) {
         if (page <= 1) page = 1;
-        return plugin.getStorage().listIndex(page);
+        return plugin.getStorageInst().listIndex(page);
     }
 }

@@ -31,7 +31,7 @@ public class WhitelistChecker {
         return suc.successEnum();
     }
     public boolean canPass(Player player) {
-        PlayerWhitelisted data = plugin.getStorage().loadPlayer(player);
+        PlayerWhitelisted data = plugin.getStorageInst().loadPlayer(player);
         if (data == null) return false;
         SuccessData suc = plugin.whitelistData().registerSuccess(data, player);
 

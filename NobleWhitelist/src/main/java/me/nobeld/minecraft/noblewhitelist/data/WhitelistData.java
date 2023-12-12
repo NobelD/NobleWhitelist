@@ -21,7 +21,7 @@ public class WhitelistData {
         this.plugin = plugin;
     }
     public SuccessData registerSuccess(Player player) {
-        return registerSuccess(plugin.getStorage().loadPlayer(player), player);
+        return registerSuccess(plugin.getStorageInst().loadPlayer(player), player);
     }
     public SuccessData registerSuccess(PlayerWhitelisted wl, Player player) {
         if (wl == null) return new SuccessData(player, false, false, false);
@@ -45,9 +45,9 @@ public class WhitelistData {
     }
     public Optional<PlayerWhitelisted> getData(@Nullable String name, @Nullable UUID uuid, long id) {
         PlayerWhitelisted data = null;
-        if (name != null) data = plugin.getStorage().loadPlayer(name);
-        if (data == null && uuid != null) data = plugin.getStorage().loadPlayer(uuid);
-        if (data == null && id >= 0) data = plugin.getStorage().loadPlayer(id);
+        if (name != null) data = plugin.getStorageInst().loadPlayer(name);
+        if (data == null && uuid != null) data = plugin.getStorageInst().loadPlayer(uuid);
+        if (data == null && id >= 0) data = plugin.getStorageInst().loadPlayer(id);
 
         return Optional.ofNullable(data);
     }
@@ -59,11 +59,11 @@ public class WhitelistData {
         return getData(name, uuid, -1);
     }
     public void addPlayer(@NotNull PlayerWhitelisted data) {
-        plugin.getStorage().save(data);
+        plugin.getStorageInst().save(data);
     }
     public PlayerWhitelisted register(String name, UUID uuid, long id) {
         PlayerWhitelisted data = new PlayerWhitelisted(name, uuid, id, true);
-        plugin.getStorage().save(data);
+        plugin.getStorageInst().save(data);
         return data;
     }
     public Optional<PlayerWhitelisted> addOptPlayer(Player player) {
@@ -71,26 +71,26 @@ public class WhitelistData {
         if (data.isPresent()) return Optional.empty();
 
         PlayerWhitelisted saved = new PlayerWhitelisted(player.getName(), player.getUniqueId());
-        plugin.getStorage().save(saved);
+        plugin.getStorageInst().save(saved);
         return Optional.of(saved);
     }
     public boolean addPlayer(Player player) {
         Optional<PlayerWhitelisted> data = getData(player.getName(), player.getUniqueId(), -1);
         if (data.isPresent()) return false;
-        plugin.getStorage().save(new PlayerWhitelisted(player.getName(), player.getUniqueId()));
+        plugin.getStorageInst().save(new PlayerWhitelisted(player.getName(), player.getUniqueId()));
         return true;
     }
     public void toggleJoinUser(PlayerWhitelisted data, boolean canJoin) {
         data.setWhitelisted(canJoin);
-        plugin.getStorage().save(data);
+        plugin.getStorageInst().save(data);
     }
     public void linkUser(@NotNull PlayerWhitelisted data, long id) {
         data.setDiscordID(id);
-        plugin.getStorage().save(data);
+        plugin.getStorageInst().save(data);
     }
     public boolean deleteUser(PlayerWhitelisted data) {
         if (data == null) return false;
-        plugin.getStorage().delete(data);
+        plugin.getStorageInst().delete(data);
         return true;
     }
     public boolean deleteUser(Player player) {
@@ -100,7 +100,7 @@ public class WhitelistData {
     public boolean deleteUser(String name, UUID uuid) {
         Optional<PlayerWhitelisted> data = getData(name, uuid, -1);
         if (data.isEmpty()) return false;
-        plugin.getStorage().delete(data.get());
+        plugin.getStorageInst().delete(data.get());
         return true;
     }
     public CheckType checkData(@NotNull PlayerWhitelisted data, @NotNull Player player) {
@@ -136,22 +136,22 @@ public class WhitelistData {
         switch (checkData(data, player)) {
             case UUID_NO_NAME -> {
                 data.setName(name);
-                plugin.getStorage().save(data);
+                plugin.getStorageInst().save(data);
                 plugin.consoleMsg().sendMessage(MessageData.warningNameConsole(name));
                 plugin.playerMsg(player).sendMessage(MessageData.warningNamePlayer(name));
             }
             case NO_UUID_NAME_CAPS -> {
                 data.setName(name);
                 data.setUuid(uuid);
-                plugin.getStorage().save(data);
+                plugin.getStorageInst().save(data);
             }
             case NO_UUID -> {
                 data.setUuid(uuid);
-                plugin.getStorage().save(data);
+                plugin.getStorageInst().save(data);
             }
             case NO_NAME, NAME_CAPS -> {
                 data.setName(name);
-                plugin.getStorage().save(data);
+                plugin.getStorageInst().save(data);
             }
         }
     }

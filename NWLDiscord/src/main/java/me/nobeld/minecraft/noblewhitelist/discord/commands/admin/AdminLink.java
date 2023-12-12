@@ -12,6 +12,7 @@ import net.dv8tion.jda.api.interactions.commands.OptionMapping;
 import net.dv8tion.jda.api.interactions.commands.OptionType;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -79,7 +80,10 @@ public class AdminLink implements SubCommand {
 
         if (data.isPresent()) {
             getPlugin().api().getWlData().linkUser(data.get(), userid);
-            DiscordUtil.replyMessage(event, MessageData.Command.userLink, () -> MessageData.baseHolder(data.get()));
+            Map<String, String> m = MessageData.baseHolder(data.get());
+
+            DiscordUtil.replyMessage(event, MessageData.Command.userLink, () -> m);
+            event.getManager().setWhitelistedRole(event.getGuild(), data.get(), m, true);
         } else
             DiscordUtil.replyMessage(event, MessageData.Error.userNotFound);
     }

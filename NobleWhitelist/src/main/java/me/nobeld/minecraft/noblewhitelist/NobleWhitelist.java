@@ -12,6 +12,7 @@ import me.nobeld.minecraft.noblewhitelist.config.WhitelistYaml;
 import me.nobeld.minecraft.noblewhitelist.data.WhitelistChecker;
 import me.nobeld.minecraft.noblewhitelist.data.WhitelistData;
 import me.nobeld.minecraft.noblewhitelist.model.DataGetter;
+import me.nobeld.minecraft.noblewhitelist.model.StorageType;
 import me.nobeld.minecraft.noblewhitelist.storage.MySQLDatabase;
 import me.nobeld.minecraft.noblewhitelist.storage.SQLDatabase;
 import me.nobeld.minecraft.noblewhitelist.storage.SQLiteDatabase;
@@ -43,8 +44,8 @@ public class NobleWhitelist extends JavaPlugin {
     private WhitelistChecker whitelistChecker;
     private UpdateChecker checker;
     private NobleWhitelistApi api;
-    private DataGetter storage = null;
-    private boolean hasDatabase = false;
+    private DataGetter storageInst = null;
+    private StorageType storageType = StorageType.NONE;
     @Override
     public void onEnable() {
         plugin = this;
@@ -70,15 +71,15 @@ public class NobleWhitelist extends JavaPlugin {
         Bukkit.getServer().getPluginManager().registerEvents(new Listener(this), this);
         setupCommand();
 
-        long total = getStorage().getTotal();
+        long total = getStorageInst().getTotal();
         consoleMsg().sendMessage(ServerUtil.formatAll("<prefix><green>Plugin activated, thanks for using it ^^"));
         consoleMsg().sendMessage(ServerUtil.formatAll("<prefix><green>Loaded <yellow>" + total + " <green>players."));
-        if (!hasDatabase && total >= 100) consoleMsg().sendMessage(ServerUtil.formatAll("<prefix><green>Mind in use database as storage type since there is a lot of players."));
+        if (!storageType.isDatabase() && total >= 100) consoleMsg().sendMessage(ServerUtil.formatAll("<prefix><green>Mind in use database as storage type since there is a lot of players."));
 
         checker = new UpdateChecker(this);
         if (checker.canUpdate(ConfigFile.getConfig(ConfigFile.notifyUpdate), false)) {
-            consoleMsg().sendMessage(ServerUtil.formatAll("<prefix><#F1B65C>There is a new version available: <#C775FF>" + checker.getLatest(), null));
-            consoleMsg().sendMessage(ServerUtil.formatAll("<prefix><#F1B65C>Download it at <#75CDFF>https://www.github.com/NobelD/NobleWhitelist/releases", null));
+            consoleMsg().sendMessage(ServerUtil.formatAll("<prefix><#F1B65C>There is a new version available for <gold>Noble Whitelist: <#C775FF>" + checker.getLatest(), null));
+            consoleMsg().sendMessage(ServerUtil.formatAll("<prefix><#F1B65C>Download it at: <#75CDFF>https://www.github.com/NobelD/NobleWhitelist/releases", null));
         }
 
         Metrics metrics = new Metrics(this, 20050);
@@ -93,9 +94,9 @@ public class NobleWhitelist extends JavaPlugin {
     public void onDisable() {
         reloadConfig();
         if (this.hasDatabase()) {
-            ((SQLDatabase)this.storage).close();
+            ((SQLDatabase)this.storageInst).close();
         }
-        if (hasDatabase()) ((SQLDatabase) storage).close();
+        if (hasDatabase()) ((SQLDatabase) storageInst).close();
         if(this.adventure != null) {
             consoleMsg().sendMessage(ServerUtil.formatAll("<prefix><red>Plugin disabled, see you later!"));
             this.adventure.close();
@@ -110,44 +111,57 @@ public class NobleWhitelist extends JavaPlugin {
     }
     public void setupStorage() {
         String type = (ConfigFile.getConfig(ConfigFile.storageType)).toLowerCase();
-        boolean isRemote = type.contains("mysql") || type.contains("mariadb");
-        boolean isLocal = type.contains("sqlite");
 
-        boolean isYaml = type.contains("yaml");
-        boolean isJson = type.contains("json");
-
-        if (isJson) {
-            this.storage = new WhitelistJson();
-        } else if (isYaml) {
-            this.storage = new WhitelistYaml();
+        if (type.contains("json")) {
+            storageType = StorageType.JSON;
+        } else if (type.contains("yaml")) {
+            storageType = StorageType.YAML;
+        } else if (type.contains("mysql")) {
+            storageType = StorageType.MYSQL;
+        } else if (type.contains("mariadb")) {
+            storageType = StorageType.MARIADB;
         } else {
-            try {
-                HikariConfig databaseConfig = new HikariConfig();
-                databaseConfig.setConnectionTimeout(30000L);
-                databaseConfig.setMaxLifetime(30000L);
-                if (isRemote && !isLocal) {
-                    this.consoleMsg().sendMessage(ServerUtil.formatAll("<prefix><green>Connecting to remote database for whitelist."));
-                    databaseConfig.setUsername(ConfigFile.getConfig(ConfigFile.storageUser));
-                    databaseConfig.setPassword(ConfigFile.getConfig(ConfigFile.storagePassword));
-                    this.storage = new MySQLDatabase(this.getName(), this.getThreadFactory(), ConfigFile.getConfig(ConfigFile.storageType), ConfigFile.getConfig(ConfigFile.storageHost), ConfigFile.getConfig(ConfigFile.storagePort), ConfigFile.getConfig(ConfigFile.storageDBName), databaseConfig);
-                } else {
-                    this.storage = new SQLiteDatabase(this.getName(), this.getThreadFactory(), databaseConfig);
-                }
+            storageType = StorageType.SQLITE;
+        }
 
-                this.hasDatabase = true;
-                ((SQLDatabase)this.storage).createTables();
-            } catch (Exception var7) {
-                if (ConfigFile.getConfig(ConfigFile.storageSecurityClose)) {
-                    log(Level.SEVERE, "Failed to setup database, the server will be closed.");
-                    log(Level.SEVERE, var7.getMessage());
-                    Bukkit.getServer().shutdown();
-                } else {
-                    log(Level.SEVERE, "Failed to setup database, plugin will be disabled.");
-                    log(Level.SEVERE, var7.getMessage());
-                    Bukkit.getPluginManager().disablePlugin(this);
+        try {
+            switch (storageType) {
+                case JSON -> {
+                    consoleMsg().sendMessage(ServerUtil.formatAll("<prefix><green>Loading <yellow>Json <green>file."));
+                    this.storageInst = new WhitelistJson();
+                }
+                case YAML -> {
+                    consoleMsg().sendMessage(ServerUtil.formatAll("<prefix><green>Loading <yellow>Yaml <green>file."));
+                    this.storageInst = new WhitelistYaml();
+                    storageType = StorageType.YAML;
+                }
+                default -> {
+                    HikariConfig databaseConfig = new HikariConfig();
+                    databaseConfig.setConnectionTimeout(30000L);
+                    databaseConfig.setMaxLifetime(30000L);
+                    if (storageType.isRemoteDatabase()) {
+                        this.consoleMsg().sendMessage(ServerUtil.formatAll("<prefix><green>Connecting to <yellow>remote database <green>for whitelist."));
+                        databaseConfig.setUsername(ConfigFile.getConfig(ConfigFile.storageUser));
+                        databaseConfig.setPassword(ConfigFile.getConfig(ConfigFile.storagePassword));
+                        this.storageInst = new MySQLDatabase(this.getName(), this.getThreadFactory(), ConfigFile.getConfig(ConfigFile.storageType), ConfigFile.getConfig(ConfigFile.storageHost), ConfigFile.getConfig(ConfigFile.storagePort), ConfigFile.getConfig(ConfigFile.storageDBName), databaseConfig);
+                    } else {
+                        consoleMsg().sendMessage(ServerUtil.formatAll("<prefix><green>Loading <yellow>local <green>database."));
+                        this.storageInst = new SQLiteDatabase(this.getName(), this.getThreadFactory(), databaseConfig);
+                    }
+                    ((SQLDatabase) this.storageInst).createTables();
                 }
             }
-
+            consoleMsg().sendMessage(ServerUtil.formatAll("<prefix><green>Storage loaded successfully."));
+        } catch (Exception e) {
+            if (ConfigFile.getConfig(ConfigFile.storageSecurityClose)) {
+                log(Level.SEVERE, "Failed to setup storage, the server will be closed.");
+                log(Level.SEVERE, e.getMessage());
+                Bukkit.getServer().shutdown();
+            } else {
+                log(Level.SEVERE, "Failed to setup storage, plugin will be disabled.");
+                log(Level.SEVERE, e.getMessage());
+                Bukkit.getPluginManager().disablePlugin(this);
+            }
         }
     }
     private ThreadFactory getThreadFactory() {
@@ -160,11 +174,14 @@ public class NobleWhitelist extends JavaPlugin {
                 .build();
     }
     public boolean hasDatabase() {
-        return this.hasDatabase;
+        return this.storageType.isDatabase();
+    }
+    public StorageType getStorageType() {
+        return this.storageType;
     }
 
-    public DataGetter getStorage() {
-        return this.storage;
+    public DataGetter getStorageInst() {
+        return this.storageInst;
     }
     public @NonNull BukkitAudiences adventure() {
         if (this.adventure == null) {

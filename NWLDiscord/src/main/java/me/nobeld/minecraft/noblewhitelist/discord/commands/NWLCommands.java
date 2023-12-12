@@ -1,6 +1,7 @@
 package me.nobeld.minecraft.noblewhitelist.discord.commands;
 
 import me.nobeld.minecraft.noblewhitelist.discord.JDAManager;
+import me.nobeld.minecraft.noblewhitelist.discord.NWLDiscord;
 import me.nobeld.minecraft.noblewhitelist.discord.commands.admin.CommandAdmin;
 import me.nobeld.minecraft.noblewhitelist.discord.commands.basic.CommandBasic;
 import me.nobeld.minecraft.noblewhitelist.discord.config.ConfigData;
@@ -11,6 +12,8 @@ import me.nobeld.minecraft.noblewhitelist.model.whitelist.PlayerWhitelisted;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
 import net.dv8tion.jda.api.events.interaction.component.ButtonInteractionEvent;
+import net.dv8tion.jda.api.exceptions.HierarchyException;
+import net.dv8tion.jda.api.exceptions.InsufficientPermissionException;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import net.dv8tion.jda.api.interactions.commands.build.CommandData;
 import org.jetbrains.annotations.NotNull;
@@ -19,6 +22,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Level;
 
 public class NWLCommands extends ListenerAdapter {
     public static Map<Long, PlayerWhitelisted> commandQueue = new HashMap<>();
@@ -58,23 +62,36 @@ public class NWLCommands extends ListenerAdapter {
             return;
         }
 
-        String command = event.getName();
-        String subCommand = event.getSubcommandName();
+        try {
+            String command = event.getName();
+            String subCommand = event.getSubcommandName();
 
-        for (CommandGeneral gen : commands) {
-            if (!gen.getName().equalsIgnoreCase(command)) continue;
-            boolean sub = false;
-            if (!gen.notSubcommands()) {
-                assert gen.getSubcommands() != null;
-                for (SubCommand com : gen.getSubcommands()) {
-                    if (!com.getName().equalsIgnoreCase(subCommand)) continue;
-                    com.onCommand(new InteractResult(manager, member, com, event));
-                    sub = true;
-                    break;
+            for (CommandGeneral gen : commands) {
+                if (!gen.getName().equalsIgnoreCase(command)) continue;
+                boolean sub = false;
+                if (!gen.notSubcommands()) {
+                    assert gen.getSubcommands() != null;
+                    for (SubCommand com : gen.getSubcommands()) {
+                        if (!com.getName().equalsIgnoreCase(subCommand)) continue;
+                        com.onCommand(new InteractResult(manager, member, com, event));
+                        sub = true;
+                        break;
+                    }
                 }
+                if (!sub) gen.onCommand(event);
+                break;
             }
-            if (!sub) gen.onCommand(event);
-            break;
+        } catch (InsufficientPermissionException e) {
+            NWLDiscord.log(Level.SEVERE, "An error occurred while executing the command: '" + event.getName() + "' for user: " + event.getMember().getNickname());
+            NWLDiscord.log(Level.SEVERE, "The bot don't have the necessary permission to complete the action.");
+            NWLDiscord.log(Level.SEVERE, e.getMessage());
+        } catch (HierarchyException e) {
+            NWLDiscord.log(Level.SEVERE, "An error occurred while executing the command: '" + event.getName() + "' for user: " + event.getMember().getNickname());
+            NWLDiscord.log(Level.SEVERE, "The bot's role is not high enough to complete an action.");
+            NWLDiscord.log(Level.SEVERE, e.getMessage());
+        } catch (Exception e) {
+            NWLDiscord.log(Level.SEVERE, "An error occurred while executing the command: '" + event.getName() + "' for user: " + event.getMember().getNickname());
+            NWLDiscord.log(Level.SEVERE, e.getMessage());
         }
     }
     @Override

@@ -12,6 +12,7 @@ import net.dv8tion.jda.api.interactions.commands.OptionMapping;
 import net.dv8tion.jda.api.interactions.commands.OptionType;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -71,7 +72,10 @@ public class AdminAdd implements SubCommand {
 
         if (data.isEmpty()) {
             PlayerWhitelisted d = getPlugin().api().getWlData().register(name, realuuid, userid);
-            DiscordUtil.replyMessage(event, MessageData.Command.userAdd, () -> MessageData.baseHolder(d));
+            Map<String, String> m = MessageData.baseHolder(d);
+
+            DiscordUtil.replyMessage(event, MessageData.Command.userAdd, () -> m);
+            event.getManager().setWhitelistedRole(event.getGuild(), d, m, true);
         } else
             DiscordUtil.replyMessage(event, MessageData.Error.userAlready);
     }

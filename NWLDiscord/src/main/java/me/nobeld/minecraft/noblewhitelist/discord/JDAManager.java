@@ -1,14 +1,19 @@
 package me.nobeld.minecraft.noblewhitelist.discord;
 
+import me.nobeld.minecraft.noblewhitelist.NobleWhitelist;
 import me.nobeld.minecraft.noblewhitelist.discord.model.InteractResult;
 import me.nobeld.minecraft.noblewhitelist.model.ConfigContainer;
 import me.nobeld.minecraft.noblewhitelist.discord.commands.NWLCommands;
 import me.nobeld.minecraft.noblewhitelist.discord.config.ConfigData;
 import me.nobeld.minecraft.noblewhitelist.discord.config.MessageData;
+import me.nobeld.minecraft.noblewhitelist.model.whitelist.PlayerWhitelisted;
+import me.nobeld.minecraft.noblewhitelist.util.ServerUtil;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
+import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.Role;
+import net.dv8tion.jda.api.entities.User;
 import net.dv8tion.jda.api.entities.channel.ChannelType;
 import net.dv8tion.jda.api.entities.channel.concrete.TextChannel;
 import net.dv8tion.jda.api.entities.channel.unions.MessageChannelUnion;
@@ -16,8 +21,10 @@ import net.dv8tion.jda.api.interactions.commands.build.CommandData;
 import net.essentialsx.discord.JDADiscordService;
 import org.bukkit.Bukkit;
 
+import java.awt.*;
 import java.lang.reflect.Field;
 import java.util.*;
+import java.util.List;
 import java.util.logging.Level;
 
 import static me.nobeld.minecraft.noblewhitelist.discord.NWLDiscord.log;
@@ -78,9 +85,11 @@ public class JDAManager {
             return;
         }
         try {
+            NobleWhitelist.getPlugin().consoleMsg().sendMessage(ServerUtil.formatAll("<prefix><yellow>Loading Discord Bot!"));
             JDABuilder builder = JDABuilder.createDefault(token);
             bot = builder.build();
             bot.awaitReady();
+            NobleWhitelist.getPlugin().consoleMsg().sendMessage(ServerUtil.formatAll("<prefix><green>Loaded Discord Bot!"));
         } catch (Exception e) {
             log(Level.SEVERE, "An error occurred while enabling the discord bot, be sure the token is valid.");
             log(Level.SEVERE, e.getMessage());
@@ -139,6 +148,59 @@ public class JDAManager {
             }
             return bot.getRoleById(id);
         }).toList();
+    }
+    public void setWhitelistedRole(Guild server, PlayerWhitelisted data, Map<String, String> place, boolean add) {
+        if (!data.hasDiscord()) return;
+        User user = bot.getUserById(data.getDiscordID());
+        if (user == null) return;
+
+        Member member = server.getMember(user);
+        if (member == null) return;
+
+        setWhitelistedRole(server, member, place, add);
+    }
+    public void setWhitelistedRole(Guild server, Member user, Map<String, String> place, boolean add) {
+        if (add) {
+            if (!ConfigData.get(giveWlRole)) return;
+            Role role = getWhitelistedRole();
+            if (!Collections.disjoint(user.getRoles(), Collections.singletonList(role))) return;
+
+            server.addRoleToMember(user, role).reason("Added whitelisted role by register or link.").queue();
+            sendMessage(getChannel(Channel.roleAdd), getMessage(MessageData.Channel.notifyRoleAdd,
+                    () -> {
+                if (place != null) {
+                    place.put("role-id", String.valueOf(role.getIdLong()));
+                    place.put("role-mention", "<@&" + role.getIdLong() + ">");
+                    return place;
+                } else return Map.of("user", String.valueOf(user.getIdLong()),
+                        "user-id", String.valueOf(user.getIdLong()),
+                        "role-id", String.valueOf(role.getIdLong()),
+                        "role-mention", "<@&" + role.getIdLong() + ">");
+                    }));
+
+        } else {
+            if (!ConfigData.get(removeWlRole)) return;
+            Role role = getWhitelistedRole();
+            if (Collections.disjoint(user.getRoles(), Collections.singletonList(role))) return;
+
+            server.removeRoleFromMember(user, role).reason("Removed whitelisted role by unregister or unlink.").queue();
+            sendMessage(getChannel(Channel.roleRemove), getMessage(MessageData.Channel.notifyRoleRemove,
+                    () -> {
+                if (place != null) {
+                    place.put("role-id", String.valueOf(role.getIdLong()));
+                    place.put("role-mention", "<@&" + role.getIdLong() + ">");
+                    return place;
+                } else return Map.of("user", String.valueOf(user.getIdLong()),
+                        "user-id", String.valueOf(user.getIdLong()),
+                        "role-id", String.valueOf(role.getIdLong()),
+                        "role-mention", "<@&" + role.getIdLong() + ">");
+                    }));
+        }
+    }
+    public Role getWhitelistedRole() {
+        long id = ConfigData.get(roleWhitelistedID);
+        if (id < 0) return null;
+        return bot.getRoleById(id);
     }
     public TextChannel getChannel(ConfigContainer<String> cont) {
         String channel = get(cont);

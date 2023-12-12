@@ -266,7 +266,7 @@ public class NWlCommand {
                 .argument(IntegerArgument.optional("page"))
                 .handler(c -> {
                     int page = c.getOrDefault("page", 1);
-                    List<PlayerWhitelisted> list = plugin.getStorage().listIndex(page);
+                    List<PlayerWhitelisted> list = plugin.getStorageInst().listIndex(page);
                     if (list != null && !list.isEmpty()) {
                         sendMsg(c, MessageData.listPage(page));
                         list.forEach(w -> sendMsg(c, MessageData.listString(w)));
@@ -278,7 +278,7 @@ public class NWlCommand {
                 .literal("clear")
                 .meta(CommandConfirmationManager.META_CONFIRMATION_REQUIRED, true)
                 .handler(c -> {
-                    if (!plugin.getStorage().clear()) sendMsg(c, MessageData.whitelistAlreadyEmpty());
+                    if (!plugin.getStorageInst().clear()) sendMsg(c, MessageData.whitelistAlreadyEmpty());
                     else sendMsg(c, MessageData.whitelistCleared());
                 })
         );
@@ -291,7 +291,7 @@ public class NWlCommand {
         );
         this.manager.command(builder.literal("reload")
                 .handler(c -> {
-                    plugin.getStorage().reload();
+                    plugin.getStorageInst().reload();
                     reloadConfig();
                     sendMsg(c, MessageData.reload());
                 })
@@ -300,11 +300,12 @@ public class NWlCommand {
                 .handler(c -> {
                     sendMsg(c, MessageData.statusHeader());
                     sendMsg(c, MessageData.statusVersion(plugin.getUptChecker().version));
-                    sendMsg(c, MessageData.statusWhitelistSize(plugin.getStorage().getTotal()));
+                    sendMsg(c, MessageData.statusWhitelistSize(plugin.getStorageInst().getTotal()));
                     sendMsg(c, MessageData.statusWhitelistActive(ConfigFile.getConfig(ConfigFile.whitelistActive)));
                     sendMsg(c, MessageData.statusNameCheck(ConfigFile.checkName()));
                     sendMsg(c, MessageData.statusUuidCheck(ConfigFile.checkUUID()));
                     sendMsg(c, MessageData.statusPermCheck(ConfigFile.checkPerm()));
+                    sendMsg(c, MessageData.statusStorageType(plugin));
                 })
         );
 

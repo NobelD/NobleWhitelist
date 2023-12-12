@@ -11,7 +11,13 @@ special:
   # If disabled all the users can see the commands and description (still can't be used without the necessary role)
   # Restart the server to apply changes.
   admin-only-server-manage: true
+  # Gives to the whitelisted user a role.
+  give-role-on-register: false
+  # Removes the role from the user if unregisters.
+  remove-role-on-unregister: false
 role:
+  # The roles cannot be added more as channels, these are fixed.
+  # But you can still change it without reloading.
   user:
     - 0000000000000000000
     - 0000000000000000000
@@ -20,11 +26,14 @@ role:
   admin:
     - 0000000000000000000
     - 0000000000000000000
+  # This role will be given to the user when registers.
+  whitelisted: 0000000000000000000
 announce-channel:
   start: none
   stop: none
   notify-self-register: staff
   notify-self-remove: staff
+  notify-given-role: none
   notify-wl-auto: none
   notify-wl-join: none
   notify-wl-try: none
@@ -123,3 +132,7 @@ command:
       - admin
     channel:
       - staff
+version:
+  # Notify when there is a new update.
+  notify-update: true
+  version: 1

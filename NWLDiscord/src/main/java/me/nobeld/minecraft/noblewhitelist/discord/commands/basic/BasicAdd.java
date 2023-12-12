@@ -78,8 +78,10 @@ public class BasicAdd implements SubCommand {
         if (data.isEmpty()) {
             PlayerWhitelisted d = getPlugin().api().getWlData().register(name, realuuid, userid);
             Map<String, String> m = MessageData.baseHolder(d);
+
             replyMessage(event, MessageData.Command.selfAdd, () -> m);
             sendMessage(event.getManager().getChannel(ConfigData.Channel.selfRegister), getMessage(MessageData.Channel.notifySelfAdd, () -> m));
+            event.getManager().setWhitelistedRole(event.getGuild(), d, m, true);
         } else
             DiscordUtil.replyMessage(event, MessageData.Error.selfAlready);
     }

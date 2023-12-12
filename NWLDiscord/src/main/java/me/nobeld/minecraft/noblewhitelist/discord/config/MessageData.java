@@ -47,6 +47,7 @@ public class MessageData {
         map.put("player-optional", dat);
         map.put("player-data", getMsg(PlaceHolders.playerData));
         map.put("toggle", data.isWhitelisted() ? getMsg(PlaceHolders.toggledTrue) : getMsg(PlaceHolders.toggledFalse));
+        map.put("user-mention", data.hasDiscord() ? ("<@" + data.getDiscordID() + ">") : "invalid");
 
         return data.toMap(map);
     }
@@ -70,6 +71,8 @@ public class MessageData {
         public static final ConfigContainer<String> notifyStop = new ConfigContainer<>("discord.channel.stop", "");
         public static final ConfigContainer<String> notifySelfAdd = new ConfigContainer<>("discord.channel.notify-self-register", "");
         public static final ConfigContainer<String> notifySelfRemove = new ConfigContainer<>("discord.channel.notify-self-remove", "");
+        public static final ConfigContainer<String> notifyRoleAdd = new ConfigContainer<>("discord.channel.notify-role-add", "");
+        public static final ConfigContainer<String> notifyRoleRemove = new ConfigContainer<>("discord.channel.notify-role-remove", "");
         public static final ConfigContainer<String> serverJoin = new ConfigContainer<>("discord.channel.notify-wl-join", "");
         public static final ConfigContainer<String> serverTry = new ConfigContainer<>("discord.channel.notify-wl-try", "");
         public static final ConfigContainer<String> serverAuto = new ConfigContainer<>("discord.channel.notify-wl-auto", "");

@@ -1,5 +1,6 @@
 package me.nobeld.minecraft.noblewhitelist.config;
 
+import me.nobeld.minecraft.noblewhitelist.NobleWhitelist;
 import me.nobeld.minecraft.noblewhitelist.model.whitelist.PlayerWhitelisted;
 import me.nobeld.minecraft.noblewhitelist.util.ServerUtil;
 import net.kyori.adventure.text.Component;
@@ -76,13 +77,16 @@ public class MessageData {
         return ServerUtil.formatAll("<prefix><#FBC36F>Whitelist: <#8CDEFF>" + (fase ? "<#FF6040>on" : "<#969FA5>off"), null);
     }
     public static Component statusNameCheck(ConfigFile.CheckType check) {
-        return ServerUtil.formatAll("<prefix><#FBC36F>Name Check: <#8CDEFF>" + check.msg(), null);
+        return ServerUtil.formatAll("<prefix><#FBC36F>Name Check: <#F07DF0>" + check.msg(), null);
     }
     public static Component statusUuidCheck(ConfigFile.CheckType check) {
-        return ServerUtil.formatAll("<prefix><#FBC36F>UUID Check: <#8CDEFF>" + check.msg(), null);
+        return ServerUtil.formatAll("<prefix><#FBC36F>UUID Check: <#F07DF0>" + check.msg(), null);
     }
     public static Component statusPermCheck(ConfigFile.CheckType check) {
-        return ServerUtil.formatAll("<prefix><#FBC36F>Perm Check: <#8CDEFF>" + check.msg(), null);
+        return ServerUtil.formatAll("<prefix><#FBC36F>Perm Check: <#F07DF0>" + check.msg(), null);
+    }
+    public static Component statusStorageType(NobleWhitelist plugin) {
+        return ServerUtil.formatAll("<prefix><#FBC36F>Storage Type: <#F07DF0>" + plugin.getStorageType().name(), null);
     }
     public static Component playerAdded() {
         return ServerUtil.formatAll("<prefix><#FBC36F>The provided player was added to the whitelist.", null);

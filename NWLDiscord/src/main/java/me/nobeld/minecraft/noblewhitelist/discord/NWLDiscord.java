@@ -1,9 +1,11 @@
 package me.nobeld.minecraft.noblewhitelist.discord;
 
+import me.nobeld.minecraft.noblewhitelist.NobleWhitelist;
 import me.nobeld.minecraft.noblewhitelist.discord.config.ConfigData;
 import me.nobeld.minecraft.noblewhitelist.discord.config.MessageData;
 import me.nobeld.minecraft.noblewhitelist.discord.util.LibsManager;
 import me.nobeld.minecraft.noblewhitelist.util.Metrics;
+import me.nobeld.minecraft.noblewhitelist.util.ServerUtil;
 import me.nobeld.minecraft.noblewhitelist.util.UpdateChecker;
 import net.byteflux.libby.BukkitLibraryManager;
 import net.essentialsx.discord.EssentialsDiscord;
@@ -28,24 +30,27 @@ public class NWLDiscord extends JavaPlugin {
         ConfigData.configFile();
         MessageData.messageFile();
 
-        if (Bukkit.getPluginManager().getPlugin("NobleWhitelist") == null) {
+        Plugin pl = Bukkit.getPluginManager().getPlugin("NobleWhitelist");
+        if (pl == null || !pl.isEnabled()) {
             this.getLogger().log(Level.SEVERE, "Can not enable the plugin because the base plugin is not installed.");
             this.getLogger().log(Level.SEVERE, "Download it here: https://github.com/NobelD/NobleWhitelist/releases");
             Bukkit.getPluginManager().disablePlugin(this);
             return;
         }
 
-        Plugin pl = Bukkit.getPluginManager().getPlugin("EssentialsDiscord");
-        if (pl != null && ConfigData.get(ConfigData.essentialsIntegration)) {
-            essentials = (JavaPlugin) pl;
+        Plugin ess = Bukkit.getPluginManager().getPlugin("EssentialsDiscord");
+        if (ess != null && ess.isEnabled() && ConfigData.get(ConfigData.essentialsIntegration)) {
+            essentials = (JavaPlugin) ess;
         }
         jdaManager = new JDAManager(this);
         checker = new UpdateChecker(this);
         Bukkit.getServer().getPluginManager().registerEvents(new Listener(this), this);
 
+        NobleWhitelist.getPlugin().consoleMsg().sendMessage(ServerUtil.formatAll("<prefix><green>Loaded Discord integration!"));
+
         if (getUptChecker().canUpdate("NWLDiscord", ConfigData.get(ConfigData.notifyUpdate), false)) {
-            log(Level.WARNING, "There is a new version available: " + checker.getLatest());
-            log(Level.WARNING, "Download it at: https://www.github.com/NobelD/NobleWhitelist/releases");
+            NobleWhitelist.getPlugin().consoleMsg().sendMessage(ServerUtil.formatAll("<prefix><#F1B65C>There is a new version available for the <gold>Discord Integration: <#C775FF>" + checker.getLatest()));
+            NobleWhitelist.getPlugin().consoleMsg().sendMessage(ServerUtil.formatAll("<prefix><#F1B65C>Download it at: <#75CDFF>https://www.github.com/NobelD/NobleWhitelist/releases"));
         }
         Metrics metrics = new Metrics(this, 20417);
         metrics.addCustomChart(new Metrics.MultiLineChart("players_and_servers", () -> {

@@ -12,6 +12,7 @@ import net.dv8tion.jda.api.interactions.commands.OptionMapping;
 import net.dv8tion.jda.api.interactions.commands.OptionType;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -79,7 +80,10 @@ public class BasicLink implements SubCommand {
             DiscordUtil.replyMessage(event, MessageData.Error.userNotFound);
         } else {
             getPlugin().api().getWlData().linkUser(data.get(), userid);
-            DiscordUtil.replyMessage(event, MessageData.Command.selfLink, () -> MessageData.baseHolder(data.get()));
+            Map<String, String> m = MessageData.baseHolder(data.get());
+
+            event.getManager().setWhitelistedRole(event.getGuild(), data.get(), m, true);
+            DiscordUtil.replyMessage(event, MessageData.Command.selfLink, () -> m);
         }
     }
 }

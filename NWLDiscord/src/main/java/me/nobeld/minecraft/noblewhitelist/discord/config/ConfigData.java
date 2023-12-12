@@ -62,8 +62,11 @@ public class ConfigData {
     public static final ConfigContainer<String> roleUserID = new ConfigContainer<>("role.user", "");
     public static final ConfigContainer<String> roleStaffID = new ConfigContainer<>("role.staff", "");
     public static final ConfigContainer<String> roleAdminID = new ConfigContainer<>("role.admin", "");
+    public static final ConfigContainer<Long> roleWhitelistedID = new ConfigContainer<>("role.whitelisted", -1L);
     public static final ConfigContainer<Boolean> notifyUpdate = new ConfigContainer<>("version.notify-update", true);
     public static final ConfigContainer<Boolean> serverManagePermission = new ConfigContainer<>("special.admin-only-server-manage", true);
+    public static final ConfigContainer<Boolean> giveWlRole = new ConfigContainer<>("special.give-role-on-register", false);
+    public static final ConfigContainer<Boolean> removeWlRole = new ConfigContainer<>("special.remove-role-on-unregister", false);
     //TODO premium suggestion
     public static final ConfigContainer<Boolean> suggestPremium = new ConfigContainer<>("special.suggest-premium-if-possible", false);
     public static class Channel {
@@ -71,6 +74,8 @@ public class ConfigData {
         public static final ConfigContainer<String> stopChannel = new ConfigContainer<>("announce-channel.stop", "");
         public static final ConfigContainer<String> selfRegister = new ConfigContainer<>("announce-channel.notify-self-register", "");
         public static final ConfigContainer<String> selfRemove = new ConfigContainer<>("announce-channel.notify-self-remove", "");
+        public static final ConfigContainer<String> roleAdd = new ConfigContainer<>("announce-channel.notify-role-add", "");
+        public static final ConfigContainer<String> roleRemove = new ConfigContainer<>("announce-channel.notify-role-remove", "");
         public static final ConfigContainer<String> whitelistJoin = new ConfigContainer<>("announce-channel.notify-wl-join", "");
         public static final ConfigContainer<String> whitelistTry = new ConfigContainer<>("announce-channel.notify-wl-try", "");
         public static final ConfigContainer<String> whitelistAuto = new ConfigContainer<>("announce-channel.notify-wl-auto", "");

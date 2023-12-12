@@ -12,6 +12,7 @@ import net.dv8tion.jda.api.interactions.commands.OptionMapping;
 import net.dv8tion.jda.api.interactions.commands.OptionType;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -82,7 +83,10 @@ public class AdminUnLink implements SubCommand {
 
         if (data.isPresent()) {
             getPlugin().api().getWlData().linkUser(data.get(), -1);
-            DiscordUtil.replyMessage(event, MessageData.Command.userUnLink, () -> MessageData.baseHolder(data.get()));
+            Map<String, String> m = MessageData.baseHolder(data.get());
+
+            DiscordUtil.replyMessage(event, MessageData.Command.userUnLink, () -> m);
+            event.getManager().setWhitelistedRole(event.getGuild(), data.get(), m, false);
         } else
             DiscordUtil.replyMessage(event, MessageData.Error.userNotFound);
     }

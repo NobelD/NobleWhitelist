@@ -2,8 +2,8 @@ placeholders:
   optional-none: "Invalid Player!"
   optional-name: "**Player name:** <name>"
   optional-uuid: "**Player uuid:** <uuid>"
-  optional-id: "**User ID:** <user>"
-  player-data: "%row% **-** <name> **-** <uuid> **-** <user>"
+  optional-id: "**User ID:** <user-id>"
+  player-data: "%row% **-** <name> **-** <uuid> **-** <user-id>"
   toggled-true: true
   toggled-false: false
 discord:
@@ -19,7 +19,7 @@ discord:
       body:
         color: 88FF8A
         content: |-
-          An user has registered to the whitelist:
+          The user <user-mention> has self registered to the whitelist:
           
           <player-optional>
     notify-self-remove:
@@ -27,11 +27,23 @@ discord:
       body:
         color: FFC288
         content: |-
-          An user has removed from the whitelist:
+          The user <user-mention> has self unregistered from the whitelist:
           
           **Player name:** <name>
           **Player uuid:** <uuid>
-          **User ID:** <user>
+          **User ID:** <user-id>
+    notify-role-add:
+      type: embed
+      body:
+        color: 88D7FF
+        content: |-
+          The user <user-mention> had the whitelisted role added.
+    notify-role-remove:
+      type: embed
+      body:
+        color: FFA287
+        content: |-
+          The user <user-mention> had the whitelisted role removed.
     notify-wl-join:
       type: embed
       body:
@@ -190,7 +202,7 @@ discord:
           
           **Player name:** <name>
           **Player uuid:** <uuid>
-          **User ID:** <user>
+          **User ID:** <user-id>
           **Can Join:** <toggle>
     self-link:
       type: embed

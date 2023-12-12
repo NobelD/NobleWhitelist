@@ -48,7 +48,7 @@ public class Listener implements org.bukkit.event.Listener {
         if (!player.isOp() || !plugin.getUptChecker().canUpdate(ConfigFile.getConfig(ConfigFile.notifyUpdate), true)) return;
 
         plugin.playerMsg(player).sendMessage(ServerUtil.formatAll("<prefix><#F1B65C>There is a new version available: <#C775FF>" + plugin.getUptChecker().getLatest(), null));
-        plugin.playerMsg(player).sendMessage(ServerUtil.formatAll("<prefix><#F1B65C>Download it at <#75CDFF>https://www.github.com/NobelD/NobleWhitelist/releases", null));
+        plugin.playerMsg(player).sendMessage(ServerUtil.formatAll("<prefix><#F1B65C>Download it at: <#75CDFF>https://www.github.com/NobelD/NobleWhitelist/releases", null));
     }
     @EventHandler(priority = EventPriority.HIGHEST)
     public void onLeave(PlayerQuitEvent event) {

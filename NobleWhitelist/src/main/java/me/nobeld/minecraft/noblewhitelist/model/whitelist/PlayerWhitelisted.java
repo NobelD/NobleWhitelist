@@ -97,12 +97,15 @@ public class PlayerWhitelisted {
         map.put("name", this.getOptName().orElse("none"));
         map.put("uuid", this.getOptUUID().map(UUID::toString).orElse("none"));
         map.put("user", this.hasDiscord() ? String.valueOf(this.getDiscordID()) : "none");
+        map.put("user-id", this.hasDiscord() ? String.valueOf(this.getDiscordID()) : "none");
+        map.put("row", this.isSaved() ? String.valueOf(this.getRowId()) : "none");
         return map;
     }
     public synchronized Map<String, String> toMap(@NotNull Map<String, String> map) {
         map.put("name", this.getOptName().orElse("none"));
         map.put("uuid", this.getOptUUID().map(UUID::toString).orElse("none"));
         map.put("user", this.hasDiscord() ? String.valueOf(this.getDiscordID()) : "none");
+        map.put("user-id", this.hasDiscord() ? String.valueOf(this.getDiscordID()) : "none");
         map.put("row", this.isSaved() ? String.valueOf(this.getRowId()) : "none");
         return map;
     }

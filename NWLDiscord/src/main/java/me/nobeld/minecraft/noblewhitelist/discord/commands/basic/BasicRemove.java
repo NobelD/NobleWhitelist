@@ -59,8 +59,10 @@ public class BasicRemove implements SubCommand {
         if (data.isPresent()) {
             getPlugin().api().getWlData().deleteUser(data.get());
             Map<String, String> m = MessageData.baseHolder(data.get());
+
             replyMessage(event, MessageData.Command.selfRemove, () -> m);
             sendMessage(event.getManager().getChannel(ConfigData.Channel.selfRemove), getMessage(MessageData.Channel.notifySelfRemove, () -> m));
+            event.getManager().setWhitelistedRole(event.getGuild(), data.get(), m, false);
         } else
             DiscordUtil.replyMessage(event, MessageData.Error.userNotFound);
     }

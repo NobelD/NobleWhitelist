@@ -46,7 +46,7 @@ public class BasicAccounts implements SubCommand {
 
         long userid = event.getMember().getIdLong();
 
-        PlayerWhitelisted data = getPlugin().getStorage().loadPlayer(userid);
+        PlayerWhitelisted data = getPlugin().getStorageInst().loadPlayer(userid);
         if (data == null) {
             DiscordUtil.replyMessage(event, MessageData.Error.selfNoAccounts);
         } else
