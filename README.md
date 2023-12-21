@@ -22,4 +22,4 @@ Also this plugin has a discord integration plugin.
 
 **[For more information about the plugin refer to the project wiki](https://github.com/NobelD/NobleWhitelist/wiki)**
 
-**Support on [Github](https://github.com/NobelD/NobleWhitelist/issues) and my [Discord Server](https://discord.com/invite/WywWcDymaN)** (is mainly spanish but english is supported :D)
+**Support on [Github](https://github.com/NobelD/NobleWhitelist/issues) and on my [Discord Server for Projects](https://discord.gg/CMbuPp7hpf)** (spanish and english are supported :D)
