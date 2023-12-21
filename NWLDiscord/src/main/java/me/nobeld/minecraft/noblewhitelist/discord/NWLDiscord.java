@@ -43,12 +43,12 @@ public class NWLDiscord extends JavaPlugin {
             essentials = (JavaPlugin) ess;
         }
         jdaManager = new JDAManager(this);
-        checker = new UpdateChecker(this);
+        checker = new UpdateChecker(this, "NWLDiscord");
         Bukkit.getServer().getPluginManager().registerEvents(new Listener(this), this);
 
         NobleWhitelist.getPlugin().consoleMsg().sendMessage(ServerUtil.formatAll("<prefix><green>Loaded Discord integration!"));
 
-        if (getUptChecker().canUpdate("NWLDiscord", ConfigData.get(ConfigData.notifyUpdate), false)) {
+        if (getUptChecker().canUpdate(ConfigData.get(ConfigData.notifyUpdate), false)) {
             NobleWhitelist.getPlugin().consoleMsg().sendMessage(ServerUtil.formatAll("<prefix><#F1B65C>There is a new version available for the <gold>Discord Integration: <#C775FF>" + checker.getLatest()));
             NobleWhitelist.getPlugin().consoleMsg().sendMessage(ServerUtil.formatAll("<prefix><#F1B65C>Download it at: <#75CDFF>https://www.github.com/NobelD/NobleWhitelist/releases"));
         }

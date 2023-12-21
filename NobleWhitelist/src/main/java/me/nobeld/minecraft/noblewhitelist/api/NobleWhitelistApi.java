@@ -8,6 +8,7 @@ import me.nobeld.minecraft.noblewhitelist.model.whitelist.SuccessEnum;
 import org.bukkit.entity.Player;
 
 import java.util.List;
+import java.util.Optional;
 
 public class NobleWhitelistApi {
     private final NobleWhitelist plugin;
@@ -73,6 +74,30 @@ public class NobleWhitelistApi {
             ConfigFile.setConfig(ConfigFile.whitelistActive, activated);
             return true;
         }
+    }
+    /**
+     * Get if the provided player is whitelisted and have a discord user linked.
+     * @param player the player to check
+     * @return true if the player has a discord user linked.
+     */
+    public boolean hasDiscordLinked(Player player) {
+        return plugin.whitelistData().getData(player).map(PlayerWhitelisted::hasDiscord).orElse(false);
+    }
+    /**
+     * Get if the player is whitelisted and get the id of their discord user linked.
+     * @param player the player to check
+     * @return optional of the player's discord user id.
+     */
+    public Optional<Long> getDiscordUser(Player player) {
+        return plugin.whitelistData().getData(player).map(PlayerWhitelisted::getDiscordID);
+    }
+    /**
+     * Get if the player is whitelisted but can not enter to the server.
+     * @param player the player to check
+     * @return true if the player can not join but is whitelisted.
+     */
+    public boolean isWhitelistDenied(Player player) {
+        return plugin.whitelistData().getData(player).map(PlayerWhitelisted::isWhitelisted).orElse(false);
     }
     /**
      * Get a list of the first 10 accounts registered, the page number determines the offset.

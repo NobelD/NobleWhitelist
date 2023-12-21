@@ -4,7 +4,7 @@ plugins {
 }
 
 group = "me.nobeld.minecraft.noblewhitelist"
-version = "1.1.1"
+version = "1.1.2"
 description = "A simple plugin for whitelist management."
 
 java {
@@ -39,8 +39,8 @@ dependencies {
     compileOnly("com.zaxxer", "HikariCP", "5.1.0")
     compileOnly("org.xerial", "sqlite-jdbc", "3.44.1.0")
 
-    compileOnly("me.clip:placeholderapi:2.11.4")
-    compileOnly("io.github.miniplaceholders:miniplaceholders-api:2.2.3")
+    compileOnly("me.clip", "placeholderapi", "2.11.4")
+    compileOnly("io.github.miniplaceholders", "miniplaceholders-api", "2.2.3")
 
     compileOnly("net.kyori","adventure-platform-bukkit","4.3.1")
     compileOnly("net.kyori","adventure-text-minimessage","4.14.0")

@@ -3,7 +3,7 @@ placeholders:
   optional-name: "**Player name:** <name>"
   optional-uuid: "**Player uuid:** <uuid>"
   optional-id: "**User ID:** <user-id>"
-  player-data: "%row% **-** <name> **-** <uuid> **-** <user-id>"
+  player-data: "<row> **-** <name> **-** <uuid> **-** <user-id>"
   toggled-true: true
   toggled-false: false
 discord:

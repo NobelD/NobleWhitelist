@@ -59,10 +59,12 @@ public class ConfigData {
     public static final ConfigContainer<Boolean> essentialsIntegration = new ConfigContainer<>("discord.essentials.essentials-integration", false);
     public static final ConfigContainer<Long> serverID = new ConfigContainer<>("discord.server-id", -1L);
     public static final ConfigContainer<String> channelsID = new ConfigContainer<>("channel", "");
+    public static final ConfigContainer<Boolean> roleEveryone = new ConfigContainer<>("role.enable-everyone-role", false);
     public static final ConfigContainer<String> roleUserID = new ConfigContainer<>("role.user", "");
     public static final ConfigContainer<String> roleStaffID = new ConfigContainer<>("role.staff", "");
     public static final ConfigContainer<String> roleAdminID = new ConfigContainer<>("role.admin", "");
     public static final ConfigContainer<Long> roleWhitelistedID = new ConfigContainer<>("role.whitelisted", -1L);
+    public static final ConfigContainer<String> roleSubWhitelistedID = new ConfigContainer<>("role.sub-whitelisted", "");
     public static final ConfigContainer<Boolean> notifyUpdate = new ConfigContainer<>("version.notify-update", true);
     public static final ConfigContainer<Boolean> serverManagePermission = new ConfigContainer<>("special.admin-only-server-manage", true);
     public static final ConfigContainer<Boolean> giveWlRole = new ConfigContainer<>("special.give-role-on-register", false);

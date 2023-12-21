@@ -14,18 +14,17 @@ import java.util.logging.Level;
 public class UpdateChecker {
     public JavaPlugin plugin;
     public final String version;
+    private final String name;
     private long lastCheck = 0;
     private boolean cantReach = false;
     private String latest;
     @SuppressWarnings("deprecation")
-    public UpdateChecker(JavaPlugin plugin) {
+    public UpdateChecker(JavaPlugin plugin, String name) {
         this.plugin = plugin;
+        this.name = name;
         version = plugin.getDescription().getVersion();
     }
     public UpdateStatus check() {
-        return check("NobleWhitelist");
-    }
-    public UpdateStatus check(String name) {
         if (System.currentTimeMillis() + 1800000 < lastCheck) return UpdateStatus.COOLDOWN;
         lastCheck = System.currentTimeMillis();
         try {
@@ -58,12 +57,6 @@ public class UpdateChecker {
     }
     public boolean canUpdate(boolean configUpdate, boolean isPlayer) {
         UpdateStatus status = check();
-        if (!isPlayer && status == UpdateStatus.CANT_REACH) consoleError();
-        if (!configUpdate) return false;
-        return status == UpdateStatus.VERSION_AVAILABLE;
-    }
-    public boolean canUpdate(String name, boolean configUpdate, boolean isPlayer) {
-        UpdateStatus status = check(name);
         if (!isPlayer && status == UpdateStatus.CANT_REACH) consoleError();
         if (!configUpdate) return false;
         return status == UpdateStatus.VERSION_AVAILABLE;

@@ -91,11 +91,17 @@ public class MessageData {
     public static Component playerAdded() {
         return ServerUtil.formatAll("<prefix><#FBC36F>The provided player was added to the whitelist.", null);
     }
+    public static Component playerSelfAdded() {
+        return ServerUtil.formatAll("<prefix><#FBC36F>You was added to the whitelist.", null);
+    }
     public static Component playerAdded(String name) {
         return ServerUtil.formatAll("<prefix><#FBC36F>The player <#99EAFE>" + name + " <#FBC36F>was added to the whitelist.", null);
     }
     public static Component playerAdded(UUID uuid) {
         return ServerUtil.formatAll("<prefix><#FBC36F>The uuid <#99EAFE>" + uuid.toString() + " <#FBC36F>was added to the whitelist.", null);
+    }
+    public static Component playerSelfRemoved() {
+        return ServerUtil.formatAll("<prefix><#FBC36F>You has been removed from the whitelist.", null);
     }
     public static Component playerRemoved(String name) {
         return ServerUtil.formatAll("<prefix><#FBC36F>The player <#99EAFE>" + name + " <#FBC36F>was removed from the whitelist.", null);
@@ -109,8 +115,14 @@ public class MessageData {
     public static Component playerAlready() {
         return ServerUtil.formatAll("<prefix><#FBC36F>Any of the data from this player is already registered.", null);
     }
+    public static Component playerSelfAlready() {
+        return ServerUtil.formatAll("<prefix><#FBC36F>You are already added to the whitelist.", null);
+    }
     public static Component playerAlready(UUID uuid) {
         return ServerUtil.formatAll("<prefix><#FBC36F>The uuid <#99EAFE>" + uuid.toString() + " <#FBC36F>is already in the whitelist.", null);
+    }
+    public static Component playerSelfNotFound() {
+        return ServerUtil.formatAll("<prefix><#FBC36F>You are not in the whitelist.", null);
     }
     public static Component playerNotFound(String name) {
         return ServerUtil.formatAll("<prefix><#FBC36F>The player <#99EAFE>" + name + " <#FBC36F>is not in the whitelist.", null);

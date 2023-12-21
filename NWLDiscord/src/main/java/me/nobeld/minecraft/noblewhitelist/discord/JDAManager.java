@@ -21,7 +21,7 @@ import net.dv8tion.jda.api.interactions.commands.build.CommandData;
 import net.essentialsx.discord.JDADiscordService;
 import org.bukkit.Bukkit;
 
-import java.awt.*;
+import javax.annotation.Nullable;
 import java.lang.reflect.Field;
 import java.util.*;
 import java.util.List;
@@ -120,6 +120,10 @@ public class JDAManager {
     public boolean notRole(Member member, ConfigContainer<String> cont) {
         List<String> roles = ConfigData.getList(cont);
         if (roles == null || roles.isEmpty()) return true;
+        if (ConfigData.get(roleEveryone)) {
+            return false;
+        }
+
         List<Role> permittedRoles = new ArrayList<>();
 
         for (Map.Entry<String, List<Role>> entry : getConfigRoles().entrySet()) {
@@ -147,7 +151,7 @@ public class JDAManager {
                 return null;
             }
             return bot.getRoleById(id);
-        }).toList();
+        }).filter(Objects::nonNull).toList();
     }
     public void setWhitelistedRole(Guild server, PlayerWhitelisted data, Map<String, String> place, boolean add) {
         if (!data.hasDiscord()) return;
@@ -163,9 +167,14 @@ public class JDAManager {
         if (add) {
             if (!ConfigData.get(giveWlRole)) return;
             Role role = getWhitelistedRole();
-            if (!Collections.disjoint(user.getRoles(), Collections.singletonList(role))) return;
+            if (role == null || !Collections.disjoint(user.getRoles(), Collections.singletonList(role))) return;
 
             server.addRoleToMember(user, role).reason("Added whitelisted role by register or link.").queue();
+
+            for (Role r : getRoleType(roleSubWhitelistedID)) {
+                server.addRoleToMember(user, r).reason("Sub whitelist roles.").queue();
+            }
+
             sendMessage(getChannel(Channel.roleAdd), getMessage(MessageData.Channel.notifyRoleAdd,
                     () -> {
                 if (place != null) {
@@ -181,9 +190,14 @@ public class JDAManager {
         } else {
             if (!ConfigData.get(removeWlRole)) return;
             Role role = getWhitelistedRole();
-            if (Collections.disjoint(user.getRoles(), Collections.singletonList(role))) return;
+            if (role == null || Collections.disjoint(user.getRoles(), Collections.singletonList(role))) return;
 
             server.removeRoleFromMember(user, role).reason("Removed whitelisted role by unregister or unlink.").queue();
+
+            for (Role r : getRoleType(roleSubWhitelistedID)) {
+                server.removeRoleFromMember(user, r).reason("Sub whitelist roles.").queue();
+            }
+
             sendMessage(getChannel(Channel.roleRemove), getMessage(MessageData.Channel.notifyRoleRemove,
                     () -> {
                 if (place != null) {
@@ -197,6 +211,7 @@ public class JDAManager {
                     }));
         }
     }
+    @Nullable
     public Role getWhitelistedRole() {
         long id = ConfigData.get(roleWhitelistedID);
         if (id < 0) return null;

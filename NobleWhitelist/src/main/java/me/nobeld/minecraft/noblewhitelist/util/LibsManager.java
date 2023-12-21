@@ -1,11 +1,13 @@
 package me.nobeld.minecraft.noblewhitelist.util;
 
+import me.nobeld.minecraft.noblewhitelist.NobleWhitelist;
 import net.byteflux.libby.Library;
 import net.byteflux.libby.LibraryManager;
 import net.byteflux.libby.relocation.Relocation;
 
 import java.util.HashSet;
 import java.util.Set;
+import java.util.logging.Level;
 
 public class LibsManager {
     // Adding a lot of libraries until the libby api supports transitive dependencies.
@@ -15,7 +17,10 @@ public class LibsManager {
         manager.addMavenCentral();
         manager.addRepository("https://jitpack.io");
         manager.addRepository("https://repo.papermc.io/repository/maven-public/");
+
+        NobleWhitelist.log(Level.WARNING, "Loading libraries..., you can ignore this warning.");
         loadLibraries();
+        NobleWhitelist.log(Level.WARNING, "Libraries loaded..., you can ignore this warning.");
     }
     private Relocation reloc(String path) {
         return new Relocation(path, "me{}nobeld{}minecraft{}noblewhitelist{}libs{}" + path);

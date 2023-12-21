@@ -31,7 +31,6 @@ import java.util.logging.Level;
 
 import static me.nobeld.minecraft.noblewhitelist.NobleWhitelist.log;
 import static me.nobeld.minecraft.noblewhitelist.config.ConfigFile.reloadConfig;
-import static me.nobeld.minecraft.noblewhitelist.util.ServerUtil.asLegacy;
 
 public class NWlCommand {
     private final NobleWhitelist plugin;
@@ -45,7 +44,7 @@ public class NWlCommand {
         try {
             this.manager = new PaperCommandManager<>(plugin, executionCoordinatorFunction, mapperFunction, mapperFunction);
         } catch (final Exception e) {
-            log(Level.SEVERE, "Failed to initialize the command this.manager");
+            log(Level.SEVERE, "Failed to initialize the command manager");
             plugin.getServer().getPluginManager().disablePlugin(plugin);
         }
         this.manager.commandSuggestionProcessor(new FilteringCommandSuggestionProcessor<>(
@@ -63,8 +62,8 @@ public class NWlCommand {
                 sendMsg(c.getCommandContext(), MessageData.clearSug1());
                 sendMsg(c.getCommandContext(), MessageData.clearSug2());
             } else sendMsg(c.getCommandContext(), MessageData.confirmationRequired());
-        },
-                s -> s.sendMessage(asLegacy(MessageData.confirmationNoMore())));
+
+        }, s -> plugin.adventure().sender(s).sendMessage(MessageData.confirmationNoMore()));
         this.confirmationManager.registerConfirmationProcessor(this.manager);
 
         new MinecraftExceptionHandler<CommandSender>()
@@ -96,10 +95,11 @@ public class NWlCommand {
                 .permission("noblewhitelist.admin");
 
         this.manager.command(builder.literal("confirm")
+                .permission("noblewhitelist.admin.confirm")
                 .meta(CommandMeta.DESCRIPTION, "Used to confirm an important command")
                 .handler(this.confirmationManager.createConfirmationExecutionHandler()));
 
-        final Command.Builder<CommandSender> builderAdd = builder.literal("add");
+        final Command.Builder<CommandSender> builderAdd = builder.literal("add").permission("noblewhitelist.admin.add");
         this.manager.command(builderAdd
                 .literal("online")
                 .handler(c -> {
@@ -114,35 +114,34 @@ public class NWlCommand {
                     }
                 })
         );
-
         this.manager.command(builderAdd
                 .literal("uuid")
                 .argument(UUIDArgument.of("uuid"))
                 .handler(c -> {
                     final UUID uuid = c.get("uuid");
                     plugin.whitelistData().getData(null, uuid, -1)
-                            .ifPresentOrElse(d -> sendMsg(c, MessageData.playerAlready(uuid)), () -> {
+                            .ifPresentOrElse(d -> sendMsg(c, MessageData.playerAlready(uuid)),
+                                    () -> {
                                         plugin.whitelistData().register(null, uuid, -1);
                                         sendMsg(c, MessageData.playerAdded(uuid));
                             }
                             );
                 })
         );
-
         this.manager.command(builderAdd
                 .literal("name")
                 .argument(StringArgument.of("name"))
                 .handler(c -> {
                     final String name = c.get("name");
                     plugin.whitelistData().getData(name, null, -1)
-                            .ifPresentOrElse(d -> sendMsg(c, MessageData.playerAlready(name)), () -> {
-                                plugin.whitelistData().register(name, null, -1);
-                                sendMsg(c, MessageData.playerAdded(name));
-                            }
+                            .ifPresentOrElse(d -> sendMsg(c, MessageData.playerAlready(name)),
+                                    () -> {
+                                        plugin.whitelistData().register(name, null, -1);
+                                        sendMsg(c, MessageData.playerAdded(name));
+                                    }
                             );
                 })
         );
-
         this.manager.command(builderAdd
                 .literal("full")
                 .argument(StringArgument.of("name"))
@@ -153,15 +152,30 @@ public class NWlCommand {
                     final UUID uuid = c.get("uuid");
                     final long id = c.get("discordid");
                     plugin.whitelistData().getData(name, uuid, id)
-                            .ifPresentOrElse(d -> sendMsg(c, MessageData.playerAlready()), () -> {
+                            .ifPresentOrElse(d -> sendMsg(c, MessageData.playerAlready()),
+                                    () -> {
                                         plugin.whitelistData().register(name, uuid, id);
                                         sendMsg(c, MessageData.playerAdded());
                                     }
                             );
                 })
         );
+        this.manager.command(builderAdd
+                .literal("me")
+                .senderType(Player.class)
+                .handler(c -> {
+                    Player player = (Player) c.getSender();
+                    plugin.whitelistData().getData(player)
+                            .ifPresentOrElse(d -> sendMsg(c, MessageData.playerSelfAlready()),
+                                    () -> {
+                                        plugin.whitelistData().addPlayer(player);
+                                        sendMsg(c, MessageData.playerSelfAdded());
+                                    }
+                            );
+                })
+        );
 
-        final Command.Builder<CommandSender> builderRemove = builder.literal("remove");
+        final Command.Builder<CommandSender> builderRemove = builder.literal("remove").permission("noblewhitelist.admin.remove");
         this.manager.command(builderRemove
                 .literal("online")
                 .handler(c -> {
@@ -176,7 +190,6 @@ public class NWlCommand {
                     }
                 })
         );
-
         this.manager.command(builderRemove
                 .literal("uuid")
                 .argument(UUIDArgument.of("uuid"))
@@ -187,7 +200,6 @@ public class NWlCommand {
                     else sendMsg(c, MessageData.playerNotFound(uuid));
                 })
         );
-
         this.manager.command(builderRemove
                 .literal("name")
                 .argument(StringArgument.of("name"))
@@ -198,8 +210,21 @@ public class NWlCommand {
                     else sendMsg(c, MessageData.playerNotFound(name));
                 })
         );
+        this.manager.command(builderRemove
+                .literal("me")
+                .senderType(Player.class)
+                .handler(c -> {
+                    Player player = (Player) c.getSender();
+                    plugin.whitelistData().getData(player)
+                            .ifPresentOrElse(d -> {
+                                plugin.whitelistData().deleteUser(player);
+                                sendMsg(c, MessageData.playerSelfRemoved());
+                                    }, () -> sendMsg(c, MessageData.playerSelfNotFound())
+                            );
+                })
+        );
 
-        final Command.Builder<CommandSender> builderToggle = builder.literal("toggle");
+        final Command.Builder<CommandSender> builderToggle = builder.literal("toggle").permission("noblewhitelist.admin.toggle");
         this.manager.command(builderToggle
                 .literal("uuid")
                 .argument(UUIDArgument.of("uuid"))
@@ -219,7 +244,6 @@ public class NWlCommand {
                             );
                 })
         );
-
         this.manager.command(builderToggle
                 .literal("name")
                 .argument(StringArgument.of("name"))
@@ -240,7 +264,26 @@ public class NWlCommand {
                             );
                 })
         );
-
+        this.manager.command(builderToggle
+                .literal("me")
+                .senderType(Player.class)
+                .argument(BooleanArgument.of("toggle"))
+                .handler(c -> {
+                    final String name = c.getSender().getName();
+                    final boolean toggle = c.get("toggle");
+                    plugin.whitelistData().getData(name, null, -1)
+                            .ifPresentOrElse(d -> {
+                                        if (d.isWhitelisted() == toggle)
+                                            sendMsg(c, MessageData.playerToggledAlready(toggle));
+                                        else {
+                                            plugin.whitelistData().toggleJoinUser(d, toggle);
+                                            sendMsg(c, MessageData.playerToggled(name, toggle));
+                                        }
+                                    },
+                                    () -> sendMsg(c, MessageData.playerNotFound(name))
+                            );
+                })
+        );
         this.manager.command(builderToggle
                 .literal("discord")
                 .argument(LongArgument.of("discord"))
@@ -262,7 +305,7 @@ public class NWlCommand {
                 })
         );
 
-        this.manager.command(builder.literal("list")
+        this.manager.command(builder.literal("list").permission("noblewhitelist.admin.list")
                 .argument(IntegerArgument.optional("page"))
                 .handler(c -> {
                     int page = c.getOrDefault("page", 1);
@@ -274,7 +317,8 @@ public class NWlCommand {
                     else sendMsg(c, MessageData.whitelistEmpty());
                 })
         );
-        this.manager.command(builder.literal("list")
+
+        this.manager.command(builder.literal("list").permission("noblewhitelist.admin.list.clear")
                 .literal("clear")
                 .meta(CommandConfirmationManager.META_CONFIRMATION_REQUIRED, true)
                 .handler(c -> {
@@ -283,20 +327,23 @@ public class NWlCommand {
                 })
         );
 
-        this.manager.command(builder.literal("on")
+        this.manager.command(builder.literal("on").permission("noblewhitelist.admin.on")
                 .handler(c -> toggleStatus(c, true))
         );
-        this.manager.command(builder.literal("off")
+
+        this.manager.command(builder.literal("off").permission("noblewhitelist.admin.off")
                 .handler(c -> toggleStatus(c, false))
         );
-        this.manager.command(builder.literal("reload")
+
+        this.manager.command(builder.literal("reload").permission("noblewhitelist.admin.reload")
                 .handler(c -> {
                     plugin.getStorageInst().reload();
                     reloadConfig();
                     sendMsg(c, MessageData.reload());
                 })
         );
-        this.manager.command(builder.literal("status")
+
+        this.manager.command(builder.literal("status").permission("noblewhitelist.admin.status")
                 .handler(c -> {
                     sendMsg(c, MessageData.statusHeader());
                     sendMsg(c, MessageData.statusVersion(plugin.getUptChecker().version));
@@ -309,7 +356,7 @@ public class NWlCommand {
                 })
         );
 
-        final Command.Builder<CommandSender> builderFind = builder.literal("find");
+        final Command.Builder<CommandSender> builderFind = builder.literal("find").permission("noblewhitelist.admin.find");
         this.manager.command(builderFind
                 .literal("uuid")
                 .argument(UUIDArgument.of("uuid"))
@@ -355,6 +402,24 @@ public class NWlCommand {
 
                     if (d.isEmpty()) {
                         sendMsg(c, MessageData.playerNotFound(id));
+                    } else {
+                        sendMsg(c, MessageData.playerAbout(d.get()));
+                        sendMsg(c, MessageData.playerAboutName(d.get()));
+                        sendMsg(c, MessageData.playerAboutUuid(d.get()));
+                        sendMsg(c, MessageData.playerAboutUser(d.get()));
+                        sendMsg(c, MessageData.playerAboutJoin(d.get()));
+                    }
+                })
+        );
+        this.manager.command(builderFind
+                .literal("me")
+                .senderType(Player.class)
+                .handler(c -> {
+                    final String name = c.getSender().getName();
+                    Optional<PlayerWhitelisted> d = plugin.whitelistData().getData(name, null, -1);
+
+                    if (d.isEmpty()) {
+                        sendMsg(c, MessageData.playerNotFound(name));
                     } else {
                         sendMsg(c, MessageData.playerAbout(d.get()));
                         sendMsg(c, MessageData.playerAboutName(d.get()));

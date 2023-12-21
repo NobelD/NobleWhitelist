@@ -55,6 +55,7 @@ public class NobleWhitelist extends JavaPlugin {
         hasPaper = ServerUtil.hasPaper();
 
         this.adventure = BukkitAudiences.create(this);
+        this.checker = new UpdateChecker(this, "NobleWhitelist");
         if (Bukkit.getPluginManager().getPlugin("PlaceholderAPI") != null) {
             new NWLPAPIExpansion(this).register();
         }
@@ -76,7 +77,6 @@ public class NobleWhitelist extends JavaPlugin {
         consoleMsg().sendMessage(ServerUtil.formatAll("<prefix><green>Loaded <yellow>" + total + " <green>players."));
         if (!storageType.isDatabase() && total >= 100) consoleMsg().sendMessage(ServerUtil.formatAll("<prefix><green>Mind in use database as storage type since there is a lot of players."));
 
-        checker = new UpdateChecker(this);
         if (checker.canUpdate(ConfigFile.getConfig(ConfigFile.notifyUpdate), false)) {
             consoleMsg().sendMessage(ServerUtil.formatAll("<prefix><#F1B65C>There is a new version available for <gold>Noble Whitelist: <#C775FF>" + checker.getLatest(), null));
             consoleMsg().sendMessage(ServerUtil.formatAll("<prefix><#F1B65C>Download it at: <#75CDFF>https://www.github.com/NobelD/NobleWhitelist/releases", null));
