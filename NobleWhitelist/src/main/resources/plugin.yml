@@ -9,7 +9,10 @@ prefix: NobleWhitelist
 load: STARTUP
 permissions:
   noblewhitelist.admin:
-    description: "Permission to manage the plugin"
+    description: "Permission to use commands"
+    default: op
+  noblewhitelist.admin.*:
+    description: "Adds you all the plugin permissions"
     default: op
     children:
       noblewhitelist.admin.confirm: true
@@ -17,15 +20,10 @@ permissions:
       noblewhitelist.admin.remove: true
       noblewhitelist.admin.toggle: true
       noblewhitelist.admin.list: true
-      noblewhitelist.admin.list.clear: true
+      noblewhitelist.admin.list.*: true
       noblewhitelist.admin.status: true
       noblewhitelist.admin.find: true
       noblewhitelist.admin.reload: true
-  noblewhitelist.admin.*:
-    description: "Adds you all the plugin permissions"
-    default: op
-    children:
-      noblewhitelist.admin.list.*: true
   noblewhitelist.admin.confirm:
     description: "Permission to confirm an important command"
     default: op
