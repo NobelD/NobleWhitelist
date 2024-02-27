@@ -3,8 +3,8 @@ plugins {
     id("com.github.johnrengelman.shadow") version "8.1.1"
 }
 
-group = "me.nobeld.minecraft.noblewhitelist.discord"
-version = "1.0.2"
+group = "me.nobeld.mc.noblewhitelist.discord"
+version = "1.1.0"
 description = "Discord integration for the NobleWhitelist plugin."
 
 java {
@@ -14,6 +14,10 @@ java {
 repositories {
     mavenCentral()
     maven {
+        name = "sonatype"
+        url = uri("https://s01.oss.sonatype.org/content/repositories/snapshots/")
+    }
+    maven {
         name = "papermc"
         url = uri("https://repo.papermc.io/repository/maven-public/")
     }
@@ -21,26 +25,18 @@ repositories {
         name = "jitpack.io"
         url = uri("https://jitpack.io")
     }
-    maven {
-        name = "essentialsxReleases"
-        url = uri("https://repo.essentialsx.net/releases")
-    }
-    maven {
-        name = "AlessioDP"
-        url = uri("https://repo.alessiodp.com/releases/")
-    }
 }
 
 dependencies {
     compileOnly(project(":NobleWhitelist"))
     compileOnly("io.papermc.paper", "paper-api", "1.20.2-R0.1-SNAPSHOT")
 
-    implementation("net.byteflux", "libby-bukkit", "1.3.0")
+    implementation("com.alessiodp.libby", "libby-bukkit", "2.0.0-SNAPSHOT") {
+        exclude(module=("spigot-api"))
+    }
     compileOnly("com.github.simplix-softworks","simplixstorage","3.2.6")
-
-    compileOnly("net.essentialsx", "EssentialsX", "2.20.1")
-    compileOnly("net.essentialsx", "EssentialsXDiscord", "2.20.1")
-    compileOnly("net.essentialsx", "EssentialsXDiscordLink", "2.20.1")
+    compileOnly("org.incendo", "cloud-jda5", "1.0.0-beta.2")
+    compileOnly("org.incendo", "cloud-processors-requirements", "1.0.0-beta.2")
 
     compileOnly("net.dv8tion", "JDA", "5.0.0-beta.18") {
         exclude(module= "opus-java")
@@ -73,9 +69,10 @@ tasks {
 
     shadowJar {
         dependencies {
-            include(dependency("net.byteflux:libby-bukkit"))
-            include(dependency("net.byteflux:libby-core"))
+            include(dependency("com.alessiodp.libby:libby-bukkit"))
+            include(dependency("com.alessiodp.libby:libby-core"))
             include(dependency("com.github.simplix-softworks:simplixstorage"))
+            /*
 
             // JDA
             include(dependency("net.dv8tion:JDA"))
@@ -97,14 +94,16 @@ tasks {
 
             // discord-webhooks
             include(dependency("club.minnced:discord-webhooks"))
+            */
         }
 
         archiveClassifier.set("")
-        fun reloc(pkg: String) = relocate(pkg, "me.nobeld.minecraft.noblewhitelist.discord.libs.$pkg")
+        fun reloc(pkg: String) = relocate(pkg, "me.nobeld.mc.noblewhitelist.discord.libs.$pkg")
 
         reloc("io.papermc")
         // JDA
-        reloc("net.dv8tion.jda")
+        //#TODO Fix relocation
+        /*reloc("net.dv8tion.jda")
         reloc("com.neovisionaries.ws")
         reloc("okhttp3")
         reloc("com.iwebpp.crypto")
@@ -119,9 +118,9 @@ tasks {
         reloc("org.json")
 
         // discord-webhooks
-        reloc("club.minnced.discord.webhook")
+        reloc("club.minnced.discord.webhook")*/
 
-        reloc("net.byteflux.libby")
+        reloc("com.alessiodp.libby")
         reloc("com.esotericsoftware")
         reloc("de.leonhard")
         reloc("net.kyori.examination")

@@ -64,7 +64,7 @@ command:
   #/whitelist link
   basic-link-self:
     role:
-      -admin
+      - admin
     channel:
       - staff
   #/whitelist accounts

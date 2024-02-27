@@ -1,6 +1,6 @@
 name: NobleWhitelist
 version: $version
-main: me.nobeld.minecraft.noblewhitelist.NobleWhitelist
+main: me.nobeld.mc.noblewhitelist.NobleWhitelist
 description: $description
 author: NobelD
 website: https://github.com/NobelD/NobleWhitelist
@@ -55,4 +55,6 @@ permissions:
     default: op
   noblewhitelist.bypass:
     description: "Permits you to pass the whitelist"
+    default: false
+  noblewhitelist.bypass.1:
     default: false
