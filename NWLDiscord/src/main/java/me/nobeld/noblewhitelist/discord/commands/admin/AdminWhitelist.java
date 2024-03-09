@@ -111,13 +111,12 @@ public class AdminWhitelist {
     private SubCommand checkingStatus() {
         return new SubCommand(b -> b.literal("checkstatus", CMDDescription.checkingStatus())
                 .meta(REQUIREMENTS_KEY, getRequirements(data, ConfigData.CommandsOpt.adminCheckStatus))
-                .handler(c -> {
-                    replyMsg(data, c, MessageData.Command.checkStatus, Map.of(
-                            "checking_name", cParse(data.getNWL().getConfigD().checkName()),
-                            "checking_uuid", cParse(data.getNWL().getConfigD().checkUUID()),
-                            "checking_perm", cParse(data.getNWL().getConfigD().checkPerm()))
-                    );
-                })
+                .handler(c ->
+                        replyMsg(data, c, MessageData.Command.checkStatus, Map.of(
+                        "checking_name", cParse(data.getNWL().getConfigD().checkName()),
+                        "checking_uuid", cParse(data.getNWL().getConfigD().checkUUID()),
+                        "checking_perm", cParse(data.getNWL().getConfigD().checkPerm()))
+                ))
         ) {
         };
     }

@@ -14,8 +14,6 @@ import org.bukkit.event.player.PlayerJoinEvent;
 import java.util.HashMap;
 import java.util.Map;
 
-import static me.nobeld.noblewhitelist.discord.util.DiscordUtil.sendMessage;
-
 public class Listener implements org.bukkit.event.Listener {
     private final NWLDsData data;
     public Listener(NWLDsData data) {

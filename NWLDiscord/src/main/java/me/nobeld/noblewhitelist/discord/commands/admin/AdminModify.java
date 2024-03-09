@@ -1,7 +1,6 @@
 package me.nobeld.noblewhitelist.discord.commands.admin;
 
 import me.nobeld.noblewhitelist.discord.JDAManager;
-import me.nobeld.noblewhitelist.discord.commands.CommandManager;
 import me.nobeld.noblewhitelist.discord.config.ConfigData;
 import me.nobeld.noblewhitelist.discord.config.MessageData;
 import me.nobeld.noblewhitelist.discord.language.CMDDescription;
@@ -22,7 +21,6 @@ import static me.nobeld.noblewhitelist.discord.model.command.BaseCommand.*;
 import static org.incendo.cloud.discord.jda5.JDAParser.userParser;
 import static org.incendo.cloud.parser.standard.BooleanParser.booleanParser;
 import static org.incendo.cloud.parser.standard.StringParser.stringParser;
-import static org.incendo.cloud.parser.standard.UUIDParser.uuidParser;
 
 public class AdminModify {
     private final NWLDsData data;

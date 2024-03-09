@@ -1,6 +1,5 @@
 package me.nobeld.noblewhitelist.api;
 
-import me.nobeld.noblewhitelist.logic.WhitelistData;
 import me.nobeld.noblewhitelist.model.PairData;
 import me.nobeld.noblewhitelist.model.base.NWLData;
 import me.nobeld.noblewhitelist.config.ConfigData;
@@ -38,9 +37,6 @@ public class NobleWhitelistApi {
     }
     public void setPermMinimum(int min) {
         data.getConfigD().set(ConfigData.WhitelistCF.permissionMinimum, min);
-    }
-    public WhitelistData getWlData() {
-        return data.whitelistData();
     }
     /**
      * Get if the player can join the server assuming all the join options as optional.
