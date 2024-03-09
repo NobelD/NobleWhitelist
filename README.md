@@ -2,6 +2,7 @@
 This plugin is a simple way to manage the whitelist, using name, uuid or permission.
 
 You can modify if you want to make some of these as optional, required or disabled.
+
 Also, this plugin has a discord integration to be used by users or managed from there.
 
 ## Versions:
