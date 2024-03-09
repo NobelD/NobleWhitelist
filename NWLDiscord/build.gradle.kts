@@ -3,7 +3,7 @@ plugins {
     id("com.github.johnrengelman.shadow") version "8.1.1"
 }
 
-group = "me.nobeld.mc.noblewhitelist.discord"
+group = "me.nobeld.noblewhitelist.discord"
 version = "1.1.0"
 description = "Discord integration for the NobleWhitelist plugin."
 
@@ -24,6 +24,10 @@ repositories {
     maven {
         name = "jitpack.io"
         url = uri("https://jitpack.io")
+        content {
+            includeGroup("com.github.simplix-softworks")
+            includeGroup("com.github.MinnDevelopment")
+        }
     }
 }
 
@@ -38,11 +42,11 @@ dependencies {
     compileOnly("org.incendo", "cloud-jda5", "1.0.0-beta.2")
     compileOnly("org.incendo", "cloud-processors-requirements", "1.0.0-beta.2")
 
-    compileOnly("net.dv8tion", "JDA", "5.0.0-beta.18") {
+    compileOnly("net.dv8tion", "JDA", "5.0.0-beta.20") {
         exclude(module= "opus-java")
     }
     compileOnly("com.github.MinnDevelopment", "emoji-java", "v6.1.0")
-    compileOnly("club.minnced", "discord-webhooks", "0.8.2") {
+    compileOnly("club.minnced", "discord-webhooks", "0.8.4") {
         exclude(module= "okhttp")
     }
     compileOnly("org.apache.logging.log4j", "log4j-core", "2.17.1")
@@ -71,7 +75,6 @@ tasks {
         dependencies {
             include(dependency("com.alessiodp.libby:libby-bukkit"))
             include(dependency("com.alessiodp.libby:libby-core"))
-            include(dependency("com.github.simplix-softworks:simplixstorage"))
             /*
 
             // JDA
@@ -98,12 +101,12 @@ tasks {
         }
 
         archiveClassifier.set("")
-        fun reloc(pkg: String) = relocate(pkg, "me.nobeld.mc.noblewhitelist.discord.libs.$pkg")
+        fun reloc(pkg: String) = relocate(pkg, "me.nobeld.noblewhitelist.discord.libs.$pkg")
 
-        reloc("io.papermc")
         // JDA
         //#TODO Fix relocation
-        /*reloc("net.dv8tion.jda")
+        /*
+        reloc("net.dv8tion.jda")
         reloc("com.neovisionaries.ws")
         reloc("okhttp3")
         reloc("com.iwebpp.crypto")
@@ -118,13 +121,16 @@ tasks {
         reloc("org.json")
 
         // discord-webhooks
-        reloc("club.minnced.discord.webhook")*/
+        reloc("club.minnced.discord.webhook")
+        */
 
+        reloc("io.papermc")
         reloc("com.alessiodp.libby")
-        reloc("com.esotericsoftware")
-        reloc("de.leonhard")
+        relocate("com.esotericsoftware", "me.nobeld.noblewhitelist.libs.com.esotericsoftware")
+        relocate("de.leonhard", "me.nobeld.noblewhitelist.libs.de.leonhard")
         reloc("net.kyori.examination")
         reloc("org.intellij")
         reloc("org.jetbrains")
+        // reloc("org.incendo")
     }
 }

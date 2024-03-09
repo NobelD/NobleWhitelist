@@ -4,7 +4,7 @@ plugins {
 }
 
 group = "me.nobeld.minecraft.noblewhitelist"
-version = "1.1.3"
+version = "1.2.0"
 description = "A simple plugin for whitelist management."
 
 java {
@@ -27,6 +27,9 @@ repositories {
     maven {
         name = "jitpack.io"
         url = uri("https://jitpack.io")
+        content {
+            includeGroup("com.github.simplix-softworks")
+        }
     }
 }
 
@@ -47,8 +50,8 @@ dependencies {
     compileOnly("net.kyori","adventure-platform-bukkit","4.3.2")
     compileOnly("net.kyori","adventure-text-minimessage","4.15.0")
 
-    compileOnly("org.incendo", "cloud-paper", "2.0.0-beta.3")
-    compileOnly("org.incendo", "cloud-minecraft-extras", "2.0.0-beta.3")
+    compileOnly("org.incendo", "cloud-paper", "2.0.0-beta.4")
+    compileOnly("org.incendo", "cloud-minecraft-extras", "2.0.0-beta.4")
     compileOnly("org.incendo", "cloud-processors-confirmation", "1.0.0-beta.2")
 }
 
@@ -73,7 +76,7 @@ tasks {
 
     shadowJar {
         archiveClassifier.set("")
-        fun reloc(pkg: String) = relocate(pkg, "me.nobeld.mc.noblewhitelist.libs.$pkg")
+        fun reloc(pkg: String) = relocate(pkg, "me.nobeld.noblewhitelist.libs.$pkg")
 
         reloc("com.alessiodp.libby")
         reloc("io.papermc")
@@ -83,5 +86,6 @@ tasks {
         reloc("org.intellij")
         reloc("org.jetbrains")
         reloc("org.json")
+        reloc("org.incendo")
     }
 }

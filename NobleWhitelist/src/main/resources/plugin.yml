@@ -1,6 +1,6 @@
 name: NobleWhitelist
 version: $version
-main: me.nobeld.mc.noblewhitelist.NobleWhitelist
+main: me.nobeld.noblewhitelist.NobleWhitelist
 description: $description
 author: NobelD
 website: https://github.com/NobelD/NobleWhitelist
@@ -10,6 +10,9 @@ load: STARTUP
 permissions:
   noblewhitelist.admin:
     description: "Permission to use commands"
+    default: op
+  noblewhitelist.admin.notify:
+    description: "Notify if there is an available update"
     default: op
   noblewhitelist.admin.*:
     description: "Adds you all the plugin permissions"
@@ -24,6 +27,7 @@ permissions:
       noblewhitelist.admin.status: true
       noblewhitelist.admin.find: true
       noblewhitelist.admin.reload: true
+      noblewhitelist.admin.notify: true
   noblewhitelist.admin.confirm:
     description: "Permission to confirm an important command"
     default: op
@@ -39,8 +43,11 @@ permissions:
   noblewhitelist.admin.list:
     description: "Permission to see the player list"
     default: op
+  noblewhitelist.admin.list.*:
+    description: "Permission to clear the whitelist"
+    default: op
     children:
-      noblewhitelist.admin.list.clear: false
+      noblewhitelist.admin.list.clear: true
   noblewhitelist.admin.list.clear:
     description: "Permission to clear the whitelist"
     default: op
