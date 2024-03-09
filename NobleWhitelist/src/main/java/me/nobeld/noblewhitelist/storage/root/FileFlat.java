@@ -20,7 +20,7 @@ import java.util.stream.Collectors;
 
 import static me.nobeld.noblewhitelist.config.FileManager.*;
 
-public abstract class FileFlat<T extends FlatFile> implements DataGetter {
+public class FileFlat<T extends FlatFile> implements DataGetter {
     private List<WhitelistEntry> list = null;
     private T whitelistFile;
     private final AtomicLong count = new AtomicLong(0);
@@ -74,7 +74,7 @@ public abstract class FileFlat<T extends FlatFile> implements DataGetter {
                 long row = Long.parseLong(id);
                 p.setRowId(row);
                 list.add(p);
-                if (row > count.get()) count.set(row + 1);
+                if (row >= count.get()) count.set(row + 1);
             } catch (Exception ignored) {}
         }
         return list;
