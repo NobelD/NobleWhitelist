@@ -4,7 +4,7 @@ plugins {
 }
 
 group = "me.nobeld.minecraft.noblewhitelist"
-version = "1.1.2"
+version = "1.2.0"
 description = "A simple plugin for whitelist management."
 
 java {
@@ -13,6 +13,10 @@ java {
 
 repositories {
     mavenCentral()
+    maven {
+        name = "sonatype"
+        url = uri("https://s01.oss.sonatype.org/content/repositories/snapshots/")
+    }
     maven {
         name = "papermc"
         url = uri("https://repo.papermc.io/repository/maven-public/")
@@ -23,10 +27,9 @@ repositories {
     maven {
         name = "jitpack.io"
         url = uri("https://jitpack.io")
-    }
-    maven {
-        name = "AlessioDP"
-        url = uri("https://repo.alessiodp.com/releases/")
+        content {
+            includeGroup("com.github.simplix-softworks")
+        }
     }
 }
 
@@ -34,19 +37,22 @@ dependencies {
     compileOnly("io.papermc.paper", "paper-api", "1.20.2-R0.1-SNAPSHOT")
     compileOnly("io.papermc", "paperlib", "1.0.7")
 
-    implementation("net.byteflux", "libby-bukkit", "1.3.0")
+    implementation("com.alessiodp.libby", "libby-bukkit", "2.0.0-SNAPSHOT") {
+        exclude(module=("spigot-api"))
+    }
     compileOnly("com.github.simplix-softworks","simplixstorage","3.2.6")
     compileOnly("com.zaxxer", "HikariCP", "5.1.0")
     compileOnly("org.xerial", "sqlite-jdbc", "3.44.1.0")
 
-    compileOnly("me.clip", "placeholderapi", "2.11.4")
+    compileOnly("me.clip", "placeholderapi", "2.11.5")
     compileOnly("io.github.miniplaceholders", "miniplaceholders-api", "2.2.3")
 
-    compileOnly("net.kyori","adventure-platform-bukkit","4.3.1")
-    compileOnly("net.kyori","adventure-text-minimessage","4.14.0")
+    compileOnly("net.kyori","adventure-platform-bukkit","4.3.2")
+    compileOnly("net.kyori","adventure-text-minimessage","4.15.0")
 
-    compileOnly("cloud.commandframework", "cloud-paper", "1.8.4")
-    compileOnly("cloud.commandframework", "cloud-minecraft-extras", "1.8.4")
+    compileOnly("org.incendo", "cloud-paper", "2.0.0-beta.4")
+    compileOnly("org.incendo", "cloud-minecraft-extras", "2.0.0-beta.4")
+    compileOnly("org.incendo", "cloud-processors-confirmation", "1.0.0-beta.2")
 }
 
 tasks {
@@ -70,9 +76,9 @@ tasks {
 
     shadowJar {
         archiveClassifier.set("")
-        fun reloc(pkg: String) = relocate(pkg, "me.nobeld.minecraft.noblewhitelist.libs.$pkg")
+        fun reloc(pkg: String) = relocate(pkg, "me.nobeld.noblewhitelist.libs.$pkg")
 
-        reloc("net.byteflux.libby")
+        reloc("com.alessiodp.libby")
         reloc("io.papermc")
         reloc("com.esotericsoftware")
         reloc("com.zaxxer")
@@ -80,5 +86,6 @@ tasks {
         reloc("org.intellij")
         reloc("org.jetbrains")
         reloc("org.json")
+        reloc("org.incendo")
     }
 }

@@ -1,11 +1,18 @@
 placeholders:
   optional-none: "Invalid Player!"
-  optional-name: "**Player name:** <name>"
+  optional-name: "**Player name:** `<name>`"
   optional-uuid: "**Player uuid:** <uuid>"
-  optional-id: "**User ID:** <user-id>"
-  player-data: "<row> **-** <name> **-** <uuid> **-** <user-id>"
+  optional-id: "**User ID:** <user_id>"
+  player-data: "<row> **-** `<name>` **-** <uuid> **-** <user_id>"
+  account-entry: "<player_data>"
+  list-entry: "<player_data>"
   toggled-true: true
   toggled-false: false
+  status-enabled: "enabled"
+  status-disabled: "disabled"
+  checking-disabled: "disabled"
+  checking-optional: "optional"
+  checking-required: "required"
 discord:
   channel:
     start:
@@ -21,7 +28,7 @@ discord:
         content: |-
           The user <user-mention> has self registered to the whitelist:
           
-          <player-optional>
+          <player_optional>
     notify-self-remove:
       type: embed
       body:
@@ -29,21 +36,21 @@ discord:
         content: |-
           The user <user-mention> has self unregistered from the whitelist:
           
-          **Player name:** <name>
+          **Player name:** `<name>`
           **Player uuid:** <uuid>
-          **User ID:** <user-id>
+          **User ID:** <user_id>
     notify-role-add:
       type: embed
       body:
         color: 88D7FF
         content: |-
-          The user <user-mention> had the whitelisted role added.
+          The user <user_mention> had the whitelisted role added.
     notify-role-remove:
       type: embed
       body:
         color: FFA287
         content: |-
-          The user <user-mention> had the whitelisted role removed.
+          The user <user_mention> had the whitelisted role removed.
     notify-wl-join:
       type: embed
       body:
@@ -51,7 +58,7 @@ discord:
         content: |-
           A player joined the server:
           
-          **Player name:** <name>
+          **Player name:** `<name>`
           **Player uuid:** <uuid>
     notify-wl-try:
       type: embed
@@ -60,7 +67,7 @@ discord:
         content: |-
           A player tried to enter the server:
           
-          **Player name:** <name>
+          **Player name:** `<name>`
           **Player uuid:** <uuid>
     notify-wl-auto:
       type: embed
@@ -69,17 +76,25 @@ discord:
         content: |-
           A player was auto registered to the whitelist:
           
-          **Player name:** <name>
+          **Player name:** `<name>`
           **Player uuid:** <uuid>
   error:
     no-permission:
       type: message
       ephemeral: true
-      content: You are not allowed to issue this command.
+      content: You are not allowed to execute this command.
     invalid-channel:
       type: message
       ephemeral: true
-      content: You are not allowed to issue this command on this channel.
+      content: You are not allowed to execute this command on this channel.
+    invalid-guild:
+      type: message
+      ephemeral: true
+      content: You are not allowed to execute this command on this guild or is an invalid guild.
+    invalid-member:
+      type: message
+      ephemeral: true
+      content: This command can only be executed by users.
     user-self-already:
       type: message
       ephemeral: true
@@ -92,18 +107,30 @@ discord:
       type: message
       ephemeral: true
       content: No player was encountered.
+    no-inputted-data:
+      type: message
+      ephemeral: true
+      content: You need to input at least 1 option for the command.
     insufficient-data:
       type: message
       ephemeral: true
-      content: You need to specify the necessary options to use this command.
+      content: You need to input the necessary options to use this command.
     invalid-uuid:
       type: message
       ephemeral: true
       content: The provided uuid is invalid.
+    invalid-interaction:
+      type: message
+      ephemeral: true
+      content: The interaction was invalid.
     self-no-accounts:
       type: message
       ephemeral: true
       content: You don't have any account registered.
+    self-no-more-accounts:
+      type: message
+      ephemeral: true
+      content: You can't register more accounts.
     user-no-accounts:
       type: message
       ephemeral: true
@@ -120,31 +147,39 @@ discord:
       type: message
       ephemeral: true
       content: "Nothing changed, the user toggle already was: <toggle>"
+    whitelist-empty:
+      type: message
+      ephemeral: true
+      content: "The whitelist is empty."
+    whitelist-page-empty:
+      type: message
+      ephemeral: true
+      content: "This page is empty."
   command:
     self-accounts:
       type: embed
       body:
         color: AFFF5A
         content: |-
-          These are the accounts linked to you.
+          These are the accounts linked to you:
           
-          <player-data>
+          <account_entry>
     user-accounts:
       type: embed
       body:
         color: AFFF5A
         content: |-
-          These are the accounts linked to the user.
+          These are the accounts linked to the user:
           
-          <player-data>
+          <account_entry>
     add-user:
       type: embed
       body:
         color: AFFF5A
         content: |-
-          You has been successfully registered this player to the whitelist.
+          You has successfully registered this player to the whitelist.
           
-          <player-optional>
+          <player_optional>
     self-add:
       type: embed
       body:
@@ -152,23 +187,23 @@ discord:
         content: |-
           You has been successfully registered to the whitelist.
           
-          <player-optional>
+          <player_optional>
     remove-user:
-      type: embed
-      body:
-        color: FF685E
-        content: |-
-          This account was removed.
-          
-          <player-optional>
-    self-remove:
       type: embed
       body:
         color: FF685E
         content: |-
           This player was removed from the whitelist.
           
-          <player-optional>
+          <player_optional>
+    self-remove:
+      type: embed
+      body:
+        color: FF685E
+        content: |-
+          This account was removed.
+          
+          <player_optional>
     whitelist-off:
       type: embed
       body:
@@ -193,6 +228,49 @@ discord:
         color: AFFF5A
         content: |-
           Nothing changed, the whitelist was already enabled.
+    list-page:
+      type: embed
+      ephemeral: true
+      body:
+        color: 77FFF7
+        content: |-
+          List of entries (Page: <page>)
+          
+          <list_entry>
+    perm-status:
+      type: embed
+      ephemeral: true
+      body:
+        color: 77FFF7
+        content: |-
+          Permission status:
+          Only OP: <only_op>
+          Perm Minimum: <perm_min>
+    perm-set:
+      type: embed
+      ephemeral: true
+      body:
+        color: 77FFF7
+        content: |-
+          Permission minimum was set to: <perm_min>
+    checking-status:
+      type: embed
+      ephemeral: true
+      body:
+        color: 77FFF7
+        content: |-
+          Checking status:
+          
+          Name: <checking_name>
+          UUID: <checking_uuid>
+          Perm: <checking_perm>
+    checking-set:
+      type: embed
+      ephemeral: true
+      body:
+        color: 77FFF7
+        content: |-
+          The checking status of <type> was changed to <option>.
     find-user:
       type: embed
       body:
@@ -200,9 +278,9 @@ discord:
         content: |-
           This player was found with the defined data.
           
-          **Player name:** <name>
+          **Player name:** `<name>`
           **Player uuid:** <uuid>
-          **User ID:** <user-id>
+          **User ID:** <user_id>
           **Can Join:** <toggle>
     self-link:
       type: embed
@@ -211,7 +289,7 @@ discord:
         content: |-
           You are now linked to this account.
           
-          <player-optional>
+          <player_optional>
     user-link:
       type: embed
       body:
@@ -219,7 +297,7 @@ discord:
         content: |-
           This user is now linked to an account.
           
-          <player-optional>
+          <player_optional>
     user-unlink:
       type: embed
       body:
@@ -227,7 +305,7 @@ discord:
         content: |-
           This user was unlinked.
           
-          <player-optional>
+          <player_optional>
     user-toggled:
       type: embed
       body:
@@ -235,4 +313,4 @@ discord:
         content: |-
           The player join was toggled to: <toggle>
           
-          <player-optional>
+          <player_optional>

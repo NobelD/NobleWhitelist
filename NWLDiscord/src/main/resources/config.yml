@@ -1,8 +1,9 @@
+# More information: https://github.com/NobelD/NobleWhitelist/wiki
 discord:
   bot-token: ""
   server-id: ""
 # You can add more channels later with their respective id.
-# The channels id can be dynamically changed, but if you add or remove a channel you will need to restart the plugin.
+# While the channels id can be dynamically changed, the channel itself needs to restart the plugin to be reloaded.
 channel:
   primary: 0000000000000000000
   staff: 0000000000000000000
@@ -11,12 +12,12 @@ special:
   # If disabled all the users can see the commands and description (still can't be used without the necessary role)
   # Restart the server to apply changes.
   admin-only-server-manage: true
-  # Gives to the whitelisted user a role.
+  # Gives the roles to the whitelisted user.
   give-role-on-register: false
-  # Removes the role from the user if unregisters.
+  # Removes the roles from the user if unregisters.
   remove-role-on-unregister: false
 role:
-  # Add the option to use "everyone" has role, this allows to the command be executed by everyone even if it does not have roles.
+  # Add the option to use "everyone" as role, this allows to the command be executed by everyone even if it does not have roles.
   enable-everyone-role: false
   # The roles cannot be added more as channels, these are fixed.
   # But you can still change it without reloading.
@@ -28,9 +29,9 @@ role:
   admin:
     - 0000000000000000000
     - 0000000000000000000
-  # This role will be given to the user when registers and will be used to check if the user has the sub roles.
+  # This role will be given to the user when registers and will be used to check if the user has the whitelist role.
   whitelisted: 0000000000000000000
-  # This extra roles will be given when the whitelist role is given.
+  # This extra roles will be given when the whitelist role is given and are not checked.
   sub-whitelisted:
     - 0000000000000000000
 announce-channel:
@@ -64,7 +65,7 @@ command:
   #/whitelist link
   basic-link-self:
     role:
-      -admin
+      - admin
     channel:
       - staff
   #/whitelist accounts
@@ -99,6 +100,41 @@ command:
       - staff
   #/wladmin off
   admin-off:
+    role:
+      - staff
+      - admin
+    channel:
+      - staff
+  #/wladmin permstatus
+  admin-perm-status:
+    role:
+      - staff
+      - admin
+    channel:
+      - staff
+  #/wladmin permset
+  admin-perm-set:
+    role:
+      - staff
+      - admin
+    channel:
+      - staff
+  #/wladmin checkstatus
+  admin-checking-status:
+    role:
+      - staff
+      - admin
+    channel:
+      - staff
+  #/wladmin checkset
+  admin-checking-set:
+    role:
+      - staff
+      - admin
+    channel:
+      - staff
+  #/wladmin list
+  admin-list:
     role:
       - staff
       - admin

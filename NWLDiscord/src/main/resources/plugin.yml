@@ -1,6 +1,6 @@
 name: NWLDiscord
 version: $version
-main: me.nobeld.minecraft.noblewhitelist.discord.NWLDiscord
+main: me.nobeld.noblewhitelist.discord.NWLDiscord
 description: $description
 author: NobelD
 website: https://github.com/NobelD/NobleWhitelist

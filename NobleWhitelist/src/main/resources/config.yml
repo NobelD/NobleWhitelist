@@ -18,8 +18,11 @@ whitelist:
     name: OPTIONAL
     uuid: OPTIONAL
     perm: DISABLED
-  # If the player who is op is considered as a bypass player.
-  count-op-as-bypass: true
+  # Makes the plugin to only count op players for the bypass permission (and disables the bypass permission)
+  only-op-as-permission: false
+  # Defines the minimum allowed bypass permission number (noblewhitelist.bypass.<number>)
+  # Set to -1 to disable the permission numbers (noblewhitelist.bypass ignores number)
+  permission-minimum-number: -1
   # If enabled and the whitelist is disabled, then will auto register the name and uuid of the player.
   # Useful if you want to enable the whitelist time later and keep the players who joined in the whitelist.
   auto-register: false
@@ -33,6 +36,7 @@ storage:
   # sqlite - Faster storage for easy management when expecting a lot of players.
   # yaml - Simple editable storage and easy to use.
   # json - Faster storage than yaml, a little confusing to read.
+  # toml - Faster as json and easier to read as yaml.
   storage-type: sqlite
   # It's not necessary to fill unless using remote databases.
   host: ''
@@ -40,8 +44,15 @@ storage:
   database: ''
   user: ''
   password: ''
-  # The server will be closed if the plugin cannot load the database, for security reasons.
-  close-if-failed: false
+  # Executes the placed actions if the server cannot connect to the database when loaded.
+  # You can use /nwl reload to reconnect to the database and this will be applied.
+  # Actions:
+  # NONE - does nothing
+  # CLOSE - closes the server
+  # BLOCK - blocks the players join
+  # COMMAND - executes a command
+  action-if-fail: NONE
+  command-if-fail: ""
 messages:
   prefix: "<bold><#17B90C>N<#7FD024>Whitelist</bold> <grey>>"
   use-prefix: true
@@ -55,4 +66,4 @@ messages:
 version:
   # Notify when there is a new update.
   notify-update: true
-  version: 2
+  version: 3
