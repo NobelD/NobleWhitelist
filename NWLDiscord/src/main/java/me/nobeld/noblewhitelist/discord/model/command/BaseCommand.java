@@ -8,6 +8,7 @@ import me.nobeld.noblewhitelist.discord.model.requirement.base.NWLRequirementInt
 import me.nobeld.noblewhitelist.model.storage.ConfigContainer;
 import me.nobeld.noblewhitelist.model.PairData;
 import me.nobeld.noblewhitelist.util.UUIDUtil;
+import net.dv8tion.jda.api.events.interaction.command.GenericCommandInteractionEvent;
 import net.dv8tion.jda.api.interactions.callbacks.IReplyCallback;
 import net.dv8tion.jda.api.utils.messages.MessageCreateData;
 import org.incendo.cloud.Command;
@@ -53,6 +54,15 @@ public abstract class BaseCommand {
     }
     public static void replyMsg(NWLDsData data, CommandContext<JDAInteraction> c, ConfigContainer<?> cont) {
         replyMsg(data, c, cont, null);
+    }
+    // #TODO change interaction checker when cloud updates options problem
+    public static boolean invalidInteraction(NWLDsData data, CommandContext<JDAInteraction> c) {
+        GenericCommandInteractionEvent e = c.sender().interactionEvent();
+        if (e == null) {
+            replyMsg(data, c, MessageData.Error.invalidInteraction);
+            return true;
+        }
+        return false;
     }
     public static boolean noInputtedData(NWLDsData data, CommandContext<JDAInteraction> c, String val1, Object val2) {
         if (val1 == null && val2 == null) {

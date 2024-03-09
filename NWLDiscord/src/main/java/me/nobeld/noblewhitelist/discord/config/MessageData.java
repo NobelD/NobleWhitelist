@@ -111,10 +111,12 @@ public class MessageData {
         public static final ConfigContainer<String> noInputtedData = new ConfigContainer<>("discord.error.no-inputted-data", "");
         public static final ConfigContainer<String> insufficientData = new ConfigContainer<>("discord.error.insufficient-data", "");
         public static final ConfigContainer<String> invalidUuid = new ConfigContainer<>("discord.error.invalid-uuid", "");
+        public static final ConfigContainer<String> invalidInteraction = new ConfigContainer<>("discord.error.invalid-interaction", "");
         public static final ConfigContainer<String> selfAlready = new ConfigContainer<>("discord.error.user-self-already", "");
         public static final ConfigContainer<String> userAlready = new ConfigContainer<>("discord.error.user-already", "");
         public static final ConfigContainer<String> userNotFound = new ConfigContainer<>("discord.error.user-not-found", "");
         public static final ConfigContainer<String> selfNoAccounts = new ConfigContainer<>("discord.error.self-no-accounts", "");
+        public static final ConfigContainer<String> selfNoMoreAccounts = new ConfigContainer<>("discord.error.self-no-more-accounts", "");
         public static final ConfigContainer<String> userNoAccounts = new ConfigContainer<>("discord.error.user-no-accounts", "");
         public static final ConfigContainer<String> alreadySelfLinked = new ConfigContainer<>("discord.error.already-self-linked", "");
         public static final ConfigContainer<String> alreadyUserLinked = new ConfigContainer<>("discord.error.already-user-linked", "");

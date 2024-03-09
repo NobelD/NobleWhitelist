@@ -9,6 +9,8 @@ import me.nobeld.noblewhitelist.discord.model.command.SubCommand;
 import me.nobeld.noblewhitelist.model.PairData;
 import me.nobeld.noblewhitelist.model.whitelist.WhitelistEntry;
 import net.dv8tion.jda.api.entities.User;
+import net.dv8tion.jda.api.events.interaction.command.GenericCommandInteractionEvent;
+import net.dv8tion.jda.api.interactions.commands.OptionMapping;
 
 import java.util.*;
 
@@ -32,8 +34,12 @@ public class AdminFind {
                 .optional("uuid", stringParser())
                 .meta(REQUIREMENTS_KEY, getRequirements(data, ConfigData.CommandsOpt.adminFind))
                 .handler(c -> {
-                    String name = c.getOrDefault("name", null);
-                    String uuid = c.getOrDefault("uuid", null);
+                    if (invalidInteraction(data, c)) return;
+                    GenericCommandInteractionEvent e = c.sender().interactionEvent();
+                    assert e != null;
+
+                    String name = Optional.ofNullable(e.getOption("name")).map(OptionMapping::getAsString).orElse(null);
+                    String uuid = Optional.ofNullable(e.getOption("uuid")).map(OptionMapping::getAsString).orElse(null);
 
                     if (noInputtedData(data, c, name, uuid)) return;
                     UUID realuuid;
@@ -53,15 +59,14 @@ public class AdminFind {
     }
     private SubCommand user() {
         return new SubCommand(b -> b.literal("finduser", CMDDescription.findUser())
-                .optional("user", userParser())
+                .required("user", userParser())
                 .meta(REQUIREMENTS_KEY, getRequirements(data, ConfigData.CommandsOpt.adminUser))
                 .handler(c -> {
-                    User user = c.getOrDefault("user", null);
-                    long id = user != null ? user.getIdLong() : -1;
+                    User user = c.get("user");
+                    long id = user.getIdLong();
 
                     List<WhitelistEntry> list = new ArrayList<>();
-                    Optional<WhitelistEntry> e = data.getNWL().whitelistData().getEntry(null, null, id);
-                    e.ifPresent(list::add);
+                    data.getNWL().whitelistData().getEntry(null, null, id).ifPresent(list::add);
 
                     if (list.isEmpty()) {
                         replyMsg(data, c, MessageData.Error.userNoAccounts);

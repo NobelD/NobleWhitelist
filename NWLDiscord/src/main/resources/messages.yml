@@ -119,10 +119,18 @@ discord:
       type: message
       ephemeral: true
       content: The provided uuid is invalid.
+    invalid-interaction:
+      type: message
+      ephemeral: true
+      content: The interaction was invalid.
     self-no-accounts:
       type: message
       ephemeral: true
       content: You don't have any account registered.
+    self-no-more-accounts:
+      type: message
+      ephemeral: true
+      content: You can't register more accounts.
     user-no-accounts:
       type: message
       ephemeral: true

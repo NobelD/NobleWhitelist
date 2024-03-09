@@ -97,8 +97,8 @@ public class AdminWhitelist {
     }
     private SubCommand permSet() {
         return new SubCommand(b -> b.literal("permset", CMDDescription.permSet())
-                .meta(REQUIREMENTS_KEY, getRequirements(data, ConfigData.CommandsOpt.adminPermSet))
                 .required("minimum", integerParser(-1))
+                .meta(REQUIREMENTS_KEY, getRequirements(data, ConfigData.CommandsOpt.adminPermSet))
                 .handler(c -> {
                     final int min = c.get("minimum");
                     String m = min <= -1 ? data.getMessageD().getMsg(MessageData.PlaceHolders.disabled) : String.valueOf(min);

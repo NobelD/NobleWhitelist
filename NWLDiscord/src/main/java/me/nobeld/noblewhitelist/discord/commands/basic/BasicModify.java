@@ -9,6 +9,8 @@ import me.nobeld.noblewhitelist.discord.model.command.BaseCommand;
 import me.nobeld.noblewhitelist.discord.model.command.SubCommand;
 import me.nobeld.noblewhitelist.model.PairData;
 import me.nobeld.noblewhitelist.model.whitelist.WhitelistEntry;
+import net.dv8tion.jda.api.events.interaction.command.GenericCommandInteractionEvent;
+import net.dv8tion.jda.api.interactions.commands.OptionMapping;
 
 import java.util.List;
 import java.util.Map;
@@ -29,7 +31,7 @@ public class BasicModify {
         this.manager = data.getJDAManager();
     }
     public List<BaseCommand> getCommands() {
-        return List.of(add(), remove(), link());
+        return List.of(add(), remove());
     }
     // #TODO system to add more accounts to the same user
     private SubCommand add() {
@@ -41,12 +43,15 @@ public class BasicModify {
                     long userid = c.sender().user().getIdLong();
                     Optional<WhitelistEntry> entryF = data.getNWL().whitelistData().getEntry(null, null, userid);
                     if (entryF.isPresent()) {
-                        replyMsg(c, "You can not register more accounts to the whitelist.", true);
+                        replyMsg(data, c, MessageData.Error.selfNoMoreAccounts);
                         return;
                     }
+                    if (invalidInteraction(data, c)) return;
+                    GenericCommandInteractionEvent e = c.sender().interactionEvent();
+                    assert e != null;
 
-                    String name = c.getOrDefault("name", null);
-                    String uuid = c.getOrDefault("uuid", null);
+                    String name = Optional.ofNullable(e.getOption("name")).map(OptionMapping::getAsString).orElse(null);
+                    String uuid = Optional.ofNullable(e.getOption("uuid")).map(OptionMapping::getAsString).orElse(null);
 
                     if (noInputtedData(data, c, name, uuid)) return;
                     UUID realuuid;
@@ -77,7 +82,7 @@ public class BasicModify {
                     long userid = c.sender().user().getIdLong();
                     Optional<WhitelistEntry> entryF = data.getNWL().whitelistData().getEntry(null, null, userid);
                     if (entryF.isEmpty()) {
-                        replyMsg(c, "You don't have any account registered to the whitelist.", true);
+                        replyMsg(data, c, MessageData.Error.selfNoAccounts);
                         return;
                     }
 
