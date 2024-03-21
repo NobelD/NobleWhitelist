@@ -4,7 +4,7 @@ plugins {
 }
 
 group = "me.nobeld.noblewhitelist.discord"
-version = "1.1.0"
+version = "1.1.1"
 description = "Discord integration for the NobleWhitelist plugin."
 
 java {
@@ -75,29 +75,6 @@ tasks {
         dependencies {
             include(dependency("com.alessiodp.libby:libby-bukkit"))
             include(dependency("com.alessiodp.libby:libby-core"))
-            /*
-
-            // JDA
-            include(dependency("net.dv8tion:JDA"))
-            include(dependency("com.neovisionaries:nv-websocket-client"))
-            include(dependency("com.squareup.okhttp3:okhttp"))
-            include(dependency("com.squareup.okio:okio"))
-            include(dependency("com.squareup.okio:okio-jvm"))
-            include(dependency("org.apache.commons:commons-collections4"))
-            include(dependency("net.sf.trove4j:trove4j"))
-            include(dependency("com.fasterxml.jackson.core:jackson-databind"))
-            include(dependency("com.fasterxml.jackson.core:jackson-core"))
-            include(dependency("com.fasterxml.jackson.core:jackson-annotations"))
-            include(dependency("org.slf4j:slf4j-api"))
-            include(dependency("org.jetbrains.kotlin:kotlin-stdlib"))
-
-            // Emoji
-            include(dependency("com.github.MinnDevelopment:emoji-java"))
-            include(dependency("org.json:json"))
-
-            // discord-webhooks
-            include(dependency("club.minnced:discord-webhooks"))
-            */
         }
 
         archiveClassifier.set("")
@@ -124,11 +101,9 @@ tasks {
         reloc("club.minnced.discord.webhook")
         */
 
-        reloc("io.papermc")
         reloc("com.alessiodp.libby")
         relocate("com.esotericsoftware", "me.nobeld.noblewhitelist.libs.com.esotericsoftware")
         relocate("de.leonhard", "me.nobeld.noblewhitelist.libs.de.leonhard")
-        reloc("net.kyori.examination")
         reloc("org.intellij")
         reloc("org.jetbrains")
         // reloc("org.incendo")

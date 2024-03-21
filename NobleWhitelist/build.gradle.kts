@@ -3,8 +3,8 @@ plugins {
     id("com.github.johnrengelman.shadow") version "8.1.1"
 }
 
-group = "me.nobeld.minecraft.noblewhitelist"
-version = "1.2.0"
+group = "me.nobeld.noblewhitelist"
+version = "1.2.1"
 description = "A simple plugin for whitelist management."
 
 java {
