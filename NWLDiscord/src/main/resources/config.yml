@@ -39,7 +39,8 @@ announce-channel:
   stop: none
   notify-self-register: staff
   notify-self-remove: staff
-  notify-given-role: none
+  notify-role-add: none
+  notify-role-remove: none
   notify-wl-auto: none
   notify-wl-join: none
   notify-wl-try: none
@@ -176,4 +177,4 @@ command:
 version:
   # Notify when there is a new update.
   notify-update: true
-  version: 1
+  version: 2

@@ -25,6 +25,20 @@ public class ConfigData {
         this.path = path;
         this.name = name;
         this.type = type;
+        updateData();
+    }
+    private void updateData() {
+        if (get(configVersion) < 2) {
+            String role = configFile().get("announce-channel.notify-given-role", "none");
+            set(Channel.roleAdd, role);
+            set(Channel.roleRemove, role);
+            configFile().remove("announce-channel.notify-given-role");
+            String adminS = configFile().get(CommandsOpt.selfLink.path() + ".role", "null");
+            if (adminS.equalsIgnoreCase("-admin")) {
+                configFile().set(CommandsOpt.selfLink.path() + ".role", List.of("admin"));
+            }
+        }
+        set(configVersion, 2);
     }
     private void registerConfig() {
         Path configPath = Paths.get(path + separator() + name);
@@ -35,6 +49,14 @@ public class ConfigData {
             registerConfig();
         }
         return configFile;
+    }
+    public <T> void set(ConfigContainer<T> container, T value) {
+        try {
+            configFile().set(container.path(), value);
+        } catch (Exception e) {
+            NWLDiscord.log(Level.WARNING, "An error occurred while setting data to the path: '" + container.path() + "'");
+            NWLDiscord.log(Level.WARNING, e.getMessage());
+        }
     }
     public <T> T get(ConfigContainer<T> container) {
         try {
@@ -82,6 +104,7 @@ public class ConfigData {
     //TODO premium suggestion
     public static final ConfigContainer<Boolean> suggestPremium = new ConfigContainer<>("special.suggest-premium-if-possible", false);
     public static final ConfigContainer<Boolean> notifyUpdate = new ConfigContainer<>("version.notify-update", true);
+    public static final ConfigContainer<Integer> configVersion = new ConfigContainer<>("version.version", 2);
     public static class Channel {
         public static final ConfigContainer<String> startChannel = new ConfigContainer<>("announce-channel.start", "");
         public static final ConfigContainer<String> stopChannel = new ConfigContainer<>("announce-channel.stop", "");

@@ -26,7 +26,7 @@ discord:
       body:
         color: 88FF8A
         content: |-
-          The user <user-mention> has self registered to the whitelist:
+          The user <user_mention> has self registered to the whitelist:
           
           <player_optional>
     notify-self-remove:
@@ -34,7 +34,7 @@ discord:
       body:
         color: FFC288
         content: |-
-          The user <user-mention> has self unregistered from the whitelist:
+          The user <user_mention> has self unregistered from the whitelist:
           
           **Player name:** `<name>`
           **Player uuid:** <uuid>
@@ -94,7 +94,9 @@ discord:
     invalid-member:
       type: message
       ephemeral: true
-      content: This command can only be executed by users.
+      content: |-
+        This command can only be executed by valid users.
+        Try again the command, if still fails notify this to an administrator.
     user-self-already:
       type: message
       ephemeral: true

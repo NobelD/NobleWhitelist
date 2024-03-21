@@ -62,7 +62,7 @@ public class AdminModify {
                         WhitelistEntry d = data.getNWL().whitelistData().registerAndSave(name, realuuid, id);
                         Map<String, String> m = data.getMessageD().baseHolder(d);
 
-                        manager.setWhitelistedRole(c.sender().guild(), d, m, true);
+                        manager.manageRoleHandled(c.sender().guild(), d, m, true);
                         replyMsg(data, c, MessageData.Command.userAdd, m);
                     } else
                         replyMsg(data, c, MessageData.Error.userAlready);
@@ -98,7 +98,7 @@ public class AdminModify {
                         data.getNWL().whitelistData().deleteUser(entry.get());
                         Map<String, String> m = data.getMessageD().baseHolder(entry.get());
 
-                        manager.setWhitelistedRole(c.sender().guild(), entry.get(), m, false);
+                        manager.manageRoleHandled(c.sender().guild(), entry.get(), m, false);
                         replyMsg(data, c, MessageData.Command.userRemove, m);
                     } else
                         replyMsg(data, c, MessageData.Error.userNotFound);
@@ -142,7 +142,7 @@ public class AdminModify {
                         Map<String, String> m = data.getMessageD().baseHolder(entry.get());
 
                         replyMsg(data, c, MessageData.Command.userLink, m);
-                        manager.setWhitelistedRole(c.sender().guild(), entry.get(), m, true);
+                        manager.manageRoleHandled(c.sender().guild(), entry.get(), m, true);
                     } else
                         replyMsg(data, c, MessageData.Error.userNotFound);
                 })
@@ -178,7 +178,7 @@ public class AdminModify {
                         Map<String, String> m = data.getMessageD().baseHolder(entry.get());
 
                         replyMsg(data, c, MessageData.Command.userUnLink, m);
-                        manager.setWhitelistedRole(c.sender().guild(), entry.get(), m, false);
+                        manager.manageRoleHandled(c.sender().guild(), entry.get(), m, false);
                     } else
                         replyMsg(data, c, MessageData.Error.userNotFound);
                 })

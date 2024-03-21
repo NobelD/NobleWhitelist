@@ -17,6 +17,10 @@ import net.dv8tion.jda.api.entities.Role;
 import net.dv8tion.jda.api.entities.User;
 import net.dv8tion.jda.api.entities.channel.Channel;
 import net.dv8tion.jda.api.entities.channel.concrete.TextChannel;
+import net.dv8tion.jda.api.exceptions.HierarchyException;
+import net.dv8tion.jda.api.exceptions.InsufficientPermissionException;
+import net.dv8tion.jda.api.requests.GatewayIntent;
+import net.dv8tion.jda.api.utils.MemberCachePolicy;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -68,8 +72,12 @@ public class JDAManager {
         }
         try {
             NobleWhitelist.adv().consoleAudience().sendMessage(AdventureUtil.formatAll("<prefix><yellow>Loading Discord Bot!"));
-            JDABuilder builder = JDABuilder.createDefault(token);
-            bot = builder.build();
+            bot = JDABuilder
+                    .createDefault(token)
+                    .enableIntents(GatewayIntent.GUILD_MEMBERS)
+                    .setMemberCachePolicy(MemberCachePolicy.ALL)
+                    .build();
+
             bot.awaitReady();
             NobleWhitelist.adv().consoleAudience().sendMessage(AdventureUtil.formatAll("<prefix><green>Loaded Discord Bot!"));
         } catch (Exception e) {
@@ -104,7 +112,11 @@ public class JDAManager {
     @Nullable
     public Member parseUser(@Nullable Guild guild, User user) {
         if (guild == null || user == null) return null;
-        return guild.getMember(user);
+        Member member = guild.getMember(user);
+        if (member == null) {
+            guild.retrieveMember(user).queue();
+        }
+        return member;
     }
     public boolean hasRole(@Nullable Guild guild, User user, ConfigContainer<String> cont) {
         Member member = parseUser(guild, user);
@@ -146,18 +158,29 @@ public class JDAManager {
             return bot.getRoleById(id);
         }).filter(Objects::nonNull).toList();
     }
-    public void setWhitelistedRole(@Nullable Guild guild, WhitelistEntry data, @Nullable Map<String, String> placeholders, boolean add) {
+    public void manageRoleHandled(@Nullable Guild guild, WhitelistEntry data, @Nullable Map<String, String> placeholders, boolean add) {
+        try {
+            manageRole(guild, data, placeholders, add);
+        } catch (InsufficientPermissionException | HierarchyException e) {
+            NWLDiscord.log(Level.SEVERE, "An error occurred while managing a role from a user.");
+            NWLDiscord.log(Level.SEVERE, e.getMessage());
+        }
+    }
+    public void manageRole(@Nullable Guild guild, WhitelistEntry data, @Nullable Map<String, String> placeholders, boolean add) throws InsufficientPermissionException, HierarchyException {
         if (guild == null || !data.hasDiscord()) return;
         Member member = guild.getMemberById(data.getDiscordID());
         if (member == null) return;
-        setWhitelistedRole(guild, member, placeholders, add);
+        manageRole(guild, member, placeholders, add);
     }
-    public void setWhitelistedRole( @NotNull Guild server, @NotNull Member member, @Nullable Map<String, String> placeholders, boolean add) {
+    public void manageRole(@NotNull Guild guild, @NotNull Member member, @Nullable Map<String, String> placeholders, boolean add) throws InsufficientPermissionException, HierarchyException {
         if (add && !data.getConfigD().get(ConfigData.giveWlRole)) return;
         else if (!add && !data.getConfigD().get(ConfigData.removeWlRole)) return;
 
-        Role role = getWhitelistedRole();
-        if (role == null || Collections.disjoint(member.getRoles(), Collections.singletonList(role))) return;
+        Role role = getWhitelistedRole(guild);
+        if (role == null) return;
+        boolean contains = member.getRoles().contains(role);
+        if (add && contains) return;
+        else if (!add && !contains) return;
 
         if (placeholders != null) {
             placeholders.put("role-id", String.valueOf(role.getIdLong()));
@@ -171,27 +194,27 @@ public class JDAManager {
             );
 
         if (add) {
-            server.addRoleToMember(member, role).reason("Added whitelisted role by register or link.").queue();
+            guild.addRoleToMember(member, role).reason("Added whitelisted role by register or link.").queue();
 
             for (Role r : getRoleType(ConfigData.roleSubWhitelistedID)) {
-                server.addRoleToMember(member, r).reason("Sub whitelist roles.").queue();
+                guild.addRoleToMember(member, r).reason("Sub whitelist roles.").queue();
             }
             DiscordUtil.sendMessage(getChannel(ConfigData.Channel.roleAdd), DiscordUtil.getMessage(data, MessageData.Channel.notifyRoleAdd, placeholders));
 
         } else {
-            server.removeRoleFromMember(member, role).reason("Removed whitelisted role by unregister or unlink.").queue();
+            guild.removeRoleFromMember(member, role).reason("Removed whitelisted role by unregister or unlink.").queue();
 
             for (Role r : getRoleType(ConfigData.roleSubWhitelistedID)) {
-                server.removeRoleFromMember(member, r).reason("Sub whitelist roles.").queue();
+                guild.removeRoleFromMember(member, r).reason("Sub whitelist roles.").queue();
             }
             DiscordUtil.sendMessage(getChannel(ConfigData.Channel.roleRemove), DiscordUtil.getMessage(data, MessageData.Channel.notifyRoleRemove, placeholders));
         }
     }
     @Nullable
-    public Role getWhitelistedRole() {
+    public Role getWhitelistedRole(Guild guild) {
         long id = data.getConfigD().get(ConfigData.roleWhitelistedID);
-        if (id < 0) return null;
-        return bot.getRoleById(id);
+        if (id <= 0) return null;
+        return guild.getRoleById(id);
     }
     public TextChannel getChannel(ConfigContainer<String> cont) {
         String channel = data.getConfigD().get(cont);

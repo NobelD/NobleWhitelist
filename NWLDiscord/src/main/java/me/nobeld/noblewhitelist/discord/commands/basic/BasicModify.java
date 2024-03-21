@@ -65,7 +65,7 @@ public class BasicModify {
                         WhitelistEntry d = data.getNWL().whitelistData().registerAndSave(name, realuuid, userid);
                         Map<String, String> m = data.getMessageD().baseHolder(d);
 
-                        manager.setWhitelistedRole(c.sender().guild(), d, m, true);
+                        manager.manageRoleHandled(c.sender().guild(), d, m, true);
                         replyMsg(data, c, MessageData.Command.selfAdd, m);
                         sendMessage(manager.getChannel(ConfigData.Channel.selfRegister), getMessage(data, MessageData.Channel.notifySelfAdd, m));
                     } else
@@ -94,7 +94,7 @@ public class BasicModify {
 
                         replyMsg(data, c, MessageData.Command.selfRemove, m);
                         sendMessage(manager.getChannel(ConfigData.Channel.selfRemove), getMessage(data, MessageData.Channel.notifySelfRemove, m));
-                        manager.setWhitelistedRole(c.sender().guild(), entry.get(), m, false);
+                        manager.manageRoleHandled(c.sender().guild(), entry.get(), m, false);
                     } else
                         replyMsg(data, c, MessageData.Error.userNotFound);
                 })
@@ -129,7 +129,7 @@ public class BasicModify {
                         data.getNWL().whitelistData().linkDiscord(entry.get(), userid);
                         Map<String, String> m = data.getMessageD().baseHolder(entry.get());
 
-                        manager.setWhitelistedRole(c.sender().guild(), entry.get(), m, true);
+                        manager.manageRoleHandled(c.sender().guild(), entry.get(), m, true);
                         replyMsg(data, c, MessageData.Command.selfLink, m);
                     }
                 })
