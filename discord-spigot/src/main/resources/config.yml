@@ -44,6 +44,7 @@ announce-channel:
   notify-wl-auto: none
   notify-wl-join: none
   notify-wl-try: none
+# TODO move to commands.yml
 command:
   #/whitelist add
   basic-add-self:
