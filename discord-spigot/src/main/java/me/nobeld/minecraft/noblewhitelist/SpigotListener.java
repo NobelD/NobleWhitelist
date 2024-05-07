@@ -22,7 +22,7 @@ public class SpigotListener implements org.bukkit.event.Listener {
     @EventHandler
     public void onWhitelistEvent(WhitelistPassEvent event) {
         if (event.isCancelled()) return;
-        if (!event.isWhitelistEnabled()) return;
+        if (event.isWhitelistDisabled()) return;
         Map<String, String> map = new HashMap<>();
         map.put("name", event.getPlayer().getName());
         map.put("uuid", event.getPlayer().getUniqueId().toString());
