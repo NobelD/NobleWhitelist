@@ -1,0 +1,131 @@
+# TODO refactor internal
+command:
+  #/whitelist add
+  basic-add-self:
+    role:
+      - user
+      - staff
+      - admin
+    channel:
+      - primary
+      - staff
+  #/whitelist remove
+  basic-remove-self:
+    role:
+      - user
+      - staff
+      - admin
+    channel:
+      - primary
+      - staff
+  #/whitelist link
+  basic-link-self:
+    role:
+      - admin
+    channel:
+      - staff
+  #/whitelist accounts
+  basic-self-accounts:
+    role:
+      - user
+      - staff
+      - admin
+    channel:
+      - primary
+      - staff
+  #/wladmin add
+  admin-add:
+    role:
+      - staff
+      - admin
+    channel:
+      - staff
+  #/wladmin remove
+  admin-remove:
+    role:
+      - staff
+      - admin
+    channel:
+      - staff
+  #/wladmin on
+  admin-on:
+    role:
+      - staff
+      - admin
+    channel:
+      - staff
+  #/wladmin off
+  admin-off:
+    role:
+      - staff
+      - admin
+    channel:
+      - staff
+  #/wladmin permstatus
+  admin-perm-status:
+    role:
+      - staff
+      - admin
+    channel:
+      - staff
+  #/wladmin permset
+  admin-perm-set:
+    role:
+      - staff
+      - admin
+    channel:
+      - staff
+  #/wladmin checkstatus
+  admin-checking-status:
+    role:
+      - staff
+      - admin
+    channel:
+      - staff
+  #/wladmin checkset
+  admin-checking-set:
+    role:
+      - staff
+      - admin
+    channel:
+      - staff
+  #/wladmin list
+  admin-list:
+    role:
+      - staff
+      - admin
+    channel:
+      - staff
+  #/wladmin find
+  admin-find:
+    role:
+      - staff
+      - admin
+    channel:
+      - staff
+  #/wladmin user
+  admin-find-user:
+    role:
+      - staff
+      - admin
+    channel:
+      - staff
+  #/wladmin link
+  admin-user-link:
+    role:
+      - admin
+    channel:
+      - staff
+  #/wladmin unlink
+  admin-user-unlink:
+    role:
+      - admin
+    channel:
+      - staff
+  #/wladmin toggle
+  admin-user-toggle:
+    role:
+      - staff
+      - admin
+    channel:
+      - staff
