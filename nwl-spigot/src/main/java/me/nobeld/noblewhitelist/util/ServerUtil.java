@@ -4,10 +4,6 @@ import io.papermc.lib.PaperLib;
 import me.nobeld.noblewhitelist.NobleWhitelist;
 import org.bukkit.Bukkit;
 
-import java.util.ArrayList;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
 import java.util.logging.Level;
 
 import static me.nobeld.noblewhitelist.util.JavaUtil.hasClass;

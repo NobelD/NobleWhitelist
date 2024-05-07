@@ -39,6 +39,9 @@ public class WhitelistPassEvent extends Event implements Cancellable {
     public boolean isWhitelistEnabled() {
         return enabled;
     }
+    public boolean isWhitelistDisabled() {
+        return !enabled;
+    }
     /**
      * @return the success type.
      */

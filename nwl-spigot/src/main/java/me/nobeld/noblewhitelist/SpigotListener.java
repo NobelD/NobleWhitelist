@@ -38,7 +38,7 @@ public class SpigotListener implements org.bukkit.event.Listener {
     @EventHandler
     public void onWhitelist(WhitelistPassEvent event) {
         if (event.isCancelled()) return;
-        if (!event.isWhitelistEnabled() || event.canPass()) return;
+        if (event.isWhitelistDisabled() || event.canPass()) return;
         disallowJoin(event.getJoinEvent(), event.getMessage());
     }
     @SuppressWarnings("deprecation")

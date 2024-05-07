@@ -1,6 +1,5 @@
 package me.nobeld.noblewhitelist.command.admin;
 
-import me.nobeld.noblewhitelist.BPlayer;
 import me.nobeld.noblewhitelist.command.NWLFindMethod;
 import me.nobeld.noblewhitelist.model.command.SubCommand;
 import me.nobeld.noblewhitelist.model.command.BaseCommand;
