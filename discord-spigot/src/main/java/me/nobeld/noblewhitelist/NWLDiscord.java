@@ -1,7 +1,6 @@
-package me.nobeld.minecraft.noblewhitelist;
+package me.nobeld.noblewhitelist;
 
 import com.alessiodp.libby.BukkitLibraryManager;
-import me.nobeld.noblewhitelist.NobleWhitelist;
 import me.nobeld.noblewhitelist.config.FileManager;
 import me.nobeld.noblewhitelist.discord.JDAManager;
 import me.nobeld.noblewhitelist.discord.config.ConfigData;
@@ -42,7 +41,8 @@ public class NWLDiscord extends JavaPlugin implements NWLDsData {
             return;
         }
         SpigotListener listener = new SpigotListener(this);
-        NWLDContainer bc = NWLDContainer.builder(this).loadLibs(new BukkitLibraryManager(this), null)
+        NWLDContainer bc = NWLDContainer.builder(this)
+                .load(() -> new LibsManager(this, new BukkitLibraryManager(this), null))
                 .loadFiles(getDataFolder().getPath(), PairData.of("config.yml", FileManager.FileType.YAML), PairData.of("messages.yml", FileManager.FileType.YAML))
                 .load(() -> Bukkit.getServer().getPluginManager().registerEvents(listener, this))
                 .loadJDA()

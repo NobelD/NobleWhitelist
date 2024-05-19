@@ -1,4 +1,4 @@
-package me.nobeld.minecraft.noblewhitelist;
+package me.nobeld.noblewhitelist;
 
 import me.nobeld.noblewhitelist.api.event.AutoWhitelistEvent;
 import me.nobeld.noblewhitelist.api.event.WhitelistPassEvent;
