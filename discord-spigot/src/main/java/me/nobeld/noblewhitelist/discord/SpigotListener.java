@@ -1,12 +1,12 @@
-package me.nobeld.noblewhitelist;
+package me.nobeld.noblewhitelist.discord;
 
+import me.nobeld.noblewhitelist.BPlayer;
 import me.nobeld.noblewhitelist.api.event.AutoWhitelistEvent;
 import me.nobeld.noblewhitelist.api.event.WhitelistPassEvent;
-import me.nobeld.noblewhitelist.discord.model.NWLDsData;
-import me.nobeld.noblewhitelist.discord.util.DiscordUtil;
 import me.nobeld.noblewhitelist.discord.config.ConfigData;
 import me.nobeld.noblewhitelist.discord.config.MessageData;
-import me.nobeld.noblewhitelist.BPlayer;
+import me.nobeld.noblewhitelist.discord.model.NWLDsData;
+import me.nobeld.noblewhitelist.discord.util.DiscordUtil;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.player.PlayerJoinEvent;
@@ -16,9 +16,11 @@ import java.util.Map;
 
 public class SpigotListener implements org.bukkit.event.Listener {
     private final NWLDsData data;
+
     public SpigotListener(NWLDsData data) {
         this.data = data;
     }
+
     @EventHandler
     public void onWhitelistEvent(WhitelistPassEvent event) {
         if (event.isCancelled()) return;
@@ -28,8 +30,10 @@ public class SpigotListener implements org.bukkit.event.Listener {
         map.put("uuid", event.getPlayer().getUniqueId().toString());
         if (event.canPass()) {
             DiscordUtil.sendMessage(data.getJDAManager().getChannel(ConfigData.Channel.whitelistJoin), DiscordUtil.getMessage(data, MessageData.Channel.serverJoin, map));
-        } else DiscordUtil.sendMessage(data.getJDAManager().getChannel(ConfigData.Channel.whitelistTry), DiscordUtil.getMessage(data, MessageData.Channel.serverTry, map));
+        } else
+            DiscordUtil.sendMessage(data.getJDAManager().getChannel(ConfigData.Channel.whitelistTry), DiscordUtil.getMessage(data, MessageData.Channel.serverTry, map));
     }
+
     @EventHandler
     public void onAutoWhitelist(AutoWhitelistEvent event) {
         if (event.isCancelled()) return;
@@ -38,10 +42,12 @@ public class SpigotListener implements org.bukkit.event.Listener {
         map.put("uuid", event.getPlayer().getUniqueId().toString());
         DiscordUtil.sendMessage(data.getJDAManager().getChannel(ConfigData.Channel.whitelistAuto), DiscordUtil.getMessage(data, MessageData.Channel.serverAuto, map));
     }
+
     @EventHandler
     public void onPlayerJoin(PlayerJoinEvent event) {
         Player player = event.getPlayer();
-        if (!player.isOp() || !data.getUptChecker().canUpdate(data.getConfigD().get(ConfigData.Version.notifyUpdate), true)) return;
+        if (!player.isOp() || !data.getUptChecker().canUpdate(data.getConfigD().get(ConfigData.Version.notifyUpdate), true))
+            return;
 
         data.getUptChecker().sendUpdate(BPlayer.of(player).getAsAudience());
     }
