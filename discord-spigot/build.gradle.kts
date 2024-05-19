@@ -4,6 +4,8 @@ plugins {
 }
 
 group = "me.nobeld.noblewhitelist.discord"
+var realName = "NWLDiscord"
+var apiType = "spigot"
 version = "2.0.0-SNAPSHOT"
 description = "Discord integration for the NobleWhitelist plugin."
 
@@ -32,30 +34,40 @@ repositories {
 }
 
 dependencies {
-    compileOnly(project(":nwl-spigot"))
-    compileOnly(project(":discord-core"))
     compileOnly(project(":nwl-core"))
+    compileOnly(project(":nwl-spigot")) {
+        exclude(module = "nwl-core")
+    }
+    implementation(project(":discord-core")) {
+        exclude(module = "nwl-core")
+        exclude(group = "org.incendo")
+        exclude(group = "net.kyori")
+        exclude(group = "net.dv8tion")
+        exclude(group = "com.github.MinnDevelopment")
+        exclude(group = "com.google.code.gson")
+    }
     compileOnly("io.papermc.paper", "paper-api", "1.20.2-R0.1-SNAPSHOT")
 
-    implementation("com.alessiodp.libby", "libby-paper", "2.0.0-20240104.190327-5") {
-        exclude(module=("libby-core"))
+    compileOnly("com.alessiodp.libby", "libby-paper", "2.0.0-20240104.190327-5") {
+        exclude(module = ("libby-core"))
     }
-    implementation("com.alessiodp.libby", "libby-bukkit", "2.0.0-20240104.190327-5") {
-        exclude(module=("libby-core"))
+    compileOnly("com.alessiodp.libby", "libby-bukkit", "2.0.0-20240104.190327-5") {
+        exclude(module = ("libby-core"))
     }
-    implementation("com.alessiodp.libby", "libby-core", "2.0.0-20240104.190327-5") {
-        exclude(module=("spigot-api"))
+    compileOnly("com.alessiodp.libby", "libby-core", "2.0.0-20240104.190327-5") {
+        exclude(module = ("spigot-api"))
     }
-    compileOnly("com.github.simplix-softworks","simplixstorage","3.2.6")
+
+    compileOnly("com.github.simplix-softworks", "simplixstorage", "3.2.6")
     compileOnly("org.incendo", "cloud-jda5", "1.0.0-beta.2")
     compileOnly("org.incendo", "cloud-processors-requirements", "1.0.0-beta.2")
 
     compileOnly("net.dv8tion", "JDA", "5.0.0-beta.20") {
-        exclude(module= "opus-java")
+        exclude(module = "opus-java")
     }
     compileOnly("com.github.MinnDevelopment", "emoji-java", "v6.1.0")
     compileOnly("club.minnced", "discord-webhooks", "0.8.4") {
-        exclude(module= "okhttp")
+        exclude(module = "okhttp")
     }
     compileOnly("org.apache.logging.log4j", "log4j-core", "2.17.1")
 }
@@ -71,7 +83,7 @@ tasks {
     processResources {
         filteringCharset = Charsets.UTF_8.name()
         val props = mapOf(
-            "name" to project.name,
+            "name" to realName,
             "version" to project.version,
             "description" to project.description,
             "apiVersion" to "1.17"
@@ -84,17 +96,21 @@ tasks {
 
     shadowJar {
         dependencies {
-            include(dependency("com.alessiodp.libby:libby-paper"))
-            include(dependency("com.alessiodp.libby:libby-bukkit"))
-            include(dependency("com.alessiodp.libby:libby-core"))
+            fun incdep(dependency: String) = include(dependency(dependency))
+
+            incdep("me.nobeld.noblewhitelist.discord:discord-core")
+            incdep("com.alessiodp.libby:libby-paper")
+            incdep("com.alessiodp.libby:libby-bukkit")
+            incdep("com.alessiodp.libby:libby-core")
         }
 
+        archiveBaseName.set("${realName}-${apiType}")
         archiveClassifier.set("")
         fun reloc(pkg: String) = relocate(pkg, "me.nobeld.noblewhitelist.discord.libs.$pkg")
-        fun nwlreloc(pkg: String) = relocate(pkg, "me.nobeld.noblewhitelist.libs.$pkg")
+        fun relocnwl(pkg: String) = relocate(pkg, "me.nobeld.noblewhitelist.libs.$pkg")
 
+        //#TODO Fix relocation (cause: cloud java version)
         // JDA
-        //#TODO Fix relocation
         /*
         reloc("net.dv8tion.jda")
         reloc("com.neovisionaries.ws")
@@ -114,9 +130,10 @@ tasks {
         reloc("club.minnced.discord.webhook")
         */
 
-        reloc("com.alessiodp.libby")
-        nwlreloc("com.esotericsoftware")
-        nwlreloc("de.leonhard")
+        relocnwl("com.alessiodp.libby")
+        relocnwl("com.esotericsoftware")
+        relocnwl("de.leonhard")
+        relocnwl("io.leangen.geantyref")
         reloc("org.intellij")
         reloc("org.jetbrains")
         // reloc("org.incendo")

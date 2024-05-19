@@ -1,7 +1,5 @@
 package me.nobeld.noblewhitelist.model.base;
 
-import com.alessiodp.libby.Library;
-import com.alessiodp.libby.LibraryManager;
 import me.nobeld.noblewhitelist.config.ConfigData;
 import me.nobeld.noblewhitelist.config.FileManager;
 import me.nobeld.noblewhitelist.language.MessageData;
@@ -13,7 +11,6 @@ import me.nobeld.noblewhitelist.model.storage.DataGetter;
 import me.nobeld.noblewhitelist.model.storage.StorageType;
 import me.nobeld.noblewhitelist.storage.root.DatabaseSQL;
 import me.nobeld.noblewhitelist.util.AdventureUtil;
-import me.nobeld.noblewhitelist.util.LibsManager;
 import me.nobeld.noblewhitelist.util.UpdateChecker;
 import net.kyori.adventure.audience.Audience;
 

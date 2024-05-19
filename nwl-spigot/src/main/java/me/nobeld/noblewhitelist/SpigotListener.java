@@ -8,6 +8,7 @@ import me.nobeld.noblewhitelist.model.base.NWLData;
 import me.nobeld.noblewhitelist.model.whitelist.SuccessData;
 import me.nobeld.noblewhitelist.util.AdventureUtil;
 import me.nobeld.noblewhitelist.config.ConfigData;
+import me.nobeld.noblewhitelist.util.BukkitAdventure;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
@@ -46,7 +47,7 @@ public class SpigotListener implements org.bukkit.event.Listener {
         if (data.hasPaper()) {
             event.disallow(PlayerLoginEvent.Result.KICK_WHITELIST, msg);
         } else {
-            event.disallow(PlayerLoginEvent.Result.KICK_WHITELIST, AdventureUtil.asLegacy(msg));
+            event.disallow(PlayerLoginEvent.Result.KICK_WHITELIST, BukkitAdventure.asLegacy(msg));
         }
     }
     @EventHandler(priority = EventPriority.HIGHEST)

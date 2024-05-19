@@ -1,4 +1,4 @@
-package me.nobeld.noblewhitelist.discord.util;
+package me.nobeld.noblewhitelist;
 
 import com.alessiodp.libby.Library;
 import com.alessiodp.libby.LibraryManager;
