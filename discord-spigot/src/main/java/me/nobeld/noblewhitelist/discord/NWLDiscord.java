@@ -1,9 +1,10 @@
-package me.nobeld.noblewhitelist;
+package me.nobeld.noblewhitelist.discord;
 
 import com.alessiodp.libby.BukkitLibraryManager;
+import me.nobeld.noblewhitelist.NobleWhitelist;
 import me.nobeld.noblewhitelist.config.FileManager;
-import me.nobeld.noblewhitelist.discord.JDAManager;
 import me.nobeld.noblewhitelist.discord.config.ConfigData;
+import me.nobeld.noblewhitelist.discord.config.MessageData;
 import me.nobeld.noblewhitelist.discord.model.NWLDContainer;
 import me.nobeld.noblewhitelist.discord.model.NWLDsData;
 import me.nobeld.noblewhitelist.model.PairData;
@@ -11,7 +12,6 @@ import me.nobeld.noblewhitelist.model.base.NWLData;
 import me.nobeld.noblewhitelist.util.AdventureUtil;
 import me.nobeld.noblewhitelist.util.SpigotMetrics;
 import me.nobeld.noblewhitelist.util.UpdateChecker;
-import me.nobeld.noblewhitelist.discord.config.MessageData;
 import org.bukkit.Bukkit;
 import org.bukkit.event.HandlerList;
 import org.bukkit.plugin.Plugin;
@@ -29,6 +29,7 @@ public class NWLDiscord extends JavaPlugin implements NWLDsData {
     private MessageData message;
     private JDAManager jdaManager;
     private UpdateChecker checker;
+
     @Override
     public void onEnable() {
         plugin = this;
@@ -73,57 +74,71 @@ public class NWLDiscord extends JavaPlugin implements NWLDsData {
         if (jdaManager.isEnabled()) jdaManager.enableCommands();
         else HandlerList.unregisterAll(listener);
     }
+
     @Override
     public void onDisable() {
         NWLDContainer.closeData(this);
     }
+
     public static void log(Level level, String msg) {
         plugin.getLogger().log(level, msg);
     }
+
     public static NWLDiscord getPlugin() {
         return plugin;
     }
+
     @Override
     public NWLData getNWL() {
         return NobleWhitelist.getPlugin();
     }
+
     @Override
     public ConfigData getConfigD() {
         return config;
     }
+
     @Override
     public MessageData getMessageD() {
         return message;
     }
+
     @Override
     public JDAManager getJDAManager() {
         return jdaManager;
     }
+
     @Override
     public UpdateChecker getUptChecker() {
         return checker;
     }
+
     @Override
     public String name() {
         return getName();
     }
+
     @SuppressWarnings("deprecation")
     @Override
     public String version() {
         return getDescription().getVersion();
     }
+
     @Override
     public Logger logger() {
         return getLogger();
     }
+
     @Override
     public void disable() {
         Bukkit.getPluginManager().disablePlugin(this);
     }
+
     @Override
     public void enableMsg(Runnable runnable) {
         Bukkit.getScheduler().scheduleSyncDelayedTask(this, runnable);
     }
+
     @Override
     public InputStream resourceStream(String name) {
         return getClassLoader().getResourceAsStream(name);
