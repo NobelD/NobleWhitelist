@@ -3,6 +3,8 @@ package me.nobeld.noblewhitelist.command.admin;
 import me.nobeld.noblewhitelist.NobleWhitelist;
 import me.nobeld.noblewhitelist.config.ConfigData;
 import me.nobeld.noblewhitelist.language.MessageData;
+import me.nobeld.noblewhitelist.model.BPlayer;
+import me.nobeld.noblewhitelist.model.base.PlayerWrapper;
 import me.nobeld.noblewhitelist.model.command.BaseCommand;
 import me.nobeld.noblewhitelist.model.command.OptionCommand;
 import me.nobeld.noblewhitelist.model.command.SubCommand;
@@ -12,6 +14,7 @@ import org.incendo.cloud.context.CommandContext;
 import java.util.ArrayList;
 import java.util.List;
 
+import static org.incendo.cloud.bukkit.parser.PlayerParser.playerParser;
 import static org.incendo.cloud.parser.standard.IntegerParser.integerParser;
 
 public class ManageCommand {
@@ -59,7 +62,22 @@ public class ManageCommand {
                     })
             ) {
             };
-            return List.of(permStatus, permChange);
+            SubCommand permCheck = new SubCommand(b -> b.literal("check")
+                    .required("player", playerParser())
+                    .optional("minimum", integerParser(-1))
+                    .handler(c -> {
+                        final PlayerWrapper player = BPlayer.of(c.get("player"));
+                        int defined = plugin.getConfigD().get(ConfigData.WhitelistCF.permissionMinimum);
+                        int min = c.getOrDefault("minimum", defined);
+
+                        BaseCommand.sendMsg(c, MessageData.permissionCheckHeader(player.getName()));
+                        BaseCommand.sendMsg(c, MessageData.permissionCheckOP(player.isOp()));
+                        BaseCommand.sendMsg(c, MessageData.permissionCheckByPass(player.hasPermission("noblewhitelist.bypass")));
+                        BaseCommand.sendMsg(c, MessageData.permissionCheckByPassMin(player.hasPermission("noblewhitelist.bypass.", min), min));
+                    })
+            ) {
+            };
+            return List.of(permStatus, permChange, permCheck);
         }
     }
 }
