@@ -53,10 +53,11 @@ dependencies {
 }
 
 tasks {
-    assemble{
-        dependsOn(shadowJar)
+    assemble {
+        // TODO Omited dependsOn(shadowJar)
     }
     compileJava {
+        // dependsOn(":NobleWhitelist:shadowJar")
         options.encoding = Charsets.UTF_8.name()
         options.release.set(17)
     }
@@ -75,7 +76,6 @@ tasks {
     }
 
     shadowJar {
-        dependsOn(compileJava)
         dependencies {
             include(dependency("com.alessiodp.libby:libby-bukkit"))
             include(dependency("com.alessiodp.libby:libby-core"))

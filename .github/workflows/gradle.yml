@@ -49,13 +49,13 @@ jobs:
     - name: Upload a NobleWhitelist
       uses: actions/upload-artifact@v4.3.1
       with:
-        name: NobleWhitelist
+        name: NobleWhitelist.jar
         path: NobleWhitelist/build/libs/*.jar
         if-no-files-found: error
 
     - name: Upload a NWLDiscord
       uses: actions/upload-artifact@v4.3.1
       with:
-        name: NWLDiscord
+        name: NWLDiscord.jar
         path: NWLDiscord/build/libs/*.jar
         if-no-files-found: error

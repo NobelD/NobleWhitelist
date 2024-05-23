@@ -55,8 +55,8 @@ dependencies {
 }
 
 tasks {
-    assemble{
-        dependsOn(shadowJar)
+    assemble {
+        // TODO Omited dependsOn(shadowJar)
     }
     compileJava {
         options.encoding = Charsets.UTF_8.name()
@@ -76,7 +76,6 @@ tasks {
         }
     }
     shadowJar {
-        dependsOn(compileJava)
         archiveClassifier.set("")
         fun reloc(pkg: String) = relocate(pkg, "me.nobeld.noblewhitelist.libs.$pkg")
 
