@@ -12,7 +12,7 @@ import java.util.logging.Level;
 
 public class ServerUtil {
     private static final boolean craftBukkit = hasClass("org.bukkit.Bukkit");
-    private static final boolean spigot = hasClass("org.spigotmc.SpigotConfig");
+    private static final boolean spigot = PaperLib.isSpigot();
     private static final boolean paper = PaperLib.isPaper();
     public static boolean hasPaper() {
         return paper;
