@@ -75,6 +75,7 @@ tasks {
     }
 
     shadowJar {
+        dependsOn(compileJava)
         dependencies {
             include(dependency("com.alessiodp.libby:libby-bukkit"))
             include(dependency("com.alessiodp.libby:libby-core"))

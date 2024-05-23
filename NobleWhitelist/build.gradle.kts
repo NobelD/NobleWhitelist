@@ -76,6 +76,7 @@ tasks {
         }
     }
     shadowJar {
+        dependsOn(compileJava)
         archiveClassifier.set("")
         fun reloc(pkg: String) = relocate(pkg, "me.nobeld.noblewhitelist.libs.$pkg")
 
