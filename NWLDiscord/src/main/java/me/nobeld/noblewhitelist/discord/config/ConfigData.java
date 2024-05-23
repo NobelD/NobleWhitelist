@@ -37,8 +37,8 @@ public class ConfigData {
             if (adminS.equalsIgnoreCase("-admin")) {
                 configFile().set(CommandsOpt.selfLink.path() + ".role", List.of("admin"));
             }
+            set(configVersion, 2);
         }
-        set(configVersion, 2);
     }
     private void registerConfig() {
         Path configPath = Paths.get(path + separator() + name);

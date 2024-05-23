@@ -78,8 +78,7 @@ public class ConfigData {
             }
             return val;
         } catch (Exception e) {
-            NobleWhitelist.log(Level.WARNING, "An error occurred while loading the path: '" + container.path() + "', using default instead: " + container.def());
-            NobleWhitelist.log(Level.WARNING, e.getMessage());
+            NobleWhitelist.log(Level.WARNING, "An error occurred while loading the path: '" + container.path() + "', using default instead: " + container.def(), e);
             return container.def();
         }
     }
@@ -87,8 +86,7 @@ public class ConfigData {
         try {
             return configFile().getEnum(container.path(), container.def().getDeclaringClass());
         } catch (Exception e) {
-            NobleWhitelist.log(Level.SEVERE, "An error occurred while loading the enum from path: '" + container.path() + "using default instead: " + container.def().toString());
-            NobleWhitelist.log(Level.WARNING, e.getMessage());
+            NobleWhitelist.log(Level.SEVERE, "An error occurred while loading the enum from path: '" + container.path() + "using default instead: " + container.def().toString(), e);
             return container.def();
         }
     }
@@ -96,8 +94,7 @@ public class ConfigData {
         try {
             configFile().set(container.path(), value);
         } catch (Exception e) {
-            NobleWhitelist.log(Level.WARNING, "An error occurred while setting data to the path: '" + container.path() + "'");
-            NobleWhitelist.log(Level.WARNING, e.getMessage());
+            NobleWhitelist.log(Level.WARNING, "An error occurred while setting data to the path: '" + container.path() + "'", e);
         }
     }
     public static class WhitelistCF {

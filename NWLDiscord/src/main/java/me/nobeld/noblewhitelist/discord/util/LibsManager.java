@@ -20,8 +20,9 @@ public class LibsManager {
         manager.addMavenCentral();
 
         NWLDiscord.log(Level.INFO, "Loading libraries, this could took a while...");
+        long time = System.currentTimeMillis();
         loadLibraries(additional);
-        NWLDiscord.log(Level.INFO, "Libraries loaded.");
+        NWLDiscord.log(Level.INFO, "Libraries loaded. (took " + (System.currentTimeMillis() - time) + "ms)");
     }
     private Relocation reloc(String path) {
         return new Relocation(path, "me{}nobeld{}noblewhitelist{}discord{}libs{}" + path);

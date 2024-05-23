@@ -53,7 +53,7 @@ public class JDAManager {
 
         Guild guild = bot.getGuildById(data.getConfigD().get(ConfigData.serverID));
         if (guild == null) {
-            NobleWhitelist.adv().consoleAudience().sendMessage(AdventureUtil.formatAll("<prefix><yellow>No server was found, commands will not be registered ."));
+            NobleWhitelist.adv().consoleAudience().sendMessage(AdventureUtil.formatAll("<prefix><red>No server was found, commands will not be registered!"));
             return;
         }
         cmdManager.registerCommands(guild);

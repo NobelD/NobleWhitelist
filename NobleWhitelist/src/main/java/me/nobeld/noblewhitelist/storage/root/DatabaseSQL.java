@@ -99,8 +99,7 @@ public class DatabaseSQL implements DataGetter {
                 return parseResult(result).orElse(null);
             }
         } catch (SQLException sqlEx) {
-            NobleWhitelist.log(Level.SEVERE, "Failed to query data: " + name);
-            NobleWhitelist.log(Level.SEVERE, sqlEx.getMessage());
+            NobleWhitelist.log(Level.SEVERE, "Failed to query data: " + name, sqlEx);
         }
 
         return null;
@@ -116,8 +115,7 @@ public class DatabaseSQL implements DataGetter {
                 return parseResult(resultSet).orElse(null);
             }
         } catch (SQLException sqlEx) {
-            NobleWhitelist.log(Level.SEVERE, "Failed to query data: " + id);
-            NobleWhitelist.log(Level.SEVERE, sqlEx.getMessage());
+            NobleWhitelist.log(Level.SEVERE, "Failed to query data: " + id, sqlEx);
         }
 
         return null;
@@ -132,8 +130,7 @@ public class DatabaseSQL implements DataGetter {
                 return parseResult(resultSet).orElse(null);
             }
         } catch (SQLException sqlEx) {
-            NobleWhitelist.log(Level.SEVERE, "Failed to query data: " + id);
-            NobleWhitelist.log(Level.SEVERE, sqlEx.getMessage());
+            NobleWhitelist.log(Level.SEVERE, "Failed to query data: " + id, sqlEx);
         }
 
         return null;
@@ -151,8 +148,7 @@ public class DatabaseSQL implements DataGetter {
                 }
             }
         } catch (SQLException sqlEx) {
-            NobleWhitelist.log(Level.SEVERE, "Failed to query data: " + id);
-            NobleWhitelist.log(Level.SEVERE, sqlEx.getMessage());
+            NobleWhitelist.log(Level.SEVERE, "Failed to query data: " + id, sqlEx);
         }
 
         return null;
@@ -175,8 +171,7 @@ public class DatabaseSQL implements DataGetter {
                 }
             }
         } catch (SQLException sqlEx) {
-            NobleWhitelist.log(Level.SEVERE, "Failed to get data.");
-            NobleWhitelist.log(Level.SEVERE, sqlEx.getMessage());
+            NobleWhitelist.log(Level.SEVERE, "Failed to get data.", sqlEx);
         }
         return list;
     }
@@ -232,9 +227,8 @@ public class DatabaseSQL implements DataGetter {
             } finally {
                 data.getSaveLock().unlock();
             }
-        } catch (SQLException ex) {
-            NobleWhitelist.log(Level.SEVERE, "Failed to query data: " + data);
-            NobleWhitelist.log(Level.SEVERE, ex.getMessage());
+        } catch (SQLException sqlEx) {
+            NobleWhitelist.log(Level.SEVERE, "Failed to query data: " + data, sqlEx);
         }
     }
     @Override
@@ -244,8 +238,7 @@ public class DatabaseSQL implements DataGetter {
             statement.setLong(1, data.getRowId());
             statement.executeUpdate();
         } catch (SQLException sqlEx) {
-            NobleWhitelist.log(Level.SEVERE, "Failed to delete data: " + data.getRowId());
-            NobleWhitelist.log(Level.SEVERE, sqlEx.getMessage());
+            NobleWhitelist.log(Level.SEVERE, "Failed to delete data: " + data.getRowId(), sqlEx);
         }
     }
     @Override
@@ -256,8 +249,7 @@ public class DatabaseSQL implements DataGetter {
             statement.executeUpdate(DELETE_ALL);
             s = true;
         } catch (SQLException sqlEx) {
-            NobleWhitelist.log(Level.SEVERE, "Failed to clear all data.");
-            NobleWhitelist.log(Level.SEVERE, sqlEx.getMessage());
+            NobleWhitelist.log(Level.SEVERE, "Failed to clear all data.", sqlEx);
             s = false;
         }
         try {
@@ -274,8 +266,7 @@ public class DatabaseSQL implements DataGetter {
                 return resultSet.getLong(1);
             }
         } catch (SQLException sqlEx) {
-            NobleWhitelist.log(Level.SEVERE, "Failed to get data.");
-            NobleWhitelist.log(Level.SEVERE, sqlEx.getMessage());
+            NobleWhitelist.log(Level.SEVERE, "Failed to get data.", sqlEx);
             return 0;
         }
     }

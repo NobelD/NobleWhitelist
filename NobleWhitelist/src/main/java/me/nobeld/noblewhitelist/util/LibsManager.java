@@ -20,9 +20,10 @@ public class LibsManager {
         manager.addMavenCentral();
         manager.addRepository("https://repo.papermc.io/repository/maven-public/");
 
-        NobleWhitelist.log(Level.INFO, "Loading libraries....");
+        NobleWhitelist.log(Level.INFO, "Loading libraries, this could took a while...");
+        long time = System.currentTimeMillis();
         loadLibraries(additional);
-        NobleWhitelist.log(Level.INFO, "Libraries loaded.");
+        NobleWhitelist.log(Level.INFO, "Libraries loaded. (took " + (System.currentTimeMillis() - time) + "ms)");
     }
     private Relocation reloc(String path) {
         return new Relocation(path, "me{}nobeld{}noblewhitelist{}libs{}" + path);
@@ -54,14 +55,6 @@ public class LibsManager {
                 .relocate(reloc("de{}leonhard"))
                 .repository("https://jitpack.io")
                 .resolveTransitiveDependencies(true)
-                .build());
-
-        //PaperLib Library
-        libraries.add(Library.builder()
-                .groupId("io{}papermc")
-                .artifactId("paperlib")
-                .version("1.0.7")
-                .relocate(reloc("io{}papermc"))
                 .build());
 
         //Database library

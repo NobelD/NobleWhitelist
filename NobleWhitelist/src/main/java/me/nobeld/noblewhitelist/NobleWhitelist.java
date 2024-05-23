@@ -45,12 +45,11 @@ public class NobleWhitelist extends JavaPlugin implements NWLData {
     public void onEnable() {
         // #TODO fix static classes and adventure
         plugin = this;
-        NWLContainer.Builder internal = NWLContainer.builder(this).loadLibs(new BukkitLibraryManager(this), null);
-
         if (!ServerUtil.canRun(this)) return;
         hasPaper = ServerUtil.hasPaper();
-
-        NWLContainer bc = internal.loadFiles(getDataFolder().getPath(), PairData.of("config.yml", FileManager.FileType.YAML))
+        NWLContainer bc = NWLContainer.builder(this)
+                .loadLibs(new BukkitLibraryManager(this), null)
+                .loadFiles(getDataFolder().getPath(), PairData.of("config.yml", FileManager.FileType.YAML))
                 .loadAdventure()
                 .loadUpdateChecker("https://api.github.com/repos/NobelD/NobleWhitelist/releases/latest",
                         "NobleWhitelist",
@@ -128,6 +127,9 @@ public class NobleWhitelist extends JavaPlugin implements NWLData {
     }
     public static void log(Level level, String msg) {
         plugin.getLogger().log(level, msg);
+    }
+    public static void log(Level level, String msg, Exception ex) {
+        plugin.getLogger().log(level, msg, ex);
     }
     public static boolean hasPaper() {
         return hasPaper;

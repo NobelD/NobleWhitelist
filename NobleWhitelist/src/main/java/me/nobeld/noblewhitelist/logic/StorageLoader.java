@@ -78,24 +78,20 @@ public class StorageLoader {
         } catch (Exception e) {
             switch(config.get(ConfigData.StorageCF.failAction)) {
                 case CLOSE -> {
-                    NobleWhitelist.log(Level.SEVERE, "Failed to setup storage, the server will be closed.");
-                    NobleWhitelist.log(Level.SEVERE, e.getMessage());
+                    NobleWhitelist.log(Level.SEVERE, "Failed to setup storage, the server will be closed.", e);
                     data.closeServer();
                 }
                 case BLOCK -> {
-                    NobleWhitelist.log(Level.SEVERE, "Failed to setup storage, the server will block the joins until reconnect to the database (use /nwl reload).");
-                    NobleWhitelist.log(Level.SEVERE, e.getMessage());
+                    NobleWhitelist.log(Level.SEVERE, "Failed to setup storage, the server will block the joins until reconnect to the database (use /nwl reload).", e);
                     data.setBlocked(true);
                 }
                 case COMMAND -> {
-                    NobleWhitelist.log(Level.SEVERE, "Failed to setup storage, the plugin will be disabled and a command will be executed.");
-                    NobleWhitelist.log(Level.SEVERE, e.getMessage());
+                    NobleWhitelist.log(Level.SEVERE, "Failed to setup storage, the plugin will be disabled and a command will be executed.", e);
                     data.runCommand(config.get(ConfigData.StorageCF.failCommand));
                     data.disable();
                 }
                 default -> {
-                    NobleWhitelist.log(Level.SEVERE, "Failed to setup storage, the plugin will be disabled.");
-                    NobleWhitelist.log(Level.SEVERE, e.getMessage());
+                    NobleWhitelist.log(Level.SEVERE, "Failed to setup storage, the plugin will be disabled.", e);
                     data.disable();
                 }
             }
