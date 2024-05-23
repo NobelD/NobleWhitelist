@@ -12,6 +12,7 @@ import java.util.Objects;
 
 public class NWLMiniExpansion {
     public NWLMiniExpansion(NobleWhitelist plugin) {
+        // TODO Expansion.builder("nwhitelist");
         Expansion expansion = Expansion.builder("NWhitelist")
                 .globalPlaceholder("whitelist_active", (q, c) -> Tag.selfClosingInserting(Component.text(ServerUtil.toS(plugin.getApi().whitelist()))))
                 .audiencePlaceholder("is_whitelisted", (a, q, c) -> {

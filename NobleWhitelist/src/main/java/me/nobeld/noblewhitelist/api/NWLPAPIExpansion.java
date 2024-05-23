@@ -17,6 +17,7 @@ public class NWLPAPIExpansion extends PlaceholderExpansion {
     }
     @Override
     public @NotNull String getIdentifier() {
+        // TODO return "nwhitelist";
         return "NWhitelist";
     }
     @Override
