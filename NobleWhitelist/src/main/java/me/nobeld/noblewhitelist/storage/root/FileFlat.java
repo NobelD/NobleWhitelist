@@ -3,6 +3,7 @@ package me.nobeld.noblewhitelist.storage.root;
 import de.leonhard.storage.internal.FlatFile;
 import de.leonhard.storage.sections.FlatFileSection;
 import me.nobeld.noblewhitelist.NobleWhitelist;
+import me.nobeld.noblewhitelist.model.PairData;
 import me.nobeld.noblewhitelist.model.base.PlayerWrapper;
 import me.nobeld.noblewhitelist.model.storage.DataGetter;
 import me.nobeld.noblewhitelist.model.whitelist.WhitelistEntry;
@@ -70,7 +71,11 @@ public class FileFlat<T extends FlatFile> implements DataGetter {
         list = new ArrayList<>();
         for (String id : whitelistFile().singleLayerKeySet()) {
             try {
-                WhitelistEntry p = stringToPlayer(whitelistFile().getString(id));
+                PairData<WhitelistEntry, Boolean> entry = reformatString(whitelistFile().getString(id));
+                WhitelistEntry p = entry.getFirst();
+                if (entry.getSecond()) {
+                    whitelistFile().set(id, entry.getFirst().getSubDataString());
+                }
                 long row = Long.parseLong(id);
                 p.setRowId(row);
                 list.add(p);
@@ -78,6 +83,29 @@ public class FileFlat<T extends FlatFile> implements DataGetter {
             } catch (Exception ignored) {}
         }
         return list;
+    }
+    public static PairData<WhitelistEntry, Boolean> reformatString(String string) {
+        if (string == null || string.isBlank() || string.equals("null") || string.equals("none")) return null;
+        final String[] split = string.split(";");
+        String name, uuid = "";
+        String id = "-1";
+        String whitelisted = "true";
+        boolean incomplete = split.length < 4;
+        if (split.length == 0) return null;
+
+        name = split[0];
+        if (split.length >= 2) uuid = split[1];
+        if (split.length >= 3) id = split[2];
+        if (split.length >= 4) whitelisted = split[3];
+
+        return PairData.of(new WhitelistEntry(name, UUIDUtil.parseUUID(uuid.trim()), parseLong(id.trim()), Boolean.parseBoolean(whitelisted.trim())), incomplete);
+    }
+    private static long parseLong(String s) {
+        try {
+            return Long.parseLong(s);
+        } catch (NumberFormatException ignored) {
+            return -1L;
+        }
     }
     @Override
     public void save(@NotNull WhitelistEntry player) {
