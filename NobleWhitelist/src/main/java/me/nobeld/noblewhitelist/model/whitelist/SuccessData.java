@@ -35,4 +35,7 @@ public record SuccessData(PlayerWrapper player, boolean name, boolean uuid, bool
         if (onlyPerm()) return SuccessEnum.BYPASS;
         return SuccessEnum.NONE;
     }
+    public static SuccessData allFalse(PlayerWrapper player) {
+        return new SuccessData(player, false, false, false);
+    }
 }

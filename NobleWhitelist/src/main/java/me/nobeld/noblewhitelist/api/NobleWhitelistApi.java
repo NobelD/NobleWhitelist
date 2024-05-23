@@ -50,7 +50,7 @@ public class NobleWhitelistApi {
      * @return true if the player can join the whitelist.
      */
     public boolean canPass(PlayerWrapper player) {
-        return data.whitelistChecker().canPass(player);
+        return data.whitelistChecker().canPass(player).getSecond();
     }
     /**
      * @return true if the whitelist is active otherwise false.

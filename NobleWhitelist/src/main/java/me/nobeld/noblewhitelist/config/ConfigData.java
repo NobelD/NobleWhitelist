@@ -111,6 +111,9 @@ public class ConfigData {
         public static final ConfigContainer<Boolean> autoRegister = new ConfigContainer<>("whitelist.auto-register", false);
         public static final ConfigContainer<Boolean> enforceNameDiffID = new ConfigContainer<>("whitelist.enforce-uuid-if-different-name", false);
     }
+    public static class SkipCF {
+        public static final ConfigContainer<Boolean> skipUUID = new ConfigContainer<>("skip.skip-uuid-save", false);
+    }
     public static class StorageCF {
         public static final ConfigContainer<String> storageType = new ConfigContainer<>("storage.storage-type", "");
         public static final ConfigContainer<String> storageHost = new ConfigContainer<>("storage.host", "");

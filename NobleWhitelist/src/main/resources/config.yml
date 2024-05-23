@@ -29,6 +29,8 @@ whitelist:
   # This will block if a player joins with the same name as another registered player but with a different uuid.
   # If you have a server with online and offline uuid players at the same time, ensure that the online player is well registered.
   enforce-uuid-if-different-name: true
+skip:
+  skip-uuid-save: false
 storage:
   # The storage type to be used, migration of data is made manually.
   # It's necessary to restart the server to apply changes.

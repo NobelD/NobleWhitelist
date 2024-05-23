@@ -92,6 +92,19 @@ public class WhitelistData {
         return Optional.of(saved);
     }
     /**
+     * Saves and register the player to the storage.
+     * @param player player to save
+     * @return optional of the entry
+     */
+    public Optional<WhitelistEntry> savePlayerOptionalNoUUID(PlayerWrapper player) {
+        Optional<WhitelistEntry> data = getEntry(player.getName(), null, -1);
+        if (data.isPresent()) return Optional.empty();
+
+        WhitelistEntry saved = new WhitelistEntry(player.getName(), null);
+        saveEntry(saved);
+        return Optional.of(saved);
+    }
+    /**
      * Toggles if the player can join or not to the server.
      * @param entry entry of the player
      * @param canJoin the state of the join

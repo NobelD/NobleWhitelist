@@ -3,7 +3,9 @@ package me.nobeld.noblewhitelist;
 import me.nobeld.noblewhitelist.api.event.AutoWhitelistEvent;
 import me.nobeld.noblewhitelist.api.event.WhitelistPassEvent;
 import me.nobeld.noblewhitelist.model.BPlayer;
+import me.nobeld.noblewhitelist.model.PairData;
 import me.nobeld.noblewhitelist.model.base.NWLData;
+import me.nobeld.noblewhitelist.model.whitelist.SuccessData;
 import me.nobeld.noblewhitelist.util.AdventureUtil;
 import me.nobeld.noblewhitelist.config.ConfigData;
 import net.kyori.adventure.text.Component;
@@ -27,11 +29,11 @@ public class Listener implements org.bukkit.event.Listener {
             disallowJoin(event, msg);
             return;
         }
-        Bukkit.getPluginManager().callEvent(new WhitelistPassEvent(player, data.getConfigD().get(ConfigData.WhitelistCF.whitelistActive),
-                data.whitelistChecker().canPass(BPlayer.of(player)),
-                data.whitelistChecker().createSuccess(BPlayer.of(player)),
-                msg,
-                event));
+        PairData<SuccessData, Boolean> pair = data.whitelistChecker().canPass(BPlayer.of(player));
+        Bukkit.getPluginManager().callEvent(new WhitelistPassEvent(
+                player, data.getConfigD().get(ConfigData.WhitelistCF.whitelistActive),
+                pair.getSecond(), pair.getFirst(), msg, event)
+        );
     }
     @EventHandler
     public void onWhitelist(WhitelistPassEvent event) {
