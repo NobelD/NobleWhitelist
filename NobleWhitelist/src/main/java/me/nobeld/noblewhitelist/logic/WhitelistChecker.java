@@ -139,11 +139,6 @@ public class WhitelistChecker {
                 data.getStorage().save(entry);
                 return true;
             }
-            case NOT_MATCH -> {
-                entry.setUuid(uuid);
-                data.getStorage().save(entry);
-                return true;
-            }
             case NO_NAME, NAME_CAPS -> {
                 entry.setName(name);
                 data.getStorage().save(entry);
