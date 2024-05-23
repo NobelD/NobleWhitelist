@@ -95,6 +95,7 @@ public class WhitelistEntry {
         map.put("name", this.getOptName().orElse("none"));
         map.put("uuid", this.getOptUUID().map(UUID::toString).orElse("none"));
         map.put("user_id", this.hasDiscord() ? String.valueOf(this.getDiscordID()) : "none");
+        map.put("user_mention", this.hasDiscord() ? "<@" + this.getDiscordID() + ">" : "none");
         map.put("row", this.isSaved() ? String.valueOf(this.getRowId()) : "none");
         return map;
     }
@@ -102,6 +103,7 @@ public class WhitelistEntry {
         map.put("name", this.getOptName().orElse("none"));
         map.put("uuid", this.getOptUUID().map(UUID::toString).orElse("none"));
         map.put("user_id", this.hasDiscord() ? String.valueOf(this.getDiscordID()) : "none");
+        map.put("user_mention", this.hasDiscord() ? "<@" + this.getDiscordID() + ">" : "none");
         map.put("row", this.isSaved() ? String.valueOf(this.getRowId()) : "none");
         return map;
     }

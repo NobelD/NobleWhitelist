@@ -183,14 +183,14 @@ public class JDAManager {
         else if (!add && !contains) return;
 
         if (placeholders != null) {
-            placeholders.put("role-id", String.valueOf(role.getIdLong()));
-            placeholders.put("role-mention", role.getAsMention());
+            placeholders.put("role_id", String.valueOf(role.getIdLong()));
+            placeholders.put("role_mention", role.getAsMention());
         } else
             placeholders = Map.of(
                     "member", String.valueOf(member.getIdLong()),
-                    "member-id", String.valueOf(member.getIdLong()),
-                    "role-id", String.valueOf(role.getIdLong()),
-                    "role-mention", role.getAsMention()
+                    "member_id", String.valueOf(member.getIdLong()),
+                    "role_id", String.valueOf(role.getIdLong()),
+                    "role_mention", role.getAsMention()
             );
 
         if (add) {
