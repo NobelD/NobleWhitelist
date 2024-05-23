@@ -113,7 +113,7 @@ public class NWLContainer {
             return this;
         }
         public Builder loadStorage() {
-            PairData<DataGetter, StorageType> st = new StorageLoader(data, config).setupStorage();
+            PairData<DataGetter, StorageType> st = StorageLoader.setupStorage(data, config);
             storage = st.getFirst();
             type = st.getSecond();
             return this;

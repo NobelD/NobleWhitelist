@@ -8,6 +8,7 @@ import me.nobeld.noblewhitelist.command.NWlCommand;
 import me.nobeld.noblewhitelist.config.ConfigData;
 import me.nobeld.noblewhitelist.config.FileManager;
 import me.nobeld.noblewhitelist.language.MessageData;
+import me.nobeld.noblewhitelist.logic.StorageLoader;
 import me.nobeld.noblewhitelist.logic.WhitelistChecker;
 import me.nobeld.noblewhitelist.logic.WhitelistData;
 import me.nobeld.noblewhitelist.model.PairData;
@@ -81,6 +82,7 @@ public class NobleWhitelist extends JavaPlugin implements NWLData {
                         valueMap.put("players", Bukkit.getOnlinePlayers().size());
                         return valueMap;
                     }));
+                    metrics.addCustomChart(new SpigotMetrics.SimplePie("storage_type", () -> storageType.getName()));
                 })
                 .build();
 
@@ -99,9 +101,9 @@ public class NobleWhitelist extends JavaPlugin implements NWLData {
     @Override
     public void reloadDataBase() {
         if (storage != null && storageType.isDatabase()) ((DatabaseSQL) storage).close();
-        NWLContainer bc = NWLContainer.builder(this).loadStorage().build();
-        this.storage = bc.getStorage();
-        this.storageType = bc.getType();
+        PairData<DataGetter, StorageType> st = StorageLoader.setupStorage(this, configData);
+        this.storage = st.getFirst();
+        this.storageType = st.getSecond();
     }
     @Override
     public void setBlocked(boolean blocked) {

@@ -16,13 +16,7 @@ import java.util.concurrent.ThreadFactory;
 import java.util.logging.Level;
 
 public class StorageLoader {
-    private final NWLData data;
-    private final ConfigData config;
-    public StorageLoader(NWLData data, ConfigData config) {
-        this.data = data;
-        this.config = config;
-    }
-    public PairData<DataGetter, StorageType> setupStorage() {
+    public static PairData<DataGetter, StorageType> setupStorage(NWLData data, ConfigData config) {
         String type = (config.get(ConfigData.StorageCF.storageType)).toLowerCase();
         DataGetter storageInst = null;
         StorageType storageType;
@@ -65,7 +59,7 @@ public class StorageLoader {
                         databaseConfig.setPassword(config.get(ConfigData.StorageCF.storagePassword));
                         storageInst = new DatabaseMySQL(
                                 data.name(),
-                                this.getThreadFactory(),
+                                getThreadFactory(data),
                                 config.get(ConfigData.StorageCF.storageType),
                                 config.get(ConfigData.StorageCF.storageHost),
                                 config.get(ConfigData.StorageCF.storagePort),
@@ -74,7 +68,7 @@ public class StorageLoader {
                         );
                     } else {
                         NobleWhitelist.adv().consoleAudience().sendMessage(AdventureUtil.formatAll("<prefix><green>Loading <yellow>local <green>database."));
-                        storageInst = new DatabaseSQLite(data.name(), getThreadFactory(), databaseConfig);
+                        storageInst = new DatabaseSQLite(data.name(), getThreadFactory(data), databaseConfig);
                     }
                     ((DatabaseSQL) storageInst).createTables();
                 }
@@ -108,7 +102,7 @@ public class StorageLoader {
         }
         return PairData.of(storageInst, storageType);
     }
-    private ThreadFactory getThreadFactory() {
+    private static ThreadFactory getThreadFactory(NWLData data) {
         // Code from https://github.com/games647/FastLogin
         return new ThreadFactoryBuilder()
                 .setNameFormat(data.name() + " Pool Thread #%1$d")
