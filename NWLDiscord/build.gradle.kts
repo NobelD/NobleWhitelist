@@ -35,7 +35,7 @@ dependencies {
     compileOnly(project(":NobleWhitelist"))
     compileOnly("io.papermc.paper", "paper-api", "1.20.2-R0.1-SNAPSHOT")
 
-    implementation("com.alessiodp.libby", "libby-bukkit", "2.0.0-SNAPSHOT") {
+    implementation("com.alessiodp.libby", "libby-bukkit", "2.0.0-20240104.190327-5") {
         exclude(module=("spigot-api"))
     }
     compileOnly("com.github.simplix-softworks","simplixstorage","3.2.6")
