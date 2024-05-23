@@ -4,7 +4,7 @@ plugins {
 }
 
 group = "me.nobeld.noblewhitelist.discord"
-version = "1.1.1"
+version = "1.1.2"
 description = "Discord integration for the NobleWhitelist plugin."
 
 java {
@@ -79,6 +79,7 @@ tasks {
 
         archiveClassifier.set("")
         fun reloc(pkg: String) = relocate(pkg, "me.nobeld.noblewhitelist.discord.libs.$pkg")
+        fun nwlreloc(pkg: String) = relocate(pkg, "me.nobeld.noblewhitelist.libs.$pkg")
 
         // JDA
         //#TODO Fix relocation
@@ -102,8 +103,8 @@ tasks {
         */
 
         reloc("com.alessiodp.libby")
-        relocate("com.esotericsoftware", "me.nobeld.noblewhitelist.libs.com.esotericsoftware")
-        relocate("de.leonhard", "me.nobeld.noblewhitelist.libs.de.leonhard")
+        nwlreloc("com.esotericsoftware")
+        nwlreloc("de.leonhard")
         reloc("org.intellij")
         reloc("org.jetbrains")
         // reloc("org.incendo")

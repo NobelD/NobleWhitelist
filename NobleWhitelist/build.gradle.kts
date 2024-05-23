@@ -1,10 +1,10 @@
 plugins {
-    `java-library`
+    id("java")
     id("com.github.johnrengelman.shadow") version "8.1.1"
 }
 
 group = "me.nobeld.noblewhitelist"
-version = "1.2.1"
+version = "1.2.2"
 description = "A simple plugin for whitelist management."
 
 java {
@@ -35,7 +35,7 @@ repositories {
 
 dependencies {
     compileOnly("io.papermc.paper", "paper-api", "1.20.2-R0.1-SNAPSHOT")
-    compileOnly("io.papermc", "paperlib", "1.0.7")
+    implementation("io.papermc", "paperlib", "1.0.7")
     implementation("com.alessiodp.libby", "libby-bukkit", "2.0.0-20240104.190327-5") {
         exclude(module=("spigot-api"))
     }
