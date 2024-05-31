@@ -42,7 +42,7 @@ public class LibsManager {
         libraries.add(Library.builder()
                 .groupId("net{}kyori")
                 .artifactId("adventure-text-minimessage")
-                .version("4.15.0")
+                .version("4.17.0")
                 .resolveTransitiveDependencies(true)
                 .build());
 
@@ -69,7 +69,7 @@ public class LibsManager {
         libraries.add(Library.builder()
                 .groupId("org{}incendo")
                 .artifactId("cloud-paper")
-                .version("2.0.0-beta.4")
+                .version("2.0.0-beta.8")
                 .relocate(reloc("org{}incendo"))
                 .resolveTransitiveDependencies(true)
                 .build());
@@ -77,17 +77,20 @@ public class LibsManager {
         libraries.add(Library.builder()
                 .groupId("org{}incendo")
                 .artifactId("cloud-minecraft-extras")
-                .version("2.0.0-beta.4")
+                .version("2.0.0-beta.8")
                 .relocate(reloc("org{}incendo"))
                 .excludeTransitiveDependency("org{}incendo", "cloud-annotations")
                 .excludeTransitiveDependency("org{}incendo", "cloud-core")
+                .excludeTransitiveDependency("net{}kyori", "adventure-api")
+                .excludeTransitiveDependency("net{}kyori", "adventure-text-minimessage")
+                .excludeTransitiveDependency("net{}kyori", "adventure-text-serializer-plain")
                 .resolveTransitiveDependencies(true)
                 .build());
 
         libraries.add(Library.builder()
                 .groupId("org{}incendo")
                 .artifactId("cloud-processors-confirmation")
-                .version("1.0.0-beta.2")
+                .version("1.0.0-beta.3")
                 .relocate(reloc("org{}incendo"))
                 .excludeTransitiveDependency("org{}incendo", "cloud-core")
                 .build());
@@ -95,7 +98,7 @@ public class LibsManager {
         libraries.add(Library.builder()
                 .groupId("org{}incendo")
                 .artifactId("cloud-processors-common")
-                .version("1.0.0-beta.2")
+                .version("1.0.0-beta.3")
                 .relocate(reloc("org{}incendo"))
                 .excludeTransitiveDependency("org{}incendo", "cloud-core")
                 .build());

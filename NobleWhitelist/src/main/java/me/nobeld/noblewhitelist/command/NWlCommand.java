@@ -15,7 +15,7 @@ import org.incendo.cloud.description.Description;
 import org.incendo.cloud.execution.ExecutionCoordinator;
 import org.incendo.cloud.minecraft.extras.MinecraftExceptionHandler;
 import org.incendo.cloud.minecraft.extras.MinecraftHelp;
-import org.incendo.cloud.paper.PaperCommandManager;
+import org.incendo.cloud.paper.LegacyPaperCommandManager;
 import org.incendo.cloud.processors.cache.GuavaCache;
 import org.incendo.cloud.processors.confirmation.ConfirmationConfiguration;
 import org.incendo.cloud.processors.confirmation.ConfirmationManager;
@@ -26,12 +26,12 @@ import java.util.List;
 
 public class NWlCommand {
     private final NobleWhitelist plugin;
-    private final PaperCommandManager<CommandSender> manager;
+    private final LegacyPaperCommandManager<CommandSender> manager;
     private MinecraftHelp<CommandSender> minecraftHelp;
     private final ConfirmationManager<CommandSender> confirmationManager;
     public NWlCommand(NobleWhitelist plugin) {
         this.plugin = plugin;
-        manager = new PaperCommandManager<>(
+        manager = new LegacyPaperCommandManager<>(
                 plugin,
                 ExecutionCoordinator.simpleCoordinator(),
                 SenderMapper.identity()

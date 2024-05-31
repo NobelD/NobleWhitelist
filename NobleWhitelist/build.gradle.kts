@@ -4,7 +4,7 @@ plugins {
 }
 
 group = "me.nobeld.noblewhitelist"
-version = "1.2.2"
+version = "1.2.3"
 description = "A simple plugin for whitelist management."
 
 java {
@@ -34,7 +34,7 @@ repositories {
 }
 
 dependencies {
-    compileOnly("io.papermc.paper", "paper-api", "1.20.2-R0.1-SNAPSHOT")
+    compileOnly("io.papermc.paper", "paper-api", "1.20.4-R0.1-SNAPSHOT")
     implementation("io.papermc", "paperlib", "1.0.7")
     implementation("com.alessiodp.libby", "libby-bukkit", "2.0.0-20240104.190327-5") {
         exclude(module=("spigot-api"))
@@ -47,11 +47,16 @@ dependencies {
     compileOnly("io.github.miniplaceholders", "miniplaceholders-api", "2.2.3")
 
     compileOnly("net.kyori","adventure-platform-bukkit","4.3.2")
-    compileOnly("net.kyori","adventure-text-minimessage","4.15.0")
+    compileOnly("net.kyori","adventure-text-minimessage","4.17.0")
 
-    compileOnly("org.incendo", "cloud-paper", "2.0.0-beta.4")
-    compileOnly("org.incendo", "cloud-minecraft-extras", "2.0.0-beta.4")
-    compileOnly("org.incendo", "cloud-processors-confirmation", "1.0.0-beta.2")
+    compileOnly("org.incendo", "cloud-paper", "2.0.0-beta.8")
+    compileOnly("org.incendo", "cloud-minecraft-extras", "2.0.0-beta.8") {
+        exclude(module=("adventure-text-minimessage"))
+        exclude(module=("adventure-api"))
+    }
+    compileOnly("org.incendo", "cloud-processors-confirmation", "1.0.0-beta.3") {
+        exclude(module=("cloud-core"))
+    }
 }
 
 tasks {
