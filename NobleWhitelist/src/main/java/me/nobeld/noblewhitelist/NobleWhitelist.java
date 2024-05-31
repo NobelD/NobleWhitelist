@@ -51,11 +51,12 @@ public class NobleWhitelist extends JavaPlugin implements NWLData {
                 .loadLibs(new BukkitLibraryManager(this), null)
                 .loadFiles(getDataFolder().getPath(), PairData.of("config.yml", FileManager.FileType.YAML))
                 .loadAdventure()
-                .loadUpdateChecker("https://api.github.com/repos/NobelD/NobleWhitelist/releases/latest",
+                .loadUpdateChecker(
                         "NobleWhitelist",
-                        (a, l) -> {
+                        "spigot",
+                        (a, l, p) -> {
                             a.sendMessage(AdventureUtil.formatAll("<prefix><#F1B65C>It seems that you are not using the latest version of <gold>Noble Whitelist <dark_green>| <#F1B65C>Latest: <#FF8B4D>" + l));
-                            a.sendMessage(AdventureUtil.formatAll("<prefix><#F1B65C>Download it at: <#75CDFF>https://modrinth.com/plugin/noble-whitelist"));
+                            a.sendMessage(AdventureUtil.formatAll("<prefix><#F1B65C>Download it at: <#75CDFF>" + p));
                         })
                 .load(() -> {
                     if (Bukkit.getPluginManager().getPlugin("PlaceholderAPI") != null) {

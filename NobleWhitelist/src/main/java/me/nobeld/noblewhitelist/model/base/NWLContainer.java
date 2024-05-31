@@ -19,7 +19,6 @@ import net.kyori.adventure.audience.Audience;
 
 import javax.annotation.Nullable;
 import java.util.List;
-import java.util.function.BiConsumer;
 
 public class NWLContainer {
     private final ConfigData config;
@@ -108,8 +107,8 @@ public class NWLContainer {
             data.getAdventure();
             return this;
         }
-        public Builder loadUpdateChecker(String url, String name, BiConsumer<Audience, String> consumer) {
-            update = new UpdateChecker(data, url, name, consumer);
+        public Builder loadUpdateChecker(String name, String subType, TriConsumer<Audience, String, String> consumer) {
+            update = new UpdateChecker(data, name, subType, consumer);
             return this;
         }
         public Builder loadStorage() {

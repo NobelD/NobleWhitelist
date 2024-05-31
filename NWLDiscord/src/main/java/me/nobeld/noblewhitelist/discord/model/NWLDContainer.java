@@ -9,13 +9,13 @@ import me.nobeld.noblewhitelist.discord.config.ConfigData;
 import me.nobeld.noblewhitelist.discord.config.MessageData;
 import me.nobeld.noblewhitelist.discord.util.LibsManager;
 import me.nobeld.noblewhitelist.model.PairData;
+import me.nobeld.noblewhitelist.model.base.TriConsumer;
 import me.nobeld.noblewhitelist.util.AdventureUtil;
 import me.nobeld.noblewhitelist.util.UpdateChecker;
 import net.kyori.adventure.audience.Audience;
 
 import javax.annotation.Nullable;
 import java.util.List;
-import java.util.function.BiConsumer;
 
 public class NWLDContainer {
     private final ConfigData config;
@@ -78,8 +78,8 @@ public class NWLDContainer {
             this.message.messageFile();
             return this;
         }
-        public Builder loadUpdateChecker(String url, String name, BiConsumer<Audience, String> consumer) {
-            update = new UpdateChecker(data, url, name, consumer);
+        public Builder loadUpdateChecker(String name, String subType, TriConsumer<Audience, String, String> consumer) {
+            update = new UpdateChecker(data, name, subType, consumer);
             return this;
         }
         public Builder loadJDA() {

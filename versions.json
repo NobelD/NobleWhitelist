@@ -1,0 +1,21 @@
+{
+  "repository": "https://github.com/NobelD/NobleWhitelist",
+  "support": "https://discord.gg/CMbuPp7hpf",
+  "issues": "https://github.com/NobelD/NobleWhitelist/issues",
+  "NobleWhitelist": {
+    "url": "https://modrinth.com/plugin/noble-whitelist",
+    "id": "hBuYjABw",
+    "latest": {
+      "core": "1.2.3",
+      "spigot": "1.2.3"
+    }
+  },
+  "NWLDiscord": {
+    "url": "https://modrinth.com/plugin/noble-whitelist-discord-integration",
+    "id": "WWbtvBwl",
+    "latest": {
+      "core": "1.2.3",
+      "spigot": "1.2.3"
+    }
+  }
+}

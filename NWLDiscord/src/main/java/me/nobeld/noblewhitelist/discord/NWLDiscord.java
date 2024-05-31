@@ -43,11 +43,12 @@ public class NWLDiscord extends JavaPlugin implements NWLDsData {
                 .loadFiles(getDataFolder().getPath(), PairData.of("config.yml", FileManager.FileType.YAML), PairData.of("messages.yml", FileManager.FileType.YAML))
                 .load(() -> Bukkit.getServer().getPluginManager().registerEvents(new Listener(this), this))
                 .loadJDA()
-                .loadUpdateChecker("https://api.github.com/repos/NobelD/NobleWhitelist/releases/latest",
+                .loadUpdateChecker(
                         "NWLDiscord",
-                        (a, l) -> {
+                        "spigot",
+                        (a, l, p) -> {
                             a.sendMessage(AdventureUtil.formatAll("<prefix><#F1B65C>It seems that you are not using the latest version of <gold>NWL Discord <dark_green>| <#F1B65C>Latest: <#FF8B4D>" + l));
-                            a.sendMessage(AdventureUtil.formatAll("<prefix><#F1B65C>Download it at: <#75CDFF>https://modrinth.com/plugin/noble-whitelist-discord-integration"));
+                            a.sendMessage(AdventureUtil.formatAll("<prefix><#F1B65C>Download it at: <#75CDFF>" + p));
                         })
                 .printMessage()
                 .load(() -> {
