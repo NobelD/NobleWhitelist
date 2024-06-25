@@ -14,67 +14,71 @@ public class AdventureUtil {
     private static Supplier<String> supplierPrefix = null;
     private static final boolean usePrefix = true;
     private static final String prefix = "<bold><#17B90C>N<#7FD024>Whitelist</bold> <grey>>";
+
     // #TODO temporary static prefix until revamp
     public static void replaceData(Supplier<Boolean> usePrefix, Supplier<String> prefix) {
         supplierUsePrefix = usePrefix;
         supplierPrefix = prefix;
     }
-    private static final LegacyComponentSerializer legacySerializer = LegacyComponentSerializer.builder()
-            .character('\u00a7')
-            .hexColors()
-            .extractUrls()
-            .useUnusualXRepeatedCharacterHexFormat()
-            .build();
+
     private static final MiniMessage miniSerializer = MiniMessage.builder()
             .tags(TagResolver.standard())
             .build();
-    public static String asLegacy(Component component) {
-        return legacySerializer.serialize(component);
-    }
+
     public static Component formatAll(String msg) {
-        return miniSerializer.deserialize(msg,
+        return miniSerializer.deserialize(
+                msg,
                 TagResolver.builder()
                         .resolver(prefixTag())
                         .resolver(MiniPlaceholdersUtil.getGlobalTagOnly())
                         .build()
-        );
+                                         );
     }
+
     public static Component formatName(String msg, String name) {
-        return miniSerializer.deserialize(msg,
+        return miniSerializer.deserialize(
+                msg,
                 TagResolver.builder()
                         .resolver(prefixTag())
                         .resolver(playerName(name))
                         .resolver(MiniPlaceholdersUtil.getGlobalTagOnly())
                         .build()
-        );
+                                         );
     }
+
     public static Component formatAudience(String msg, Audience audience) {
-        return miniSerializer.deserialize(msg,
+        return miniSerializer.deserialize(
+                msg,
                 TagResolver.builder()
                         .resolver(prefixTag())
                         .resolver(MiniPlaceholdersUtil.getAudienceGlobalTag(audience))
                         .build()
-        );
+                                         );
     }
+
     private static Component base(String msg) {
         return miniSerializer.deserialize(msg);
     }
+
     private static boolean usePrefix() {
         if (supplierUsePrefix != null) {
             return supplierUsePrefix.get();
         }
         return usePrefix;
     }
+
     private static String prefix() {
         if (supplierPrefix != null && supplierPrefix.get() != null) {
             return supplierPrefix.get();
         }
         return prefix;
     }
+
     private static @NotNull TagResolver prefixTag() {
         final Component component = base(usePrefix() ? (prefix() + "<reset> ") : "");
         return TagResolver.resolver("prefix", Tag.selfClosingInserting(component));
     }
+
     private static @NotNull TagResolver playerName(String name) {
         final Component component = name == null ? Component.text("null") : Component.text(name);
         return TagResolver.resolver("name", Tag.selfClosingInserting(component));
