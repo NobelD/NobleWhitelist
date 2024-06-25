@@ -24,22 +24,26 @@ public class MessageData {
     private final String path;
     private final String name;
     private final FileManager.FileType type;
+
     public MessageData(NWLDsData data, String path, String name, FileManager.FileType type) {
         this.data = data;
         this.path = path;
         this.name = name;
         this.type = type;
     }
+
     private void registerMessages() {
         Path configPath = Paths.get(path + separator() + name);
         messagesFile = FileManager.registerFile(type, configPath, null, data.resourceStream(name), ConfigSettings.SKIP_COMMENTS, DataType.SORTED);
     }
+
     public FlatFile messageFile() {
         if (messagesFile == null) {
             registerMessages();
         }
         return messagesFile;
     }
+
     public Map<String, String> baseHolder(@NotNull WhitelistEntry data) {
         Map<String, String> map = new HashMap<>();
         StringBuilder string = new StringBuilder();
@@ -57,6 +61,7 @@ public class MessageData {
 
         return data.toMap(map);
     }
+
     public String getMsg(ConfigContainer<String> container) {
         try {
             return messageFile().get(container.path(), container.def());
@@ -66,6 +71,7 @@ public class MessageData {
             return container.def();
         }
     }
+
     public FlatFileSection getMsgSec(ConfigContainer<?> container) {
         try {
             return messageFile().getSection(container.path());
@@ -75,6 +81,7 @@ public class MessageData {
             return null;
         }
     }
+
     public static class PlaceHolders {
         public static final ConfigContainer<String> optionalNone = new ConfigContainer<>("placeholders.optional-none", "");
         public static final ConfigContainer<String> optionalName = new ConfigContainer<>("placeholders.optional-name", "");
@@ -91,6 +98,7 @@ public class MessageData {
         public static final ConfigContainer<String> checkingOptional = new ConfigContainer<>("placeholders.checking-optional", "");
         public static final ConfigContainer<String> checkingRequired = new ConfigContainer<>("placeholders.checking-required", "");
     }
+
     public static class Channel {
         public static final ConfigContainer<String> notifyStart = new ConfigContainer<>("discord.channel.start", "");
         public static final ConfigContainer<String> notifyStop = new ConfigContainer<>("discord.channel.stop", "");
@@ -102,6 +110,7 @@ public class MessageData {
         public static final ConfigContainer<String> serverTry = new ConfigContainer<>("discord.channel.notify-wl-try", "");
         public static final ConfigContainer<String> serverAuto = new ConfigContainer<>("discord.channel.notify-wl-auto", "");
     }
+
     public static class Error {
         public static final ConfigContainer<String> noPermission = new ConfigContainer<>("discord.error.no-permission", "");
         public static final ConfigContainer<String> incorrectChannel = new ConfigContainer<>("discord.error.invalid-channel", "");
@@ -123,6 +132,7 @@ public class MessageData {
         public static final ConfigContainer<String> whitelistEmpty = new ConfigContainer<>("discord.error.whitelist-empty", "");
         public static final ConfigContainer<String> whitelistPageEmpty = new ConfigContainer<>("discord.error.whitelist-page-empty", "");
     }
+
     public static class Command {
         public static final ConfigContainer<String> selfAccounts = new ConfigContainer<>("discord.command.self-accounts", "");
         public static final ConfigContainer<String> userAccounts = new ConfigContainer<>("discord.command.user-accounts", "");

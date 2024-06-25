@@ -4,9 +4,9 @@
 whitelist:
   # Alternate the whitelist will dynamically be changed.
   enabled: false
-  # Will disable the name change in the whitelist config if the player joins with the same uuid but different name.
-  # If you have a low-performance server this can help a little.
-  skip-name-change: false
+  # If this is enabled and the whitelist is disabled, then will auto register the name and uuid of the player.
+  # Useful if you want to enable the whitelist time later and keep the players who joined in the whitelist.
+  auto-register: false
   # Posible values for checking:
   # DISABLED - will not be used when checking.
   # OPTIONAL - will be an option when checking.
@@ -18,17 +18,22 @@ whitelist:
     name: OPTIONAL
     uuid: OPTIONAL
     perm: DISABLED
+  # This will block if a player joins with the same name as another registered player but with a different uuid.
+  # If you have a server with online and offline uuid players at the same time, ensure that the online player is well registered.
+  enforce-uuid-if-different-name: true
+skip:
+  # Will disable the name change in the whitelist config if the player joins with the same uuid but different name.
+  # If you have a low-performance server this can help a little.
+  skip-name-change: false
+  # Will disable the name change in the whitelist config if the player joins with the same uuid but different name.
+  # If you have a low-performance server this can help a little.
+  skip-uuid-save: false
+bypass:
   # Makes the plugin to only count op players for the bypass permission (and disables the bypass permission)
   only-op-as-permission: false
   # Defines the minimum allowed bypass permission number (noblewhitelist.bypass.<number>)
   # Set to -1 to disable the permission numbers (noblewhitelist.bypass ignores number)
   permission-minimum-number: -1
-  # If enabled and the whitelist is disabled, then will auto register the name and uuid of the player.
-  # Useful if you want to enable the whitelist time later and keep the players who joined in the whitelist.
-  auto-register: false
-  # This will block if a player joins with the same name as another registered player but with a different uuid.
-  # If you have a server with online and offline uuid players at the same time, ensure that the online player is well registered.
-  enforce-uuid-if-different-name: true
 storage:
   # The storage type to be used, migration of data is made manually.
   # It's necessary to restart the server to apply changes.

@@ -19,6 +19,7 @@ public class ConfigData {
     private final String path;
     private final String name;
     private final FileManager.FileType type;
+
     public ConfigData(NWLDsData data, String path, String name, FileManager.FileType type) {
         this.data = data;
         this.path = path;
@@ -26,6 +27,7 @@ public class ConfigData {
         this.type = type;
         updateData();
     }
+
     private void updateData() {
         if (get(Version.configVersion) < 2) {
             String role = configFile().get("announce-channel.notify-given-role", "none");
@@ -39,16 +41,19 @@ public class ConfigData {
         }
         set(Version.configVersion, 2);
     }
+
     private void registerConfig() {
         Path configPath = Paths.get(path + separator() + name);
         configFile = FileManager.registerFile(type, configPath, data.resourceStream(name));
     }
+
     public FlatFile configFile() {
         if (configFile == null) {
             registerConfig();
         }
         return configFile;
     }
+
     public <T> void set(ConfigContainer<T> container, T value) {
         try {
             configFile().set(container.path(), value);
@@ -57,6 +62,7 @@ public class ConfigData {
             data.logger().log(Level.WARNING, e.getMessage());
         }
     }
+
     public <T> T get(ConfigContainer<T> container) {
         try {
             T result;
@@ -71,6 +77,7 @@ public class ConfigData {
             return container.def();
         }
     }
+
     public FlatFileSection getSection(ConfigContainer<?> container) {
         try {
             return configFile().getSection(container.path());
@@ -80,6 +87,7 @@ public class ConfigData {
             return null;
         }
     }
+
     public List<String> getList(ConfigContainer<String> container) {
         try {
             return configFile().getStringList(container.path());
@@ -89,8 +97,10 @@ public class ConfigData {
             return null;
         }
     }
+
     //TODO premium suggestion
     public static final ConfigContainer<Boolean> suggestPremium = new ConfigContainer<>("special.suggest-premium-if-possible", false);
+
     public static class Discord {
         public static final ConfigContainer<Long> serverID = new ConfigContainer<>("discord.server-id", -1L);
         public static final ConfigContainer<String> channelsID = new ConfigContainer<>("channel", "");
@@ -104,10 +114,12 @@ public class ConfigData {
         public static final ConfigContainer<Boolean> giveWlRole = new ConfigContainer<>("special.give-role-on-register", false);
         public static final ConfigContainer<Boolean> removeWlRole = new ConfigContainer<>("special.remove-role-on-unregister", false);
     }
+
     public static class Version {
         public static final ConfigContainer<Boolean> notifyUpdate = new ConfigContainer<>("version.notify-update", true);
         public static final ConfigContainer<Integer> configVersion = new ConfigContainer<>("version.version", 2);
     }
+
     public static class Channel {
         public static final ConfigContainer<String> startChannel = new ConfigContainer<>("announce-channel.start", "");
         public static final ConfigContainer<String> stopChannel = new ConfigContainer<>("announce-channel.stop", "");
@@ -119,6 +131,7 @@ public class ConfigData {
         public static final ConfigContainer<String> whitelistTry = new ConfigContainer<>("announce-channel.notify-wl-try", "");
         public static final ConfigContainer<String> whitelistAuto = new ConfigContainer<>("announce-channel.notify-wl-auto", "");
     }
+
     public static class CommandsOpt {
         public static final ConfigContainer<String> selfAdd = new ConfigContainer<>("command.basic-add-self", "");
         public static final ConfigContainer<String> selfRemove = new ConfigContainer<>("command.basic-remove-self", "");
