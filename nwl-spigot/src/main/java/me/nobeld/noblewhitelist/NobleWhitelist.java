@@ -48,6 +48,7 @@ public class NobleWhitelist extends JavaPlugin implements NWLData {
     private BukkitAudiences provider;
     private static BukkitAdventure adventure = null;
     private boolean blocked = false;
+
     public BukkitAudiences getProvider() {
         if (hasPaper) {
             throw new IllegalStateException("Tried to access Adventure when the server is paper!");
@@ -57,9 +58,11 @@ public class NobleWhitelist extends JavaPlugin implements NWLData {
         }
         return provider;
     }
+
     public void setProvider(BukkitAudiences provider) {
         this.provider = provider;
     }
+
     @Override
     public void onEnable() {
         // #TODO fix static classes and adventure
@@ -69,26 +72,30 @@ public class NobleWhitelist extends JavaPlugin implements NWLData {
         boolean paperLoader = hasPaper && ServerUtil.isGreaterEquals(19, 4);
 
         if (!ServerUtil.canRun(this)) return;
-        NWLContainer.Builder internal = NWLContainer.builder(this).loadLibs(
-                paperLoader ? new PaperLibraryManager(this) : new BukkitLibraryManager(this),
-                hasPaper,
-                Collections.singletonList(Library.builder()
-                        .groupId("net{}kyori")
-                        .artifactId("adventure-platform-bukkit")
-                        .version("4.3.2")
-                        .resolveTransitiveDependencies(true)
-                        .build()
-                )
-        );
+        NWLContainer.Builder internal = NWLContainer.builder(this)
+                .load(() -> new LibsManager(
+                              this,
+                              paperLoader ? new PaperLibraryManager(this) : new BukkitLibraryManager(this),
+                              hasPaper,
+                              Collections.singletonList(Library.builder()
+                                                                .groupId("net{}kyori")
+                                                                .artifactId("adventure-platform-bukkit")
+                                                                .version("4.3.2")
+                                                                .resolveTransitiveDependencies(true)
+                                                                .build())
+                      )
+                     );
 
         NWLContainer bc = internal.loadFiles(getDataFolder().getPath(), PairData.of("config.yml", FileManager.FileType.YAML))
                 .loadAdventure()
-                .loadUpdateChecker("https://api.github.com/repos/NobelD/NobleWhitelist/releases/latest",
+                .loadUpdateChecker(
+                        "https://api.github.com/repos/NobelD/NobleWhitelist/releases/latest",
                         "NobleWhitelist",
                         (a, l) -> {
                             a.sendMessage(AdventureUtil.formatAll("<prefix><#F1B65C>It seems that you are not using the latest version of <gold>Noble Whitelist <dark_green>| <#F1B65C>Latest: <#FF8B4D>" + l));
                             a.sendMessage(AdventureUtil.formatAll("<prefix><#F1B65C>Download it at: <#75CDFF>https://modrinth.com/plugin/noble-whitelist"));
-                        })
+                        }
+                                  )
                 .load(() -> {
                     if (Bukkit.getPluginManager().getPlugin("PlaceholderAPI") != null) {
                         new NWLPAPIExpansion(this).register();
@@ -97,7 +104,7 @@ public class NobleWhitelist extends JavaPlugin implements NWLData {
                         new NWLMiniExpansion(this);
                     }
                 })
-                .loadStorage(this::createThread)
+                .loadStorage()
                 .loadData()
                 .load(() -> {
                     this.api = new NobleWhitelistApi(this);
@@ -124,18 +131,22 @@ public class NobleWhitelist extends JavaPlugin implements NWLData {
         this.whitelistData = bc.getWlData();
         this.whitelistChecker = bc.getWlChecker();
     }
+
     @Override
     public void onDisable() {
         NWLContainer.closeData(this);
     }
+
     @Override
     public void reloadDataBase() {
         if (storage != null && storageType.isDatabase()) ((DatabaseSQL) storage).close();
-        NWLContainer bc = NWLContainer.builder(this).loadStorage(this::createThread).build();
+        NWLContainer bc = NWLContainer.builder(this).loadStorage().build();
         this.storage = bc.getStorage();
         this.storageType = bc.getType();
     }
-    private ThreadFactory createThread(String name) {
+
+    @Override
+    public ThreadFactory createThread(String name) {
         // Code from https://github.com/games647/FastLogin
         return new ThreadFactoryBuilder()
                 .setNameFormat(name)
@@ -144,38 +155,48 @@ public class NobleWhitelist extends JavaPlugin implements NWLData {
                 .setDaemon(true)
                 .build();
     }
+
     @Override
     public void setBlocked(boolean blocked) {
         this.blocked = blocked;
     }
+
     @Override
     public boolean isBlocked() {
         return blocked;
     }
+
     public static NobleWhitelist getPlugin() {
         return plugin;
     }
+
     @Override
     public NobleWhitelistApi getApi() {
         return this.api;
     }
+
     public static BukkitAdventure adv() {
         return adventure;
     }
+
     public NWlCommand getCommand() {
         return commands;
     }
+
     public boolean hasPaper() {
         return hasPaper;
     }
+
     @Override
     public StorageType getStorageType() {
         return this.storageType;
     }
+
     @Override
     public DataGetter getStorage() {
         return this.storage;
     }
+
     @Override
     public AdvPlatformManager getAdventure() {
         if (adventure == null) {
@@ -185,51 +206,63 @@ public class NobleWhitelist extends JavaPlugin implements NWLData {
         }
         return adventure;
     }
+
     @Override
     public ConfigData getConfigD() {
         return configData;
     }
+
     @Override
     public MessageData getMessageD() {
         return messageData;
     }
+
     @Override
     public WhitelistData whitelistData() {
         return this.whitelistData;
     }
+
     @Override
     public WhitelistChecker whitelistChecker() {
         return this.whitelistChecker;
     }
+
     @Override
     public UpdateChecker getUptChecker() {
         return this.uptChecker;
     }
+
     @Override
     public String configPath() {
         return getDataFolder().getPath() + separator();
     }
+
     @Override
     public String name() {
         return getName();
     }
+
     @SuppressWarnings("deprecation")
     @Override
     public String version() {
         return getDescription().getVersion();
     }
+
     @Override
     public void disable() {
         Bukkit.getPluginManager().disablePlugin(this);
     }
+
     @Override
     public void closeServer() {
         Bukkit.getServer().shutdown();
     }
+
     @Override
     public void runCommand(String command) {
         Bukkit.dispatchCommand(Bukkit.getConsoleSender(), command);
     }
+
     @Override
     public Logger logger() {
         return getLogger();

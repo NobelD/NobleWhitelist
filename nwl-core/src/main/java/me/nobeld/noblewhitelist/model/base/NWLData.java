@@ -9,21 +9,40 @@ import me.nobeld.noblewhitelist.model.storage.DataGetter;
 import me.nobeld.noblewhitelist.model.storage.StorageType;
 import me.nobeld.noblewhitelist.util.UpdateChecker;
 
+import java.util.concurrent.ThreadFactory;
+
 public interface NWLData extends BaseVersioning {
     AdvPlatformManager getAdventure();
+
     ConfigData getConfigD();
+
     MessageData getMessageD();
+
     WhitelistData whitelistData();
+
     WhitelistChecker whitelistChecker();
+
     DataGetter getStorage();
+
     StorageType getStorageType();
+
+    ThreadFactory createThread(String name);
+
     UpdateChecker getUptChecker();
+
     NobleWhitelistApi getApi();
+
     String configPath();
+
     void disable();
+
     void reloadDataBase();
+
     void closeServer();
+
     void runCommand(String command);
+
     void setBlocked(boolean block);
+
     boolean isBlocked();
 }

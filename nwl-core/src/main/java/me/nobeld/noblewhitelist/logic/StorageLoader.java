@@ -11,18 +11,17 @@ import me.nobeld.noblewhitelist.storage.root.DatabaseSQL;
 import me.nobeld.noblewhitelist.util.AdventureUtil;
 
 import java.util.concurrent.ThreadFactory;
-import java.util.function.Function;
 import java.util.logging.Level;
 
 public class StorageLoader {
     private final NWLData data;
     private final ConfigData config;
-    private final Function<String, ThreadFactory> threadCreator;
-    public StorageLoader(NWLData data, ConfigData config, Function<String, ThreadFactory> threadCreator) {
+
+    public StorageLoader(NWLData data, ConfigData config) {
         this.data = data;
         this.config = config;
-        this.threadCreator = threadCreator;
     }
+
     public PairData<DataGetter, StorageType> setupStorage() {
         String type = (config.get(ConfigData.StorageCF.storageType)).toLowerCase();
         DataGetter storageInst = null;
@@ -84,7 +83,7 @@ public class StorageLoader {
             data.getAdventure().consoleAudience().sendMessage(AdventureUtil.formatAll("<prefix><green>The whitelist storage was loaded."));
             data.setBlocked(false);
         } catch (Exception e) {
-            switch(config.get(ConfigData.StorageCF.failAction)) {
+            switch (config.get(ConfigData.StorageCF.failAction)) {
                 case CLOSE -> {
                     data.logger().log(Level.SEVERE, "Failed to setup storage, the server will be closed.", e);
                     data.closeServer();
@@ -106,7 +105,8 @@ public class StorageLoader {
         }
         return PairData.of(storageInst, storageType);
     }
+
     private ThreadFactory getThreadFactory() {
-        return threadCreator.apply(data.name() + " Pool Thread #%1$d");
+        return data.createThread(data.name() + " Pool Thread #%1$d");
     }
 }

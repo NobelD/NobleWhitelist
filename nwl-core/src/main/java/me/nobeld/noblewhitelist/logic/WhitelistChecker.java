@@ -1,8 +1,8 @@
 package me.nobeld.noblewhitelist.logic;
 
+import me.nobeld.noblewhitelist.config.ConfigData;
 import me.nobeld.noblewhitelist.model.base.NWLData;
 import me.nobeld.noblewhitelist.model.base.PlayerWrapper;
-import me.nobeld.noblewhitelist.config.ConfigData;
 import me.nobeld.noblewhitelist.model.checking.CheckingOption;
 import me.nobeld.noblewhitelist.model.whitelist.CheckType;
 import me.nobeld.noblewhitelist.model.whitelist.SuccessData;
@@ -17,25 +17,31 @@ import java.util.function.Consumer;
 
 public class WhitelistChecker {
     private final NWLData data;
+
     public WhitelistChecker(NWLData data) {
         this.data = data;
     }
+
     public SuccessEnum createSuccessAsEnum(PlayerWrapper player) {
         SuccessData suc = createSuccess(player);
         if (suc == null) return SuccessEnum.UNKNOWN;
         return suc.successEnum();
     }
+
     /**
      * Create and get information about a player of how joined the server.
+     *
      * @param player instance of the player
      * @return the success data of the player
      */
     public SuccessData createSuccess(@NotNull PlayerWrapper player) {
         return createSuccess(data.getStorage().loadPlayer(player), player);
     }
+
     /**
      * Create and get information about a player of how joined the server.
-     * @param entry entry of the player
+     *
+     * @param entry  entry of the player
      * @param player instance of the player
      * @return the success data of the player
      */
@@ -47,15 +53,17 @@ public class WhitelistChecker {
             uuid = entry.getOptUUID().isPresent();
         }
         boolean perm;
-        if (data.getConfigD().get(ConfigData.WhitelistCF.onlyOpPerm)) perm = player.isOp();
+        if (data.getConfigD().get(ConfigData.ByPassCF.onlyOpPerm)) perm = player.isOp();
         else perm = player.isOp() ||
                 player.hasPermission("noblewhitelist.bypass") ||
-                player.hasPermission("noblewhitelist.bypass.", data.getConfigD().get(ConfigData.WhitelistCF.permissionMinimum));
+                player.hasPermission("noblewhitelist.bypass.", data.getConfigD().get(ConfigData.ByPassCF.permissionMinimum));
 
         return new SuccessData(player, name, uuid, perm);
     }
+
     /**
      * Checks and gives information about a player
+     *
      * @param player player to compare
      * @return result of the check or invalid of the player does not have data
      */
@@ -65,51 +73,32 @@ public class WhitelistChecker {
         if (entry.isEmpty()) return CheckType.INVALID;
         return checkEntry(entry.get(), player);
     }
+
     /**
      * Checks and gives information about an entry and a player
-     * @param entry entry of the player
+     *
+     * @param entry  entry of the player
      * @param player player to compare
      * @return result of the check
      */
     public CheckType checkEntry(@NotNull WhitelistEntry entry, @NotNull PlayerWrapper player) {
-        String enName = entry.getName();
-        if (enName == null) return CheckType.NO_NAME;
-        String plName = player.getName();
-        UUID enUUID = entry.getUUID();
-        UUID plUUID = player.getUUID();
-
-        if (enUUID == null) {
-            if (enName.equals(plName)) return CheckType.NO_UUID;
-            else if (enName.equalsIgnoreCase(plName)) return CheckType.NO_UUID_NAME_CAPS;
-            else return CheckType.NOT_MATCH;
-        }
-        if (data.getConfigD().get(ConfigData.WhitelistCF.skipName)) {
-            if (enUUID.equals(plUUID)) return CheckType.SKIPPED_NAME;
-            else return CheckType.NOT_MATCH;
-        }
-
-        if (enName.equals(plName)) {
-            if (!enUUID.equals(plUUID)) return CheckType.NAME_DIFFERENT_UUID;
-            else return CheckType.NORMAL;
-
-        } else if (enName.equalsIgnoreCase(plName)) {
-            if (!enUUID.equals(plUUID)) return CheckType.NAME_CAPS_DIFFERENT_UUID;
-            else return CheckType.NAME_CAPS;
-        }
-        if (enUUID.equals(plUUID)) return CheckType.UUID_NO_NAME;
-        return CheckType.NORMAL;
+        return CheckType.getFromPlayer(entry, player, false, false);
     }
+
     /**
      * Updates and replaces the data of a player
+     *
      * @param player player to use
      * @return true if some data was changed, false if no data was changed or the player does not have data
      */
     public boolean updateData(@NotNull PlayerWrapper player) {
         return data.whitelistData().getEntry(player).filter(w -> updateData(w, player)).isPresent();
     }
+
     /**
      * Updates and replaces the data of a player
-     * @param entry entry of the player
+     *
+     * @param entry  entry of the player
      * @param player player to use
      * @return true if some data was changed
      */
@@ -117,40 +106,29 @@ public class WhitelistChecker {
         String name = player.getName();
         UUID uuid = player.getUUID();
 
-        switch (data.whitelistChecker().checkEntry(entry, player)) {
-            case UUID_NO_NAME -> {
-                entry.setName(name);
-                data.getStorage().save(entry);
-                data.getAdventure().consoleAudience().sendMessage(data.getMessageD().warningNameConsole(name));
-                player.sendMessage(data.getMessageD().warningNamePlayer(name));
-                return true;
-            }
-            case NO_UUID_NAME_CAPS, NO_UUID -> {
-                entry.setName(name);
-                entry.setUuid(uuid);
-                data.getStorage().save(entry);
-                return true;
-            }
-            case NOT_MATCH -> {
-                entry.setUuid(uuid);
-                data.getStorage().save(entry);
-                return true;
-            }
-            case NO_NAME, NAME_CAPS -> {
-                entry.setName(name);
-                data.getStorage().save(entry);
-                return true;
-            }
-            default -> {
-                return false;
-            }
-        }
+        CheckType check = data.whitelistChecker().checkEntry(entry, player);
+
+        if (check.emptyNameYesUUID()) {
+            entry.setName(name);
+            data.getStorage().save(entry);
+            data.getAdventure().consoleAudience().sendMessage(data.getMessageD().warningNameConsole(name));
+            player.sendMessage(data.getMessageD().warningNamePlayer(name));
+        } else if (check.emptyUUIDYesNameOrCaps()) {
+            entry.setName(name);
+            entry.setUuid(uuid);
+            data.getStorage().save(entry);
+        } else if (check.emptyNameYesUUID() || check.nameWithCapsYesUUID()) {
+            entry.setName(name);
+            data.getStorage().save(entry);
+        } else return false;
+        return true;
     }
 
     /**
      * Parses, loads and updates the player.
      * If auto whitelist is enabled this will also register them.
-     * @param player player to parse
+     *
+     * @param player        player to parse
      * @param entryConsumer consumer if the player is auto registered
      */
     public void parseJoinData(PlayerWrapper player, Consumer<WhitelistEntry> entryConsumer) {
@@ -161,15 +139,18 @@ public class WhitelistChecker {
             }
         } else updateData(entry.get(), player);
     }
+
     /**
      * Determines if the player can join the server
+     *
      * @param player instance of the player
      * @return true if the player can join
      */
     public boolean canPass(PlayerWrapper player) {
         Optional<WhitelistEntry> entry = this.data.whitelistData().getEntry(player);
 
-        if (entry.isPresent() && this.data.getConfigD().get(ConfigData.WhitelistCF.enforceNameDiffID) && checkEntry(entry.get(), player) == CheckType.NAME_DIFFERENT_UUID) return false;
+        if (entry.isPresent() && this.data.getConfigD().get(ConfigData.WhitelistCF.enforceNameDiffID) && checkEntry(entry.get(), player).diffUUIDYesName())
+            return false;
 
         SuccessData suc = createSuccess(entry.orElse(null), player);
 
