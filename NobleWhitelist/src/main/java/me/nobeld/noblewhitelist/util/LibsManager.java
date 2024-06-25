@@ -35,7 +35,7 @@ public class LibsManager {
         libraries.add(Library.builder()
                 .groupId("net{}kyori")
                 .artifactId("adventure-platform-bukkit")
-                .version("4.3.2")
+                .version("4.3.3")
                 .resolveTransitiveDependencies(true)
                 .build());
 
@@ -69,7 +69,7 @@ public class LibsManager {
         libraries.add(Library.builder()
                 .groupId("org{}incendo")
                 .artifactId("cloud-paper")
-                .version("2.0.0-beta.8")
+                .version("2.0.0-beta.9")
                 .relocate(reloc("org{}incendo"))
                 .resolveTransitiveDependencies(true)
                 .build());
@@ -77,7 +77,7 @@ public class LibsManager {
         libraries.add(Library.builder()
                 .groupId("org{}incendo")
                 .artifactId("cloud-minecraft-extras")
-                .version("2.0.0-beta.8")
+                .version("2.0.0-beta.9")
                 .relocate(reloc("org{}incendo"))
                 .excludeTransitiveDependency("org{}incendo", "cloud-annotations")
                 .excludeTransitiveDependency("org{}incendo", "cloud-core")

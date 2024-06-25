@@ -4,7 +4,7 @@ plugins {
 }
 
 group = "me.nobeld.noblewhitelist"
-version = "1.2.3"
+version = "1.2.4"
 description = "A simple plugin for whitelist management."
 
 java {
@@ -46,11 +46,12 @@ dependencies {
     compileOnly("me.clip", "placeholderapi", "2.11.5")
     compileOnly("io.github.miniplaceholders", "miniplaceholders-api", "2.2.3")
 
-    compileOnly("net.kyori","adventure-platform-bukkit","4.3.2")
+    compileOnly("net.kyori","adventure-platform-bukkit","4.3.3")
     compileOnly("net.kyori","adventure-text-minimessage","4.17.0")
 
-    compileOnly("org.incendo", "cloud-paper", "2.0.0-beta.8")
-    compileOnly("org.incendo", "cloud-minecraft-extras", "2.0.0-beta.8") {
+    compileOnly("org.incendo", "cloud-paper", "2.0.0-beta.9")
+    //20240621.043523-80
+    compileOnly("org.incendo", "cloud-minecraft-extras", "2.0.0-beta.9") {
         exclude(module=("adventure-text-minimessage"))
         exclude(module=("adventure-api"))
     }

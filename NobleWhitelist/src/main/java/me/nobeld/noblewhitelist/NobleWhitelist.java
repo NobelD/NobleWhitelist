@@ -68,11 +68,7 @@ public class NobleWhitelist extends JavaPlugin implements NWLData {
                 })
                 .loadStorage()
                 .loadData()
-                .load(() -> {
-                    this.api = new NobleWhitelistApi(this);
-                    Bukkit.getServer().getPluginManager().registerEvents(new Listener(this), this);
-                    this.commands = new NWlCommand(this);
-                })
+                .load(this::loadExtra)
                 .printMessage()
                 .load(() -> {
                     SpigotMetrics metrics = new SpigotMetrics(this, 20050);
@@ -93,6 +89,15 @@ public class NobleWhitelist extends JavaPlugin implements NWLData {
         this.storageType = bc.getType();
         this.whitelistData = bc.getWlData();
         this.whitelistChecker = bc.getWlChecker();
+    }
+    private void loadExtra() {
+        this.api = new NobleWhitelistApi(this);
+        Bukkit.getServer().getPluginManager().registerEvents(new Listener(this), this);
+        try {
+            this.commands = new NWlCommand(this);
+        } catch (Throwable e) {
+            logger().log(Level.SEVERE, "Cannot load the commands constructor, no commands will be available.\nConsider to update otherwise report this problem.", e);
+        }
     }
     @Override
     public void onDisable() {

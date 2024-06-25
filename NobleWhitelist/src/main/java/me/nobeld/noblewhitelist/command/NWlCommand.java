@@ -23,6 +23,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
 
 public class NWlCommand {
     private final NobleWhitelist plugin;
@@ -36,9 +37,16 @@ public class NWlCommand {
                 ExecutionCoordinator.simpleCoordinator(),
                 SenderMapper.identity()
         );
+        boolean registered = false;
         if (manager.hasCapability(CloudBukkitCapabilities.NATIVE_BRIGADIER)) {
-            manager.registerBrigadier();
-        } else if (manager.hasCapability(CloudBukkitCapabilities.ASYNCHRONOUS_COMPLETION)) {
+            try {
+                manager.registerBrigadier();
+                registered = true;
+            } catch (Throwable e) {
+                plugin.logger().log(Level.SEVERE, "Cannot load the native brigadier even when is allowed.", e);
+            }
+        }
+        if (!registered && manager.hasCapability(CloudBukkitCapabilities.ASYNCHRONOUS_COMPLETION)) {
             manager.registerAsynchronousCompletions();
         }
 
