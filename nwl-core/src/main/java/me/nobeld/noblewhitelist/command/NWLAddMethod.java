@@ -24,40 +24,48 @@ public class NWLAddMethod {
             else sendMsg(context, MessageData.serverAmount(true, total), mapper);
         }
     }
+
     public static <T> void uuid(NWLData data, CommandContext<T> context, Function<T, Audience> mapper, UUID uuid) {
         data.whitelistData().getEntry(null, uuid, -1)
-                .ifPresentOrElse(d -> sendMsg(context, MessageData.playerAlready(uuid), mapper),
+                .ifPresentOrElse(
+                        d -> sendMsg(context, MessageData.playerAlready(uuid), mapper),
                         () -> {
                             data.whitelistData().registerAndSave(null, uuid, -1);
                             sendMsg(context, MessageData.playerAdded(uuid), mapper);
                         }
-                );
+                                );
     }
+
     public static <T> void name(NWLData data, CommandContext<T> context, Function<T, Audience> mapper, String name) {
         data.whitelistData().getEntry(name, null, -1)
-                .ifPresentOrElse(d -> sendMsg(context, MessageData.playerAlready(name), mapper),
+                .ifPresentOrElse(
+                        d -> sendMsg(context, MessageData.playerAlready(name), mapper),
                         () -> {
                             data.whitelistData().registerAndSave(name, null, -1);
                             sendMsg(context, MessageData.playerAdded(name), mapper);
                         }
-                );
+                                );
     }
+
     public static <T> void full(NWLData data, CommandContext<T> context, Function<T, Audience> mapper, String name, UUID uuid, long id) {
         data.whitelistData().getEntry(name, uuid, id)
-                .ifPresentOrElse(d -> sendMsg(context, MessageData.playerAlready(), mapper),
+                .ifPresentOrElse(
+                        d -> sendMsg(context, MessageData.playerAlready(), mapper),
                         () -> {
                             data.whitelistData().registerAndSave(name, uuid, id);
                             sendMsg(context, MessageData.playerAdded(), mapper);
                         }
-                );
+                                );
     }
+
     public static <T> void me(NWLData data, CommandContext<T> context, Function<T, Audience> mapper, PlayerWrapper player) {
         data.whitelistData().getEntry(player)
-                .ifPresentOrElse(d -> sendMsg(context, MessageData.playerSelfAlready(), mapper),
+                .ifPresentOrElse(
+                        d -> sendMsg(context, MessageData.playerSelfAlready(), mapper),
                         () -> {
                             data.whitelistData().savePlayer(player);
                             sendMsg(context, MessageData.playerSelfAdded(), mapper);
                         }
-                );
+                                );
     }
 }

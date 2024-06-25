@@ -15,7 +15,7 @@ import java.util.function.BiConsumer;
 import java.util.logging.Level;
 
 public class UpdateChecker {
-    public BaseVersioning data;
+    public final BaseVersioning data;
     public final String version;
     private final String url;
     private final String name;
@@ -23,6 +23,7 @@ public class UpdateChecker {
     private boolean cantReach = false;
     private String latest;
     private final BiConsumer<Audience, String> suggerConsumer;
+
     public UpdateChecker(BaseVersioning data, String url, String name, BiConsumer<Audience, String> suggerConsumer) {
         this.data = data;
         this.name = name;
@@ -30,6 +31,7 @@ public class UpdateChecker {
         version = data.version();
         this.suggerConsumer = suggerConsumer;
     }
+
     public UpdateStatus githubCheck() {
         if (System.currentTimeMillis() < lastCheck + 1800000) return UpdateStatus.COOLDOWN;
         lastCheck = System.currentTimeMillis();
@@ -61,8 +63,9 @@ public class UpdateChecker {
             return UpdateStatus.CANT_REACH;
         }
     }
+
     public UpdateStatus simpleCheck() {
-        if (System.currentTimeMillis()< lastCheck + 1800000 ) return UpdateStatus.COOLDOWN;
+        if (System.currentTimeMillis() < lastCheck + 1800000) return UpdateStatus.COOLDOWN;
         lastCheck = System.currentTimeMillis();
         try {
             HttpURLConnection con = (HttpURLConnection) new URL(url).openConnection();
@@ -79,23 +82,28 @@ public class UpdateChecker {
             return UpdateStatus.CANT_REACH;
         }
     }
+
     public boolean canUpdate(boolean configUpdate, boolean isPlayer) {
         UpdateStatus status = githubCheck();
         if (!isPlayer && status == UpdateStatus.CANT_REACH) consoleError();
         if (!configUpdate) return false;
         return status == UpdateStatus.VERSION_AVAILABLE;
     }
+
     public void consoleError() {
         if (cantReach) return;
         cantReach = true;
         data.logger().log(Level.WARNING, "An error occurred while checking for updates.");
     }
+
     public String getLatest() {
         return latest;
     }
+
     public enum UpdateStatus {
         SAME_VERSION, VERSION_AVAILABLE, NO_DATA, CANT_REACH, COOLDOWN
     }
+
     public void sendUpdate(Audience aud) {
         suggerConsumer.accept(aud, getLatest());
     }

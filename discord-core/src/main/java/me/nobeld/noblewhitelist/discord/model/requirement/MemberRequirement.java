@@ -12,13 +12,16 @@ import org.incendo.cloud.discord.jda5.JDAInteraction;
 
 public class MemberRequirement implements NWLRequirementInterface {
     private final NWLDsData data;
+
     public MemberRequirement(NWLDsData data) {
         this.data = data;
     }
+
     @Override
     public boolean evaluateRequirement(@NonNull CommandContext<JDAInteraction> commandContext) {
         return data.getJDAManager().parseUser(commandContext.sender().guild(), commandContext.sender().user()) != null;
     }
+
     @Override
     @Nullable
     public MessageCreateData errorMessage() {

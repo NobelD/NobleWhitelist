@@ -6,5 +6,6 @@ import org.incendo.cloud.discord.jda5.JDAInteraction;
 import org.incendo.cloud.processors.requirements.Requirement;
 
 public interface NWLRequirementInterface extends Requirement<JDAInteraction, NWLRequirementInterface> {
-    @Nullable MessageCreateData errorMessage();
+    @Nullable
+    MessageCreateData errorMessage();
 }

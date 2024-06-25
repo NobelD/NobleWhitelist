@@ -20,6 +20,7 @@ public class NWLFindMethod {
         sendMsg(context, MessageData.playerAboutUser(d), mapper);
         sendMsg(context, MessageData.playerAboutJoin(d), mapper);
     }
+
     public static <T> void uuid(NWLData data, CommandContext<T> context, Function<T, Audience> mapper, UUID uuid) {
         Optional<WhitelistEntry> d = data.whitelistData().getEntry(null, uuid, -1);
 
@@ -29,6 +30,7 @@ public class NWLFindMethod {
             playerAbout(context, d.get(), mapper);
         }
     }
+
     public static <T> void name(NWLData data, CommandContext<T> context, Function<T, Audience> mapper, String name) {
         Optional<WhitelistEntry> d = data.whitelistData().getEntry(name, null, -1);
 
@@ -38,6 +40,7 @@ public class NWLFindMethod {
             playerAbout(context, d.get(), mapper);
         }
     }
+
     public static <T> void discord(NWLData data, CommandContext<T> context, Function<T, Audience> mapper, long id) {
         Optional<WhitelistEntry> d = data.whitelistData().getEntry(null, null, id);
 

@@ -9,10 +9,12 @@ import java.util.function.Function;
 
 public abstract class OptionCommand extends BaseCommand {
     private final List<BaseCommand> subCommand;
+
     public OptionCommand(Function<Command.Builder<JDAInteraction>, Command.Builder<JDAInteraction>> builder, List<BaseCommand> subCommand) {
         super(builder);
         this.subCommand = subCommand;
     }
+
     @Override
     public void register(CommandManager<JDAInteraction> mng, Command.Builder<JDAInteraction> base) {
         Command.Builder<JDAInteraction> sub = getBaseBuilder(base);
@@ -25,12 +27,15 @@ public abstract class OptionCommand extends BaseCommand {
             }
         });
     }
+
     public Command.Builder<JDAInteraction> getBaseBuilder(Command.Builder<JDAInteraction> base) {
         return this.builder.apply(base);
     }
+
     public List<BaseCommand> getSubCommand() {
         return subCommand;
     }
+
     @Override
     public Command.Builder<JDAInteraction> getCommand(Command.Builder<JDAInteraction> builder) {
         return null;

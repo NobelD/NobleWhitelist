@@ -27,8 +27,8 @@ package me.nobeld.noblewhitelist.storage;
 
 import com.zaxxer.hikari.HikariConfig;
 import me.nobeld.noblewhitelist.model.base.NWLData;
-import me.nobeld.noblewhitelist.model.whitelist.WhitelistEntry;
 import me.nobeld.noblewhitelist.model.base.PlayerWrapper;
+import me.nobeld.noblewhitelist.model.whitelist.WhitelistEntry;
 import me.nobeld.noblewhitelist.storage.root.DatabaseSQL;
 import org.jetbrains.annotations.NotNull;
 import org.sqlite.JDBC;
@@ -48,9 +48,11 @@ import static me.nobeld.noblewhitelist.config.FileManager.separator;
 public class DatabaseSQLite extends DatabaseSQL {
     private static final String SQLITE_DRIVER = "org.sqlite.SQLiteDataSource";
     private final Lock lock = new ReentrantLock();
+
     public DatabaseSQLite(NWLData data, String poolName, ThreadFactory threadFactory, HikariConfig config) {
         super(data, poolName, threadFactory, setParams(data, config));
     }
+
     private static HikariConfig setParams(NWLData data, HikariConfig config) {
         config.setDataSourceClassName(SQLITE_DRIVER);
 
@@ -73,6 +75,7 @@ public class DatabaseSQLite extends DatabaseSQL {
         }
         return config;
     }
+
     @Override
     public WhitelistEntry loadPlayer(@NotNull PlayerWrapper player) {
         lock.lock();
@@ -82,6 +85,7 @@ public class DatabaseSQLite extends DatabaseSQL {
             lock.unlock();
         }
     }
+
     @Override
     public WhitelistEntry loadPlayer(@NotNull String name) {
         lock.lock();
@@ -91,6 +95,7 @@ public class DatabaseSQLite extends DatabaseSQL {
             lock.unlock();
         }
     }
+
     @Override
     public WhitelistEntry loadPlayer(@NotNull UUID uuid) {
         lock.lock();
@@ -100,6 +105,7 @@ public class DatabaseSQLite extends DatabaseSQL {
             lock.unlock();
         }
     }
+
     @Override
     public WhitelistEntry loadPlayer(long id) {
         lock.lock();
@@ -109,6 +115,7 @@ public class DatabaseSQLite extends DatabaseSQL {
             lock.unlock();
         }
     }
+
     @Override
     public List<WhitelistEntry> loadAccounts(long id) {
         lock.lock();
@@ -118,6 +125,7 @@ public class DatabaseSQLite extends DatabaseSQL {
             lock.unlock();
         }
     }
+
     @Override
     public void save(@NotNull WhitelistEntry data) {
         lock.lock();
@@ -127,10 +135,13 @@ public class DatabaseSQLite extends DatabaseSQL {
             lock.unlock();
         }
     }
+
     @Override
     public void createTables() throws SQLException {
-        try (Connection con = dataSource.getConnection();
-             Statement createStmt = con.createStatement()) {
+        try (
+                Connection con = dataSource.getConnection();
+                Statement createStmt = con.createStatement()
+        ) {
             // SQLite has a different syntax for auto increment
             createStmt.executeUpdate(CREATE_TABLE.replace("AUTO_INCREMENT", "AUTOINCREMENT"));
         }

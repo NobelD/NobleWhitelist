@@ -15,15 +15,18 @@ import org.incendo.cloud.discord.jda5.JDAInteraction;
 public class ChannelRequirement implements NWLRequirementInterface {
     private final NWLDsData data;
     private final ConfigContainer<String> channel;
+
     public ChannelRequirement(NWLDsData data, ConfigContainer<String> channel) {
         this.data = data;
         this.channel = channel;
     }
+
     @Override
     public boolean evaluateRequirement(@NonNull CommandContext<JDAInteraction> commandContext) {
         GenericCommandInteractionEvent i = commandContext.sender().interactionEvent();
         return i != null && data.getJDAManager().matchChannel(commandContext.sender().guild(), i.getChannel(), channel);
     }
+
     @Override
     @Nullable
     public MessageCreateData errorMessage() {

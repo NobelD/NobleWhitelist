@@ -10,6 +10,7 @@ public abstract class SubCommand extends BaseCommand {
     public SubCommand(Function<Command.Builder<JDAInteraction>, Command.Builder<JDAInteraction>> builder) {
         super(builder);
     }
+
     @Override
     public void register(CommandManager<JDAInteraction> mng, Command.Builder<JDAInteraction> builder) {
         mng.command(getCommand(builder));

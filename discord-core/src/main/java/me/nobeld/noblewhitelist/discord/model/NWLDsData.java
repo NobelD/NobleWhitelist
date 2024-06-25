@@ -11,11 +11,18 @@ import java.io.InputStream;
 
 public interface NWLDsData extends BaseVersioning {
     ConfigData getConfigD();
+
     MessageData getMessageD();
+
     JDAManager getJDAManager();
+
     UpdateChecker getUptChecker();
+
     void disable();
+
     void enableMsg(Runnable runnable);
+
     InputStream resourceStream(String name);
+
     NWLData getNWL();
 }

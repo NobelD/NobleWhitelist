@@ -7,10 +7,6 @@ import me.nobeld.noblewhitelist.storage.root.FileFlat;
 
 public class FileJson extends FileFlat<Json> {
     public FileJson(NWLData data) {
-        super(data, "json", false, p -> FileManager.registerJson(p , (String) null));
-    }
-    @Override
-    public Json whitelistFile() {
-        return super.whitelistFile();
+        super(data, "json", false, p -> FileManager.registerJson(p, (String) null));
     }
 }

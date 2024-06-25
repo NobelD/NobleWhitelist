@@ -1,8 +1,8 @@
 package me.nobeld.noblewhitelist.api;
 
 import io.github.miniplaceholders.api.Expansion;
-import me.nobeld.noblewhitelist.NobleWhitelist;
 import me.nobeld.noblewhitelist.BPlayer;
+import me.nobeld.noblewhitelist.NobleWhitelist;
 import me.nobeld.noblewhitelist.util.ServerUtil;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.tag.Tag;

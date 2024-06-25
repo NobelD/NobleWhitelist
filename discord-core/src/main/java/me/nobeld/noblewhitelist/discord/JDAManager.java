@@ -2,12 +2,12 @@ package me.nobeld.noblewhitelist.discord;
 
 import me.nobeld.noblewhitelist.discord.commands.CommandManager;
 import me.nobeld.noblewhitelist.discord.config.ConfigData;
+import me.nobeld.noblewhitelist.discord.config.MessageData;
 import me.nobeld.noblewhitelist.discord.model.NWLDsData;
 import me.nobeld.noblewhitelist.discord.util.DiscordUtil;
 import me.nobeld.noblewhitelist.model.storage.ConfigContainer;
-import me.nobeld.noblewhitelist.util.AdventureUtil;
-import me.nobeld.noblewhitelist.discord.config.MessageData;
 import me.nobeld.noblewhitelist.model.whitelist.WhitelistEntry;
+import me.nobeld.noblewhitelist.util.AdventureUtil;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
 import net.dv8tion.jda.api.entities.Guild;
@@ -24,7 +24,6 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
-import java.util.List;
 import java.util.logging.Level;
 
 public class JDAManager {
@@ -34,6 +33,7 @@ public class JDAManager {
     private JDA bot;
     private final Set<String> channels = new HashSet<>();
     private CommandManager cmdManager = null;
+
     public JDAManager(NWLDsData data, ConfigData config) {
         this.data = data;
         this.enabled = false;
@@ -47,6 +47,7 @@ public class JDAManager {
         loadChannels(config);
         start();
     }
+
     public void enableCommands() {
         cmdManager = new CommandManager(data);
         cmdManager.loadCommands();
@@ -60,12 +61,15 @@ public class JDAManager {
         }
         cmdManager.registerCommands(guild);
     }
+
     public CommandManager getCommandManager() {
         return cmdManager;
     }
+
     private void loadChannels(ConfigData config) {
         channels.addAll(config.getSection(ConfigData.Discord.channelsID).singleLayerKeySet());
     }
+
     private void start() {
         if (token == null || token.isEmpty() || token.isBlank()) {
             data.logger().log(Level.SEVERE, "The bot token is missing, the bot will not be enabled.");
@@ -90,19 +94,23 @@ public class JDAManager {
         }
         data.enableMsg(() -> DiscordUtil.sendMessage(getChannel(ConfigData.Channel.startChannel), DiscordUtil.getMessage(data, MessageData.Channel.notifyStart)));
     }
+
     public void disable() {
         if (bot == null) return;
         DiscordUtil.sendMessage(getChannel(ConfigData.Channel.stopChannel), DiscordUtil.getMessage(data, MessageData.Channel.notifyStop));
     }
+
     public boolean isEnabled() {
         return enabled;
     }
+
     public boolean matchChannel(@Nullable Guild guild, Channel channel, ConfigContainer<String> cont) {
         if (guild == null) return false;
         TextChannel ch = guild.getTextChannelById(channel.getIdLong());
         if (ch == null) return false;
         return matchChannel(ch, cont);
     }
+
     public boolean matchChannel(TextChannel channel, ConfigContainer<String> cont) {
         List<String> channels = data.getConfigD().getSection(cont).getStringList("channel");
         if (channels == null || channels.isEmpty()) return false;
@@ -114,6 +122,7 @@ public class JDAManager {
         }
         return permittedChannels.contains(channel);
     }
+
     @Nullable
     public Member parseUser(@Nullable Guild guild, User user) {
         if (guild == null || user == null) return null;
@@ -123,11 +132,13 @@ public class JDAManager {
         }
         return member;
     }
+
     public boolean hasRole(@Nullable Guild guild, User user, ConfigContainer<String> cont) {
         Member member = parseUser(guild, user);
         if (member == null) return false;
         return hasRole(member, cont);
     }
+
     public boolean hasRole(Member member, ConfigContainer<String> cont) {
         List<String> roles = data.getConfigD().getSection(cont).getStringList("role");
         if (roles == null || roles.isEmpty()) return false;
@@ -143,6 +154,7 @@ public class JDAManager {
         }
         return !Collections.disjoint(member.getRoles(), permittedRoles);
     }
+
     private Map<String, List<Role>> getConfigRoles() {
         Map<String, List<Role>> roles = new HashMap<>();
         roles.put("user", getRoleType(ConfigData.Discord.roleUserID));
@@ -150,6 +162,7 @@ public class JDAManager {
         roles.put("admin", getRoleType(ConfigData.Discord.roleAdminID));
         return roles;
     }
+
     private List<Role> getRoleType(ConfigContainer<String> cont) {
         List<String> list = data.getConfigD().getList(cont);
         if (list == null) return Collections.emptyList();
@@ -163,6 +176,7 @@ public class JDAManager {
             return bot.getRoleById(id);
         }).filter(Objects::nonNull).toList();
     }
+
     public void manageRoleHandled(@Nullable Guild guild, WhitelistEntry data, @Nullable Map<String, String> placeholders, boolean add) {
         try {
             manageRole(guild, data, placeholders, add);
@@ -170,12 +184,14 @@ public class JDAManager {
             this.data.logger().log(Level.SEVERE, "An error occurred while managing a role from a user.", e);
         }
     }
+
     public void manageRole(@Nullable Guild guild, WhitelistEntry data, @Nullable Map<String, String> placeholders, boolean add) throws InsufficientPermissionException, HierarchyException {
         if (guild == null || !data.hasDiscord()) return;
         Member member = guild.getMemberById(data.getDiscordID());
         if (member == null) return;
         manageRole(guild, member, placeholders, add);
     }
+
     public void manageRole(@NotNull Guild guild, @NotNull Member member, @Nullable Map<String, String> placeholders, boolean add) throws InsufficientPermissionException, HierarchyException {
         if (add && !data.getConfigD().get(ConfigData.Discord.giveWlRole)) return;
         else if (!add && !data.getConfigD().get(ConfigData.Discord.removeWlRole)) return;
@@ -194,7 +210,7 @@ public class JDAManager {
                     "member_id", String.valueOf(member.getIdLong()),
                     "role_id", String.valueOf(role.getIdLong()),
                     "role_mention", role.getAsMention()
-            );
+                                 );
 
         if (add) {
             guild.addRoleToMember(member, role).reason("Added whitelisted role by register or link.").queue();
@@ -213,20 +229,24 @@ public class JDAManager {
             DiscordUtil.sendMessage(getChannel(ConfigData.Channel.roleRemove), DiscordUtil.getMessage(data, MessageData.Channel.notifyRoleRemove, placeholders));
         }
     }
+
     @Nullable
     public Role getWhitelistedRole(Guild guild) {
         long id = data.getConfigD().get(ConfigData.Discord.roleWhitelistedID);
         if (id <= 0) return null;
         return guild.getRoleById(id);
     }
+
     public TextChannel getChannel(ConfigContainer<String> cont) {
         String channel = data.getConfigD().get(cont);
         return getChannel(channel);
     }
+
     public TextChannel getChannel(String channel) {
         if (channel == null || channel.isEmpty() || channel.isBlank() || channel.equalsIgnoreCase("none")) return null;
         return getNWLChannel(channel);
     }
+
     public TextChannel getNWLChannel(String channel) {
         long id = -1;
         for (String s : channels) {

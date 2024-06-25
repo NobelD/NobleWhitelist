@@ -9,8 +9,4 @@ public class FileYaml extends FileFlat<Yaml> {
     public FileYaml(NWLData data) {
         super(data, "yml", true, p -> FileManager.registerYaml(p, (String) null));
     }
-    @Override
-    public Yaml whitelistFile() {
-        return super.whitelistFile();
-    }
 }

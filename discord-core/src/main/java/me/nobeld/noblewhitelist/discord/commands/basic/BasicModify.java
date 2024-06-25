@@ -26,13 +26,16 @@ import static org.incendo.cloud.parser.standard.StringParser.stringParser;
 public class BasicModify {
     private final NWLDsData data;
     private final JDAManager manager;
+
     public BasicModify(NWLDsData data) {
         this.data = data;
         this.manager = data.getJDAManager();
     }
+
     public List<BaseCommand> getCommands() {
         return List.of(add(), remove());
     }
+
     // #TODO system to add more accounts to the same user
     private SubCommand add() {
         return new SubCommand(b -> b.literal("add", CMDDescription.selfAdd())
@@ -74,6 +77,7 @@ public class BasicModify {
         ) {
         };
     }
+
     // #TODO system to remove multiple accounts for same user
     private SubCommand remove() {
         return new SubCommand(b -> b.literal("remove", CMDDescription.selfRemove())
@@ -101,6 +105,7 @@ public class BasicModify {
         ) {
         };
     }
+
     private SubCommand link() {
         return new SubCommand(b -> b.literal("link", CMDDescription.selfLink())
                 .meta(REQUIREMENTS_KEY, getRequirements(data, ConfigData.CommandsOpt.selfLink))

@@ -27,13 +27,16 @@ import static org.incendo.cloud.parser.standard.StringParser.stringParser;
 public class AdminModify {
     private final NWLDsData data;
     private final JDAManager manager;
+
     public AdminModify(NWLDsData data) {
         this.data = data;
         this.manager = data.getJDAManager();
     }
+
     public List<BaseCommand> getCommands() {
         return List.of(add(), remove(), link(), unlink(), toggle());
     }
+
     private SubCommand add() {
         return new SubCommand(b -> b.literal("add", CMDDescription.addUser())
                 .optional("name", stringParser())
@@ -70,6 +73,7 @@ public class AdminModify {
         ) {
         };
     }
+
     private SubCommand remove() {
         return new SubCommand(b -> b.literal("remove", CMDDescription.removeUser())
                 .optional("name", stringParser())
@@ -107,6 +111,7 @@ public class AdminModify {
 
         };
     }
+
     private SubCommand link() {
         return new SubCommand(b -> b.literal("link", CMDDescription.linkUser())
                 .optional("name", stringParser())
@@ -149,6 +154,7 @@ public class AdminModify {
         ) {
         };
     }
+
     private SubCommand unlink() {
         return new SubCommand(b -> b.literal("unlink", CMDDescription.unlinkUser())
                 .optional("name", stringParser())
@@ -185,6 +191,7 @@ public class AdminModify {
         ) {
         };
     }
+
     private SubCommand toggle() {
         return new SubCommand(b -> b.literal("toggle", CMDDescription.toggleUser())
                 .required("toggle", booleanParser())

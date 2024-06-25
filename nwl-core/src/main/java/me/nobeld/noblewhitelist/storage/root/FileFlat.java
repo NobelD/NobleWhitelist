@@ -27,6 +27,7 @@ public class FileFlat<T extends FlatFile> implements DataGetter {
     private final boolean migrate;
     private final Function<Path, T> consumer;
     private final NWLData data;
+
     public FileFlat(NWLData data, String suffix, boolean migrate, Function<Path, T> consumer) {
         this.data = data;
         this.suffix = suffix;
@@ -34,17 +35,20 @@ public class FileFlat<T extends FlatFile> implements DataGetter {
         this.consumer = consumer;
         whitelistFile();
     }
+
     public void registerWhitelist() {
         Path filePath = Paths.get(data.configPath() + "whitelist." + suffix);
         whitelistFile = consumer.apply(filePath);
         if (migrate) migrateData();
     }
+
     public T whitelistFile() {
         if (whitelistFile == null) {
             registerWhitelist();
         }
         return whitelistFile;
     }
+
     public void migrateData() {
         FlatFileSection sec = whitelistFile().getSection("whitelist");
         if (sec.singleLayerKeySet().isEmpty()) return;
@@ -58,14 +62,17 @@ public class FileFlat<T extends FlatFile> implements DataGetter {
         whitelistFile().clear();
         bulkUpdate(list);
     }
+
     public void bulkUpdate(List<WhitelistEntry> list) {
         list.forEach(this::insertData);
         whitelistFile().set("temp", true);
         whitelistFile().remove("temp");
     }
+
     private void insertData(WhitelistEntry player) {
         whitelistFile().getFileData().insert(String.valueOf(player.getRowId()), player.getSubDataString());
     }
+
     public List<WhitelistEntry> getAll() {
         if (list != null) return list;
         list = new ArrayList<>();
@@ -80,10 +87,12 @@ public class FileFlat<T extends FlatFile> implements DataGetter {
                 p.setRowId(row);
                 list.add(p);
                 if (row >= count.get()) count.set(row + 1);
-            } catch (Exception ignored) {}
+            } catch (Exception ignored) {
+            }
         }
         return list;
     }
+
     public static PairData<WhitelistEntry, Boolean> reformatString(String string) {
         if (string == null || string.isBlank() || string.equals("null") || string.equals("none")) return null;
         final String[] split = string.split(";");
@@ -100,6 +109,7 @@ public class FileFlat<T extends FlatFile> implements DataGetter {
 
         return PairData.of(new WhitelistEntry(name, UUIDUtil.parseUUID(uuid.trim()), parseLong(id.trim()), Boolean.parseBoolean(whitelisted.trim())), incomplete);
     }
+
     private static long parseLong(String s) {
         try {
             return Long.parseLong(s);
@@ -107,9 +117,10 @@ public class FileFlat<T extends FlatFile> implements DataGetter {
             return -1L;
         }
     }
+
     @Override
     public void save(@NotNull WhitelistEntry player) {
-        if (player.isSaved()){
+        if (player.isSaved()) {
             whitelistFile().set(String.valueOf(player.getRowId()), player.getSubDataString());
         } else {
             long num = count.getAndIncrement();
@@ -118,6 +129,7 @@ public class FileFlat<T extends FlatFile> implements DataGetter {
             getAll().add(player);
         }
     }
+
     @Override
     public boolean clear() {
         if (list == null || list.isEmpty()) return false;
@@ -126,32 +138,39 @@ public class FileFlat<T extends FlatFile> implements DataGetter {
         count.set(0);
         return true;
     }
+
     @Override
     public void reload() {
         list = null;
         getAll();
     }
+
     @Override
     public void delete(@NotNull WhitelistEntry player) {
         getAll().remove(player);
         whitelistFile().remove(String.valueOf(player.getRowId()));
     }
+
     @Override
     public WhitelistEntry loadPlayer(@NotNull String name) {
         return getAll().stream().filter(p -> p.getOptName().filter(n -> n.equalsIgnoreCase(name)).isPresent()).findFirst().orElse(null);
     }
+
     @Override
     public WhitelistEntry loadPlayer(@NotNull UUID uuid) {
         return getAll().stream().filter(p -> p.getOptUUID().filter(u -> u.equals(uuid)).isPresent()).findFirst().orElse(null);
     }
+
     @Override
     public WhitelistEntry loadPlayer(long id) {
         return getAll().stream().filter(p -> p.getDiscordID() == id).findFirst().orElse(null);
     }
+
     @Override
     public List<WhitelistEntry> loadAccounts(long id) {
         return getAll().stream().filter(p -> p.getDiscordID() == id).toList();
     }
+
     @Override
     public WhitelistEntry loadPlayer(@NotNull PlayerWrapper player) {
         return getAll().stream().filter(p -> {
@@ -160,12 +179,14 @@ public class FileFlat<T extends FlatFile> implements DataGetter {
             } else return p.getOptUUID().filter(u -> u.equals(player.getUUID())).isPresent();
         }).findFirst().orElse(null);
     }
+
     @Override
     public List<WhitelistEntry> listIndex(int page) {
         if (page <= 1) return getAll().stream().limit(10).collect(Collectors.toList());
         int amount = 10 * (page - 1);
         return getAll().stream().skip(amount).limit(10).collect(Collectors.toList());
     }
+
     @Override
     public long getTotal() {
         return getAll().size();

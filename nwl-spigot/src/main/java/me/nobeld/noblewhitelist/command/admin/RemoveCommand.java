@@ -1,12 +1,12 @@
 package me.nobeld.noblewhitelist.command.admin;
 
 import me.nobeld.noblewhitelist.BPlayer;
+import me.nobeld.noblewhitelist.NobleWhitelist;
 import me.nobeld.noblewhitelist.command.NWLRemoveMethod;
-import me.nobeld.noblewhitelist.model.command.SubCommand;
+import me.nobeld.noblewhitelist.language.MessageData;
 import me.nobeld.noblewhitelist.model.command.BaseCommand;
 import me.nobeld.noblewhitelist.model.command.OptionCommand;
-import me.nobeld.noblewhitelist.NobleWhitelist;
-import me.nobeld.noblewhitelist.language.MessageData;
+import me.nobeld.noblewhitelist.model.command.SubCommand;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -21,6 +21,7 @@ public class RemoveCommand extends OptionCommand<CommandSender> {
     public RemoveCommand(NobleWhitelist plugin) {
         super(b -> b.literal("remove").permission("noblewhitelist.admin.remove"), commands(plugin));
     }
+
     private static List<BaseCommand<CommandSender>> commands(NobleWhitelist plugin) {
         SubCommand<CommandSender> removeOnline = new SubCommand<>(b -> b
                 .literal("online")

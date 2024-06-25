@@ -17,6 +17,7 @@ public class CheckingCommand extends OptionCommand<CommandSender> {
     public CheckingCommand(NobleWhitelist plugin) {
         super(b -> b.literal("checking").permission("noblewhitelist.admin.checking"), commands(plugin));
     }
+
     private static List<BaseCommand<CommandSender>> commands(NobleWhitelist plugin) {
         SubCommand<CommandSender> status = new SubCommand<>(b -> b.literal("status")
                 .handler(c -> NWLCheckingMethod.sendCheck(plugin, c, plugin.getAdventure()::senderAudience))
