@@ -50,7 +50,6 @@ dependencies {
     compileOnly("net.kyori","adventure-text-minimessage","4.17.0")
 
     compileOnly("org.incendo", "cloud-paper", "2.0.0-beta.9")
-    //20240621.043523-80
     compileOnly("org.incendo", "cloud-minecraft-extras", "2.0.0-beta.9") {
         exclude(module=("adventure-text-minimessage"))
         exclude(module=("adventure-api"))
@@ -61,8 +60,11 @@ dependencies {
 }
 
 tasks {
+    jar {
+        archiveClassifier.set("slim")
+    }
     assemble {
-        // TODO Omited dependsOn(shadowJar)
+        dependsOn(shadowJar)
     }
     compileJava {
         options.encoding = Charsets.UTF_8.name()

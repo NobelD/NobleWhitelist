@@ -53,11 +53,13 @@ dependencies {
 }
 
 tasks {
+    jar {
+        archiveClassifier.set("slim")
+    }
     assemble {
-        // TODO Omited dependsOn(shadowJar)
+        dependsOn(shadowJar)
     }
     compileJava {
-        // dependsOn(":NobleWhitelist:shadowJar")
         options.encoding = Charsets.UTF_8.name()
         options.release.set(17)
     }
