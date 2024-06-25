@@ -27,6 +27,7 @@ public class NWLContainer {
     private final StorageType type;
     private final WhitelistData wlData;
     private final WhitelistChecker wlChecker;
+
     protected NWLContainer(ConfigData config, MessageData message, UpdateChecker update, DataGetter storage, StorageType type, WhitelistData wlData, WhitelistChecker wlChecker) {
         this.config = config;
         this.message = message;
@@ -36,34 +37,43 @@ public class NWLContainer {
         this.wlData = wlData;
         this.wlChecker = wlChecker;
     }
+
     public static Builder builder(NWLData data) {
         return new Builder(data);
     }
+
     public static void closeData(NWLData data) {
         if (data.getConfigD() != null) data.getConfigD().reloadConfig();
         if (data.getStorageType().isDatabase()) {
-            if (data.getStorage() != null) ((DatabaseSQL)data.getStorage()).close();
+            if (data.getStorage() != null) ((DatabaseSQL) data.getStorage()).close();
         }
         if (data.getAdventure() != null) data.getAdventure().closeAdventure();
     }
+
     public ConfigData getConfig() {
         return config;
     }
+
     public MessageData getMessage() {
         return message;
     }
+
     public UpdateChecker getUpdate() {
         return update;
     }
+
     public DataGetter getStorage() {
         return storage;
     }
+
     public StorageType getType() {
         return type;
     }
+
     public WhitelistData getWlData() {
         return wlData;
     }
+
     public WhitelistChecker getWlChecker() {
         return wlChecker;
     }
@@ -88,13 +98,11 @@ public class NWLContainer {
         private StorageType type = StorageType.NONE;
         private WhitelistData wlData = null;
         private WhitelistChecker wlChecker = null;
+
         protected Builder(NWLData data) {
             this.data = data;
         }
-        public Builder loadLibs(LibraryManager manager, boolean skipAdv, @Nullable List<Library> additional) {
-            new LibsManager(data, manager, skipAdv, additional);
-            return this;
-        }
+
         public Builder loadFiles(String path, PairData<String, FileManager.FileType> config) {
             this.config = new ConfigData(data, path, config.getFirst(), config.getSecond());
             AdventureUtil.replaceData(() -> this.config.usePrefix(), () -> this.config.getPrefix());
@@ -102,6 +110,7 @@ public class NWLContainer {
             this.config.refreshData();
             return this;
         }
+
         public Builder loadAdventure() {
             data.getAdventure();
             return this;
@@ -116,26 +125,31 @@ public class NWLContainer {
             type = st.getSecond();
             return this;
         }
+
         public Builder loadData() {
             wlData = new WhitelistData(data);
             wlChecker = new WhitelistChecker(data);
             return this;
         }
+
         public Builder printMessage() {
             long total = storage.getTotal();
             data.getAdventure().consoleAudience().sendMessage(AdventureUtil.formatAll("<prefix><green>Plugin successfully activated!"));
             data.getAdventure().consoleAudience().sendMessage(AdventureUtil.formatAll("<prefix><green>Loaded <yellow>" + total + " <green>whitelist entries."));
-            if (!type.isDatabase() && total >= 100) data.getAdventure().consoleAudience().sendMessage(AdventureUtil.formatAll("<prefix><green>Mind in use database as storage type since there is a lot of entries."));
+            if (!type.isDatabase() && total >= 100)
+                data.getAdventure().consoleAudience().sendMessage(AdventureUtil.formatAll("<prefix><green>Mind in use database as storage type since there is a lot of entries."));
 
             if (update.canUpdate(config.get(ConfigData.ServerCF.notifyUpdate), false)) {
                 update.sendUpdate(data.getAdventure().consoleAudience());
             }
             return this;
         }
+
         public Builder load(Runnable runnable) {
             runnable.run();
             return this;
         }
+
         public NWLContainer build() {
             return new NWLContainer(config, message, update, storage, type, wlData, wlChecker);
         }

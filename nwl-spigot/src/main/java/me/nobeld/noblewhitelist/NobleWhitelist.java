@@ -49,6 +49,7 @@ public class NobleWhitelist extends JavaPlugin implements NWLData {
     private BukkitAudiences provider;
     private static BukkitAdventure adventure = null;
     private boolean blocked = false;
+
     public BukkitAudiences getProvider() {
         if (hasPaper) {
             throw new IllegalStateException("Tried to access Adventure when the server is paper!");
@@ -58,9 +59,11 @@ public class NobleWhitelist extends JavaPlugin implements NWLData {
         }
         return provider;
     }
+
     public void setProvider(BukkitAudiences provider) {
         this.provider = provider;
     }
+
     @Override
     public void onEnable() {
         // #TODO fix static classes and adventure
@@ -71,17 +74,18 @@ public class NobleWhitelist extends JavaPlugin implements NWLData {
         boolean paperLoader = hasPaper && ServerUtil.isGreaterEquals(19, 4);
 
         NWLContainer bc = NWLContainer.builder(this)
-                .loadLibs(
-                paperLoader ? new PaperLibraryManager(this) : new BukkitLibraryManager(this),
-                hasPaper,
-                Collections.singletonList(Library.builder()
-                        .groupId("net{}kyori")
-                        .artifactId("adventure-platform-bukkit")
-                        .version("4.3.2")
-                        .resolveTransitiveDependencies(true)
-                        .build()
-                )
-                         )
+                .load(() -> new LibsManager(
+                              this,
+                              paperLoader ? new PaperLibraryManager(this) : new BukkitLibraryManager(this),
+                              hasPaper,
+                              Collections.singletonList(Library.builder()
+                                                                .groupId("net{}kyori")
+                                                                .artifactId("adventure-platform-bukkit")
+                                                                .version("4.3.2")
+                                                                .resolveTransitiveDependencies(true)
+                                                                .build())
+                      )
+                     )
                 .loadFiles(getDataFolder().getPath(), PairData.of("config.yml", FileManager.FileType.YAML))
                 .loadAdventure()
                 .loadUpdateChecker(
@@ -123,6 +127,7 @@ public class NobleWhitelist extends JavaPlugin implements NWLData {
         this.whitelistData = bc.getWlData();
         this.whitelistChecker = bc.getWlChecker();
     }
+    
     private void loadExtra() {
         this.api = new NobleWhitelistApi(this);
         Bukkit.getServer().getPluginManager().registerEvents(new Listener(this), this);
@@ -132,10 +137,12 @@ public class NobleWhitelist extends JavaPlugin implements NWLData {
             logger().log(Level.SEVERE, "Cannot load the commands constructor, no commands will be available.\nConsider to update otherwise report this problem.", e);
         }
     }
+    
     @Override
     public void onDisable() {
         NWLContainer.closeData(this);
     }
+
     @Override
     public void reloadDataBase() {
         if (storage != null && storageType.isDatabase()) ((DatabaseSQL) storage).close();
@@ -143,38 +150,59 @@ public class NobleWhitelist extends JavaPlugin implements NWLData {
         this.storage = st.getFirst();
         this.storageType = st.getSecond();
     }
+
+    @Override
+    public ThreadFactory createThread(String name) {
+        // Code from https://github.com/games647/FastLogin
+        return new ThreadFactoryBuilder()
+                .setNameFormat(name)
+                // Hikari create daemons by default. We could use daemon threads for our own scheduler too
+                // because we safely shut down
+                .setDaemon(true)
+                .build();
+    }
+
     @Override
     public void setBlocked(boolean blocked) {
         this.blocked = blocked;
     }
+
     @Override
     public boolean isBlocked() {
         return blocked;
     }
+
     public static NobleWhitelist getPlugin() {
         return plugin;
     }
+
     @Override
     public NobleWhitelistApi getApi() {
         return this.api;
     }
+
     public static BukkitAdventure adv() {
         return adventure;
     }
+
     public NWlCommand getCommand() {
         return commands;
     }
+
     public boolean hasPaper() {
         return hasPaper;
     }
+
     @Override
     public StorageType getStorageType() {
         return this.storageType;
     }
+
     @Override
     public DataGetter getStorage() {
         return this.storage;
     }
+
     @Override
     public AdvPlatformManager getAdventure() {
         if (adventure == null) {
@@ -184,51 +212,63 @@ public class NobleWhitelist extends JavaPlugin implements NWLData {
         }
         return adventure;
     }
+
     @Override
     public ConfigData getConfigD() {
         return configData;
     }
+
     @Override
     public MessageData getMessageD() {
         return messageData;
     }
+
     @Override
     public WhitelistData whitelistData() {
         return this.whitelistData;
     }
+
     @Override
     public WhitelistChecker whitelistChecker() {
         return this.whitelistChecker;
     }
+
     @Override
     public UpdateChecker getUptChecker() {
         return this.uptChecker;
     }
+
     @Override
     public String configPath() {
         return getDataFolder().getPath() + separator();
     }
+
     @Override
     public String name() {
         return getName();
     }
+
     @SuppressWarnings("deprecation")
     @Override
     public String version() {
         return getDescription().getVersion();
     }
+
     @Override
     public void disable() {
         Bukkit.getPluginManager().disablePlugin(this);
     }
+
     @Override
     public void closeServer() {
         Bukkit.getServer().shutdown();
     }
+
     @Override
     public void runCommand(String command) {
         Bukkit.dispatchCommand(Bukkit.getConsoleSender(), command);
     }
+
     @Override
     public Logger logger() {
         return getLogger();

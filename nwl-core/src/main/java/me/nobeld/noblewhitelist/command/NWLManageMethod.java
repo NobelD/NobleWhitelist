@@ -20,12 +20,14 @@ public class NWLManageMethod {
             BaseCommand.sendMsg(context, MessageData.whitelistChanged(activate), mapper);
         }
     }
+
     public static <T> void permStatus(NWLData data, CommandContext<T> context, Function<T, Audience> mapper) {
         BaseCommand.sendMsg(context, MessageData.permissionInf1(data), mapper);
         BaseCommand.sendMsg(context, MessageData.permissionInf2(data), mapper);
     }
+
     public static <T> void permSet(NWLData data, CommandContext<T> context, Function<T, Audience> mapper, int min) {
-        data.getConfigD().set(ConfigData.WhitelistCF.permissionMinimum, min);
+        data.getConfigD().set(ConfigData.ByPassCF.permissionMinimum, min);
         BaseCommand.sendMsg(context, MessageData.permissionChanged(min), mapper);
     }
 }
