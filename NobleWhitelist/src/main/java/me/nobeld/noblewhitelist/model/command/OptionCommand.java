@@ -17,13 +17,7 @@ public abstract class OptionCommand extends BaseCommand {
     public void register(CommandManager<CommandSender> mng, Command.Builder<CommandSender> base) {
         Command.Builder<CommandSender> sub = getBaseBuilder(base);
 
-        this.getSubCommand().forEach(cmd -> {
-            if (cmd instanceof OptionCommand opt) {
-                opt.register(mng, sub);
-            } else {
-                mng.command(cmd.getCommand(sub));
-            }
-        });
+        this.getSubCommand().forEach(cmd -> cmd.register(mng, sub));
     }
     public Command.Builder<CommandSender> getBaseBuilder(Command.Builder<CommandSender> base) {
         return this.builder.apply(base);

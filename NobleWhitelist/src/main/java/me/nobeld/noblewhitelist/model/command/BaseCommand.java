@@ -9,7 +9,7 @@ import org.incendo.cloud.context.CommandContext;
 
 import java.util.function.Function;
 
-public abstract class BaseCommand {
+public class BaseCommand {
     final Function<Command.Builder<CommandSender>, Command.Builder<CommandSender>> builder;
     public BaseCommand(Function<Command.Builder<CommandSender>, Command.Builder<CommandSender>> builder) {
         this.builder = builder;
@@ -18,7 +18,9 @@ public abstract class BaseCommand {
         CommandSender sender = c.sender();
         NobleWhitelist.adv().adventure().sender(sender).sendMessage(msg);
     }
-    public abstract void register(CommandManager<CommandSender> mng, Command.Builder<CommandSender> builder);
+    public void register(CommandManager<CommandSender> mng, Command.Builder<CommandSender> builder) {
+        mng.command(getCommand(builder));
+    }
     public Command.Builder<? extends CommandSender> getCommand(Command.Builder<CommandSender> base) {
         return builder.apply(base);
     }

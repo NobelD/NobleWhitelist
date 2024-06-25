@@ -131,7 +131,6 @@ public class DatabaseSQLite extends DatabaseSQL {
     public void createTables() throws SQLException {
         try (Connection con = dataSource.getConnection();
              Statement createStmt = con.createStatement()) {
-            // SQLite has a different syntax for auto increment
             createStmt.executeUpdate(CREATE_TABLE.replace("AUTO_INCREMENT", "AUTOINCREMENT"));
         }
     }
