@@ -2,8 +2,8 @@ package me.nobeld.noblewhitelist.api;
 
 import me.clip.placeholderapi.expansion.PlaceholderExpansion;
 import me.nobeld.noblewhitelist.BPlayer;
-import me.nobeld.noblewhitelist.util.ServerUtil;
 import me.nobeld.noblewhitelist.NobleWhitelist;
+import me.nobeld.noblewhitelist.util.ServerUtil;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
@@ -12,25 +12,31 @@ import java.util.Objects;
 
 public class NWLPAPIExpansion extends PlaceholderExpansion {
     private final NobleWhitelist plugin;
+
     public NWLPAPIExpansion(NobleWhitelist plugin) {
         this.plugin = plugin;
     }
+
     @Override
     public @NotNull String getIdentifier() {
         return "nwhitelist";
     }
+
     @Override
     public @NotNull String getAuthor() {
         return "NobelD";
     }
+
     @Override
     public @NotNull String getVersion() {
         return plugin.version();
     }
+
     @Override
     public boolean persist() {
         return true;
     }
+
     @Override
     public String onRequest(OfflinePlayer player, String params) {
         Player p = (Player) player;

@@ -26,10 +26,12 @@ public class ManageCommand {
         commands.add(new Perm(plugin));
         return commands;
     }
+
     private static class Perm extends OptionCommand<CommandSender> {
         public Perm(NobleWhitelist plugin) {
             super(b -> b.literal("perm").permission("noblewhitelist.admin.permission"), commands(plugin));
         }
+
         private static List<BaseCommand<CommandSender>> commands(NobleWhitelist plugin) {
             SubCommand<CommandSender> permStatus = new SubCommand<>(b -> b.literal("status")
                     .handler(c -> NWLManageMethod.permStatus(plugin, c, plugin.getAdventure()::senderAudience))

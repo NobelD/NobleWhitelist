@@ -10,16 +10,26 @@ import java.util.Optional;
 import java.util.UUID;
 
 public interface PlayerWrapper {
+    @NotNull
     String getName();
+
+    @NotNull
     UUID getUUID();
+
     boolean hasPermission(String permission);
+
     boolean hasPermission(String permissionPrefix, int minimum);
+
     boolean isOp();
+
     void sendMessage(Component component);
+
     Audience getAsAudience();
+
     default Optional<WhitelistEntry> getWhitelistEntry(@NotNull DataGetter storage) {
         return getWhitelistEntry(storage, -1);
     }
+
     default Optional<WhitelistEntry> getWhitelistEntry(@NotNull DataGetter storage, long discordId) {
         WhitelistEntry data = storage.loadPlayer(getName());
         if (data == null) data = storage.loadPlayer(getUUID());
@@ -27,7 +37,8 @@ public interface PlayerWrapper {
 
         return Optional.ofNullable(data);
     }
-    default String mergeString() {
-        return "PlayerW{name=" + getName() + ";uuid=" + getUUID() + "}";
+
+    default String asString() {
+        return "PlayerW[name=" + getName() + ";uuid=" + getUUID() + "]";
     }
 }

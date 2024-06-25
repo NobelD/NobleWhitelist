@@ -13,7 +13,7 @@ import java.net.URL;
 import java.util.logging.Level;
 
 public class UpdateChecker {
-    public BaseVersioning data;
+    public final BaseVersioning data;
     public final String version;
     private String url = "https://github.com/NobelD/NobleWhitelist";
     private final String name;
@@ -28,6 +28,7 @@ public class UpdateChecker {
         this.version = data.version();
         this.suggestConsumer = suggestConsumer;
     }
+
     public UpdateStatus githubCheck() {
         if (System.currentTimeMillis() < lastCheck + 1800000) return UpdateStatus.COOLDOWN;
         lastCheck = System.currentTimeMillis();
@@ -58,6 +59,7 @@ public class UpdateChecker {
             if (con != null) con.disconnect();
         }
     }
+
     public boolean canUpdate(boolean configUpdate, boolean isPlayer) {
         UpdateStatus status = githubCheck();
         if (!isPlayer && status == UpdateStatus.CANT_REACH) return false;
@@ -73,6 +75,7 @@ public class UpdateChecker {
     public enum UpdateStatus {
         SAME_VERSION, VERSION_AVAILABLE, NO_DATA, CANT_REACH, COOLDOWN
     }
+
     public void sendUpdate(Audience aud) {
         suggestConsumer.accept(aud, getLatest(), getUrl());
     }

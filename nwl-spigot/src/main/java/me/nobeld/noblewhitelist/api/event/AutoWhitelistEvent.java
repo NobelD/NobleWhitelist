@@ -12,31 +12,38 @@ public class AutoWhitelistEvent extends Event implements Cancellable {
     private final Player player;
     private final WhitelistEntry data;
     private static final HandlerList handlers = new HandlerList();
+
     public AutoWhitelistEvent(Player player, WhitelistEntry data) {
         this.player = player;
         this.data = data;
         isCancelled = false;
     }
+
     /**
      * @return the player of the event.
      */
     public Player getPlayer() {
         return player;
     }
+
     public WhitelistEntry getDataRegistered() {
         return data;
     }
+
     @Override
     public @NotNull HandlerList getHandlers() {
         return handlers;
     }
+
     public static HandlerList getHandlerList() {
         return handlers;
     }
+
     @Override
     public boolean isCancelled() {
         return isCancelled;
     }
+
     @Override
     public void setCancelled(boolean cancel) {
         isCancelled = cancel;

@@ -1,11 +1,11 @@
 package me.nobeld.noblewhitelist.command.admin;
 
+import me.nobeld.noblewhitelist.NobleWhitelist;
 import me.nobeld.noblewhitelist.command.NWLToggleMethod;
-import me.nobeld.noblewhitelist.model.command.SubCommand;
+import me.nobeld.noblewhitelist.language.MessageData;
 import me.nobeld.noblewhitelist.model.command.BaseCommand;
 import me.nobeld.noblewhitelist.model.command.OptionCommand;
-import me.nobeld.noblewhitelist.NobleWhitelist;
-import me.nobeld.noblewhitelist.language.MessageData;
+import me.nobeld.noblewhitelist.model.command.SubCommand;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
@@ -21,6 +21,7 @@ public class ToggleCommand extends OptionCommand<CommandSender> {
     public ToggleCommand(NobleWhitelist plugin) {
         super(b -> b.literal("toggle").permission("noblewhitelist.admin.toggle"), commands(plugin));
     }
+
     private static List<BaseCommand<CommandSender>> commands(NobleWhitelist plugin) {
         SubCommand<CommandSender> toggleUuid = new SubCommand<>(b -> b
                 .literal("uuid")
@@ -31,7 +32,8 @@ public class ToggleCommand extends OptionCommand<CommandSender> {
                     final boolean toggle = c.get("toggle");
                     NWLToggleMethod.uuid(plugin, c, plugin.getAdventure()::senderAudience, uuid, toggle);
                 })
-        ) {};
+        ) {
+        };
         SubCommand<CommandSender> toggleName = new SubCommand<>(b -> b
                 .literal("name")
                 .required("name", stringParser())
@@ -41,7 +43,8 @@ public class ToggleCommand extends OptionCommand<CommandSender> {
                     final boolean toggle = c.get("toggle");
                     NWLToggleMethod.name(plugin, c, plugin.getAdventure()::senderAudience, name, toggle);
                 })
-        ) {};
+        ) {
+        };
         SubCommand<CommandSender> toggleMe = new SubCommand<>(b -> b
                 .literal("me")
                 .required("toggle", booleanParser())
@@ -53,7 +56,8 @@ public class ToggleCommand extends OptionCommand<CommandSender> {
                         sendMsg(c, MessageData.onlyPlayer(), plugin.getAdventure()::senderAudience);
                     }
                 })
-        ) {};
+        ) {
+        };
         SubCommand<CommandSender> toggleDiscord = new SubCommand<>(b -> b
                 .literal("discord")
                 .required("id", longParser())
@@ -63,7 +67,8 @@ public class ToggleCommand extends OptionCommand<CommandSender> {
                     final boolean toggle = c.get("toggle");
                     NWLToggleMethod.discord(plugin, c, plugin.getAdventure()::senderAudience, id, toggle);
                 })
-        ) {};
+        ) {
+        };
         return List.of(toggleUuid, toggleName, toggleMe, toggleDiscord);
     }
 }

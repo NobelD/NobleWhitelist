@@ -14,14 +14,17 @@ import org.incendo.cloud.discord.jda5.JDAInteraction;
 
 public class GuildRequirement implements NWLRequirementInterface {
     private final NWLDsData data;
+
     public GuildRequirement(NWLDsData data) {
         this.data = data;
     }
+
     @Override
     public boolean evaluateRequirement(@NonNull CommandContext<JDAInteraction> commandContext) {
         Guild guild = commandContext.sender().guild();
         return guild != null && guild.getIdLong() == data.getConfigD().get(ConfigData.Discord.serverID);
     }
+
     @Override
     @Nullable
     public MessageCreateData errorMessage() {

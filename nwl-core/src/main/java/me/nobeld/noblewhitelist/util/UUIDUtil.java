@@ -13,14 +13,16 @@ public class UUIDUtil {
             builder.insert(16, "-");
             builder.insert(12, "-");
             builder.insert(8, "-");
-        } catch (StringIndexOutOfBoundsException e){
+        } catch (StringIndexOutOfBoundsException e) {
             return null;
         }
         return builder.toString();
     }
+
     @Nullable
     public static UUID parseUUID(String uuid) {
-        if (uuid == null || uuid.isEmpty() || uuid.isBlank() || uuid.equalsIgnoreCase("none$") || uuid.equalsIgnoreCase("null")) return null;
+        if (uuid == null || uuid.isEmpty() || uuid.isBlank() || uuid.equalsIgnoreCase("none$") || uuid.equalsIgnoreCase("null"))
+            return null;
         UUID id;
         try {
             id = UUID.fromString(uuid);
@@ -35,6 +37,7 @@ public class UUIDUtil {
         }
         return id;
     }
+
     public static String noDashUUID(UUID uuid) {
         return uuid.toString().trim().replace("-", "");
     }

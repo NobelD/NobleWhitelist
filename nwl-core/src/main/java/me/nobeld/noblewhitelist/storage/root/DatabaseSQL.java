@@ -28,14 +28,17 @@ package me.nobeld.noblewhitelist.storage.root;
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
 import me.nobeld.noblewhitelist.model.base.NWLData;
+import me.nobeld.noblewhitelist.model.base.PlayerWrapper;
 import me.nobeld.noblewhitelist.model.storage.DataGetter;
 import me.nobeld.noblewhitelist.model.whitelist.WhitelistEntry;
-import me.nobeld.noblewhitelist.model.base.PlayerWrapper;
 import me.nobeld.noblewhitelist.util.UUIDUtil;
 import org.jetbrains.annotations.NotNull;
 
 import java.sql.*;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
+import java.util.UUID;
 import java.util.concurrent.ThreadFactory;
 import java.util.logging.Level;
 
@@ -57,19 +60,22 @@ public class DatabaseSQL implements DataGetter {
     protected static final String GET_BY_UUID = "SELECT * FROM `" + TABLE_NAME + "` WHERE `UUID`=? LIMIT 1";
     protected static final String GET_BY_DISCORD = "SELECT * FROM `" + TABLE_NAME + "` WHERE `Discord`=? LIMIT 1";
     protected static final String GET_BY_DISCORD_ALL = "SELECT * FROM `" + TABLE_NAME + "` WHERE `Discord`=? LIMIT 100";
-    protected static final String DELETE_BY_ID= "DELETE FROM `" + TABLE_NAME + "` WHERE `ID`=?";
+    protected static final String DELETE_BY_ID = "DELETE FROM `" + TABLE_NAME + "` WHERE `ID`=?";
     protected static final String DELETE_ALL = "DROP TABLE `" + TABLE_NAME + "`";
     protected static final String INSERT_DATA = "INSERT INTO `" + TABLE_NAME
             + "` (`Name`, `UUID`, `Discord`, `Whitelisted`) " + "VALUES (?, ?, ?, ?) ";
     protected static final String UPDATE_DATA = "UPDATE `" + TABLE_NAME
             + "` SET `Name`=?, `UUID`=?, `Discord`=?, `Whitelisted`=? WHERE `ID`=?";
+
     protected static String SELECT_AMOUNT(int m) {
         if (m <= 1) return "SELECT * FROM `" + TABLE_NAME + "` ORDER BY `ID` LIMIT 10";
         int amount = 10 * (m - 1);
         return "SELECT * FROM `" + TABLE_NAME + "` ORDER BY `ID` LIMIT 10 OFFSET " + amount;
     }
+
     protected final NWLData data;
     protected final HikariDataSource dataSource;
+
     public DatabaseSQL(NWLData data, String poolName, ThreadFactory threadFactory, HikariConfig config) {
         this.data = data;
         config.setPoolName(poolName);
@@ -78,12 +84,16 @@ public class DatabaseSQL implements DataGetter {
         }
         this.dataSource = new HikariDataSource(config);
     }
+
     public void createTables() throws SQLException {
-        try (Connection con = dataSource.getConnection();
-             Statement createStmt = con.createStatement()) {
+        try (
+                Connection con = dataSource.getConnection();
+                Statement createStmt = con.createStatement()
+        ) {
             createStmt.executeUpdate(CREATE_TABLE);
         }
     }
+
     @Override
     public WhitelistEntry loadPlayer(@NotNull PlayerWrapper player) {
         WhitelistEntry result = this.loadPlayer(player.getUUID());
@@ -91,10 +101,13 @@ public class DatabaseSQL implements DataGetter {
         result = loadPlayer(player.getName());
         return result;
     }
+
     @Override
     public WhitelistEntry loadPlayer(@NotNull String name) {
-        try (Connection con = dataSource.getConnection();
-             PreparedStatement statement = con.prepareStatement(GET_BY_NAME)) {
+        try (
+                Connection con = dataSource.getConnection();
+                PreparedStatement statement = con.prepareStatement(GET_BY_NAME)
+        ) {
             statement.setString(1, name.toLowerCase());
 
             try (ResultSet result = statement.executeQuery()) {
@@ -106,11 +119,14 @@ public class DatabaseSQL implements DataGetter {
 
         return null;
     }
+
     @Override
     public WhitelistEntry loadPlayer(@NotNull UUID uuid) {
         String id = UUIDUtil.noDashUUID(uuid);
-        try (Connection con = dataSource.getConnection();
-             PreparedStatement statement = con.prepareStatement(GET_BY_UUID)) {
+        try (
+                Connection con = dataSource.getConnection();
+                PreparedStatement statement = con.prepareStatement(GET_BY_UUID)
+        ) {
             statement.setString(1, id);
 
             try (ResultSet resultSet = statement.executeQuery()) {
@@ -122,10 +138,13 @@ public class DatabaseSQL implements DataGetter {
 
         return null;
     }
+
     @Override
     public WhitelistEntry loadPlayer(long id) {
-        try (Connection con = dataSource.getConnection();
-             PreparedStatement statement = con.prepareStatement(GET_BY_DISCORD)) {
+        try (
+                Connection con = dataSource.getConnection();
+                PreparedStatement statement = con.prepareStatement(GET_BY_DISCORD)
+        ) {
             statement.setLong(1, id);
 
             try (ResultSet resultSet = statement.executeQuery()) {
@@ -137,10 +156,13 @@ public class DatabaseSQL implements DataGetter {
 
         return null;
     }
+
     @Override
     public List<WhitelistEntry> loadAccounts(long id) {
-        try (Connection con = dataSource.getConnection();
-             PreparedStatement statement = con.prepareStatement(GET_BY_DISCORD_ALL)) {
+        try (
+                Connection con = dataSource.getConnection();
+                PreparedStatement statement = con.prepareStatement(GET_BY_DISCORD_ALL)
+        ) {
             statement.setLong(1, id);
 
             try (ResultSet resultSet = statement.executeQuery()) {
@@ -155,12 +177,15 @@ public class DatabaseSQL implements DataGetter {
 
         return null;
     }
+
     @Override
     public List<WhitelistEntry> listIndex(int page) {
         String state = SELECT_AMOUNT(page);
         List<WhitelistEntry> list = new ArrayList<>();
-        try (Connection con = dataSource.getConnection();
-             Statement statement = con.createStatement()) {
+        try (
+                Connection con = dataSource.getConnection();
+                Statement statement = con.createStatement()
+        ) {
             try (ResultSet resultSet = statement.executeQuery(state)) {
                 while (resultSet.next()) {
                     long id = resultSet.getInt(1);
@@ -177,6 +202,7 @@ public class DatabaseSQL implements DataGetter {
         }
         return list;
     }
+
     private Optional<WhitelistEntry> parseResult(ResultSet resultSet) throws SQLException {
         if (resultSet.next()) {
             return getResult(resultSet);
@@ -184,6 +210,7 @@ public class DatabaseSQL implements DataGetter {
 
         return Optional.empty();
     }
+
     private Optional<WhitelistEntry> getResult(ResultSet resultSet) throws SQLException {
         long id = resultSet.getInt(1);
 
@@ -194,6 +221,7 @@ public class DatabaseSQL implements DataGetter {
 
         return Optional.of(new WhitelistEntry(id, name, UUIDUtil.parseUUID(uuid), discord, whitelisted));
     }
+
     @Override
     public void save(@NotNull WhitelistEntry data) {
         try (Connection con = dataSource.getConnection()) {
@@ -233,21 +261,27 @@ public class DatabaseSQL implements DataGetter {
             this.data.logger().log(Level.SEVERE, "Failed to query data: " + data, sqlEx);
         }
     }
+
     @Override
     public void delete(@NotNull WhitelistEntry data) {
-        try (Connection con = dataSource.getConnection();
-             PreparedStatement statement = con.prepareStatement(DELETE_BY_ID)) {
+        try (
+                Connection con = dataSource.getConnection();
+                PreparedStatement statement = con.prepareStatement(DELETE_BY_ID)
+        ) {
             statement.setLong(1, data.getRowId());
             statement.executeUpdate();
         } catch (SQLException sqlEx) {
             this.data.logger().log(Level.SEVERE, "Failed to delete data: " + data.getRowId(), sqlEx);
         }
     }
+
     @Override
     public boolean clear() {
         boolean s;
-        try (Connection con = dataSource.getConnection();
-             Statement statement = con.createStatement()) {
+        try (
+                Connection con = dataSource.getConnection();
+                Statement statement = con.createStatement()
+        ) {
             statement.executeUpdate(DELETE_ALL);
             s = true;
         } catch (SQLException sqlEx) {
@@ -256,13 +290,17 @@ public class DatabaseSQL implements DataGetter {
         }
         try {
             createTables();
-        } catch (SQLException ignored) {}
+        } catch (SQLException ignored) {
+        }
         return s;
     }
+
     @Override
     public long getTotal() {
-        try (Connection con = dataSource.getConnection();
-             Statement statement = con.createStatement()) {
+        try (
+                Connection con = dataSource.getConnection();
+                Statement statement = con.createStatement()
+        ) {
             try (ResultSet resultSet = statement.executeQuery(COUNT_ALL)) {
                 resultSet.next();
                 return resultSet.getLong(1);
@@ -272,8 +310,11 @@ public class DatabaseSQL implements DataGetter {
             return 0;
         }
     }
+
     @Override
-    public void reload() {}
+    public void reload() {
+    }
+
     public void close() {
         dataSource.close();
     }

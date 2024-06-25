@@ -8,20 +8,26 @@ public enum SuccessEnum {
     BYPASS("bypass"),
     NONE("none"),
     NOT_ACTIVE("inactive"),
-    UNKNOWN("unknown"),;
+    UNKNOWN("unknown"),
+    ;
     private final String string;
+
     SuccessEnum(String string) {
         this.string = string;
     }
+
     public String string() {
         return string;
     }
+
     public boolean isWhitelisted() {
         return this != NONE && this != BYPASS;
     }
+
     public boolean isByPass() {
         return this == BYPASS;
     }
+
     public boolean optionalJoin() {
         return this != NONE;
     }

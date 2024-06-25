@@ -1,8 +1,8 @@
 package me.nobeld.noblewhitelist.discord.commands.admin;
 
-import me.nobeld.noblewhitelist.discord.language.CMDDescription;
 import me.nobeld.noblewhitelist.discord.config.ConfigData;
 import me.nobeld.noblewhitelist.discord.config.MessageData;
+import me.nobeld.noblewhitelist.discord.language.CMDDescription;
 import me.nobeld.noblewhitelist.discord.model.NWLDsData;
 import me.nobeld.noblewhitelist.discord.model.command.BaseCommand;
 import me.nobeld.noblewhitelist.discord.model.command.SubCommand;
@@ -22,12 +22,15 @@ import static org.incendo.cloud.parser.standard.StringParser.stringParser;
 
 public class AdminFind {
     private final NWLDsData data;
+
     public AdminFind(NWLDsData data) {
         this.data = data;
     }
+
     public List<BaseCommand> getCommands() {
         return List.of(player(), user());
     }
+
     private SubCommand player() {
         return new SubCommand(b -> b.literal("find", CMDDescription.find())
                 .optional("name", stringParser())
@@ -57,6 +60,7 @@ public class AdminFind {
         ) {
         };
     }
+
     private SubCommand user() {
         return new SubCommand(b -> b.literal("finduser", CMDDescription.findUser())
                 .required("user", userParser())
@@ -80,8 +84,9 @@ public class AdminFind {
                         for (String entry : entries) {
                             sb.append(entry).append("$$");
                         }
-                        Map<String,String> m = Map.of("count_total", String.valueOf(list.size()),
-                                "account_entry", sb.toString().replace("$$$$", "\n").replace("$$", ""));
+                        Map<String, String> m = Map.of("count_total", String.valueOf(list.size()),
+                                                       "account_entry", sb.toString().replace("$$$$", "\n").replace("$$", "")
+                                                      );
 
                         replyMsg(data, c, MessageData.Command.userAccounts, m);
                     }

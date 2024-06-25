@@ -20,9 +20,11 @@ public class FileManager {
     public static String separator() {
         return FileSystems.getDefault().getSeparator();
     }
+
     /**
      * Create a new instance of a Yaml File.
-     * @param path where the file will be saved.
+     *
+     * @param path     where the file will be saved.
      * @param resource the name of the resource from the plugin.
      * @return The yaml file instance.
      * @throws SimplixValidationException if the resource is not founded or another related error.
@@ -32,9 +34,11 @@ public class FileManager {
         yaml.forceReload();
         return yaml;
     }
+
     /**
      * Create a new instance of a Json File.
-     * @param path where the file will be saved.
+     *
+     * @param path     where the file will be saved.
      * @param resource the name of the resource from the plugin.
      * @return The json file instance.
      * @throws SimplixValidationException if the resource is not founded or another related error.
@@ -44,9 +48,11 @@ public class FileManager {
         json.forceReload();
         return json;
     }
+
     /**
      * Create a new instance of a Toml File.
-     * @param path where the file will be saved.
+     *
+     * @param path     where the file will be saved.
      * @param resource the name of the resource from the plugin.
      * @return The toml file instance.
      * @throws SimplixValidationException if the resource is not founded or another related error.
@@ -56,9 +62,11 @@ public class FileManager {
         toml.forceReload();
         return toml;
     }
+
     /**
      * Create a new instance of a Yaml File.
-     * @param path where the file will be saved.
+     *
+     * @param path   where the file will be saved.
      * @param stream input stream of the resource
      * @return The yaml file instance.
      * @throws SimplixValidationException if the resource is not founded or another related error.
@@ -69,9 +77,11 @@ public class FileManager {
         yaml.forceReload();
         return yaml;
     }
+
     /**
      * Create a new instance of a Json File.
-     * @param path where the file will be saved.
+     *
+     * @param path   where the file will be saved.
      * @param stream input stream of the resource
      * @return The json file instance.
      * @throws SimplixValidationException if the resource is not founded or another related error.
@@ -81,9 +91,11 @@ public class FileManager {
         json.forceReload();
         return json;
     }
+
     /**
      * Create a new instance of a Toml File.
-     * @param path where the file will be saved.
+     *
+     * @param path   where the file will be saved.
      * @param stream input stream of the resource
      * @return The toml file instance.
      * @throws SimplixValidationException if the resource is not founded or another related error.
@@ -93,6 +105,7 @@ public class FileManager {
         toml.forceReload();
         return toml;
     }
+
     public static FlatFile registerFile(FileType type, Path path, InputStream stream) {
         return switch (type) {
             case JSON -> registerJson(path, stream);
@@ -100,6 +113,7 @@ public class FileManager {
             case TOML -> registerToml(path, stream);
         };
     }
+
     public static FlatFile registerFile(FileType type, Path path, String resource) {
         return switch (type) {
             case JSON -> registerJson(path, resource);
@@ -107,13 +121,16 @@ public class FileManager {
             case TOML -> registerToml(path, resource);
         };
     }
+
     public static FlatFile registerFile(FileType type, Path path, @Nullable String resource, @Nullable InputStream stream, ConfigSettings settings, DataType dataType) {
         return switch (type) {
             case JSON -> createBuilder(path, resource, stream, settings, dataType).createJson();
-            case YAML -> createBuilder(path, resource, stream, settings, dataType).createYaml().addDefaultsFromInputStream();
+            case YAML ->
+                    createBuilder(path, resource, stream, settings, dataType).createYaml().addDefaultsFromInputStream();
             case TOML -> createBuilder(path, resource, stream, settings, dataType).createToml();
         };
     }
+
     private static SimplixBuilder createBuilder(Path path, @Nullable String resource, @Nullable InputStream stream, ConfigSettings settings, DataType type) {
         SimplixBuilder b = SimplixBuilder.fromPath(path);
         if (resource != null) {
@@ -123,11 +140,13 @@ public class FileManager {
         }
         return b.setConfigSettings(settings).setDataType(type);
     }
+
     public static WhitelistEntry stringToPlayer(String string) {
         if (string == null || string.isBlank() || string.equals("null") || string.equals("none")) return null;
         final String[] split = string.split(";");
         return new WhitelistEntry(split[0], UUIDUtil.parseUUID(split[1].trim()), Long.parseLong(split[2].trim()), Boolean.parseBoolean(split[3].trim()));
     }
+
     public enum FileType {
         JSON,
         YAML,

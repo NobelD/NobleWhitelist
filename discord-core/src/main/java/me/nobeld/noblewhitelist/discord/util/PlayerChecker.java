@@ -24,6 +24,7 @@ public class PlayerChecker {
         }
         return id;
     }
+
     public String checkPlayer(UUID id, int tries) {
         int intent = 0;
         String name = null;
@@ -34,6 +35,7 @@ public class PlayerChecker {
         }
         return name;
     }
+
     public UUID checkPlayer(String name) {
         UUID uuid = null;
         try {
@@ -54,6 +56,7 @@ public class PlayerChecker {
         }
         return uuid;
     }
+
     public String checkPlayer(UUID uuid) {
         String name = null;
         try {
@@ -74,11 +77,13 @@ public class PlayerChecker {
         }
         return name;
     }
+
     public static boolean isValid(String string) {
         Pattern pattern = Pattern.compile("[a-zA-Z0-9_]*");
         Matcher matcher = pattern.matcher(string);
         return !matcher.matches();
     }
+
     public static boolean isValidGeyser(String string) {
         Pattern pattern = Pattern.compile("[a-zA-Z0-9_.]*");
         Matcher matcher = pattern.matcher(string);

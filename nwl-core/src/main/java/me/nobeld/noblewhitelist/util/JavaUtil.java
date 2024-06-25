@@ -14,6 +14,7 @@ public class JavaUtil {
             return false;
         }
     }
+
     public static boolean hasClass(String... classNames) {
         for (String className : classNames) {
             if (hasClass(className)) {
@@ -22,6 +23,7 @@ public class JavaUtil {
         }
         return false;
     }
+
     public static <K extends Comparable<? super K>, V> Map<K, V> sortByKey(Map<K, V> map) {
         List<Map.Entry<K, V>> list = new ArrayList<>(map.entrySet());
         list.sort(Map.Entry.comparingByKey());
@@ -32,6 +34,7 @@ public class JavaUtil {
         }
         return sorted;
     }
+
     public static String buildString(Object... string) {
         StringBuilder builder = new StringBuilder();
         for (Object s : string) {

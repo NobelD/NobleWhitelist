@@ -9,8 +9,4 @@ public class FileToml extends FileFlat<Toml> {
     public FileToml(NWLData data) {
         super(data, "toml", false, p -> FileManager.registerToml(p, (String) null));
     }
-    @Override
-    public Toml whitelistFile() {
-        return super.whitelistFile();
-    }
 }

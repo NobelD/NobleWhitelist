@@ -6,27 +6,35 @@ public record SuccessData(PlayerWrapper player, boolean name, boolean uuid, bool
     public boolean hasAny() {
         return name || uuid || perm;
     }
+
     public boolean hasAll() {
         return name && uuid && perm;
     }
+
     public boolean isNormal() {
         return name && uuid;
     }
+
     public boolean isWhitelisted() {
         return name || uuid;
     }
+
     public boolean isBypass() {
         return perm;
     }
+
     public boolean onlyName() {
         return name && !(uuid || perm);
     }
+
     public boolean onlyUuid() {
         return uuid && !(name || perm);
     }
+
     public boolean onlyPerm() {
         return perm && !(name || uuid);
     }
+
     public SuccessEnum successEnum() {
         if (hasAll()) return SuccessEnum.ALL;
         if (isNormal()) return SuccessEnum.NORMAL;

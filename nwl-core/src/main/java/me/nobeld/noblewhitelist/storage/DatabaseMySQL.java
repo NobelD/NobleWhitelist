@@ -37,9 +37,11 @@ public class DatabaseMySQL extends DatabaseSQL {
     private static final String JDBC_PROTOCOL = "jdbc:";
     private static final String MYSQL_DRIVER = "com.mysql.cj.jdbc.Driver";
     private static final String MARIADB_DRIVER = "org.mariadb.jdbc.Driver";
+
     public DatabaseMySQL(NWLData data, String poolName, ThreadFactory threadFactory, String driver, String ip, int port, String database, HikariConfig config) {
         super(data, poolName, threadFactory, setParams(driver, ip, port, database, config));
     }
+
     private static HikariConfig setParams(String driver, String host, int port, String database, HikariConfig config) {
         if (driver.trim().equalsIgnoreCase("mysql")) {
             config.setDriverClassName(MYSQL_DRIVER);
@@ -60,6 +62,7 @@ public class DatabaseMySQL extends DatabaseSQL {
         addPerformanceProperties(config);
         return config;
     }
+
     private static String buildJDBCUrl(String driver, String host, int port, String database) {
         MySQLVariant variant = MySQLVariant.fromDriver(driver);
         if (variant == null) {
@@ -68,6 +71,7 @@ public class DatabaseMySQL extends DatabaseSQL {
 
         return variant.getJdbcPrefix() + "://" + host + ':' + port + '/' + database;
     }
+
     private static void addPerformanceProperties(HikariConfig config) {
         // disabled by default - will return the same prepared statement instance
         config.addDataSourceProperty("cachePrepStmts", true);
@@ -98,10 +102,12 @@ public class DatabaseMySQL extends DatabaseSQL {
         // In our case it can be useful to see the time in error messages
         // config.addDataSourceProperty("maintainTimeStats", false);
     }
+
     enum MySQLVariant {
         MYSQL("mysql"),
         MARIADB("mariadb");
         private final String jdbcPrefix;
+
         public static MySQLVariant fromDriver(String driver) {
             String normalizedDriver = driver.toLowerCase(Locale.ENGLISH);
             if (normalizedDriver.contains("mysql")) {
@@ -111,9 +117,11 @@ public class DatabaseMySQL extends DatabaseSQL {
             }
             return null;
         }
+
         MySQLVariant(String jdbcPrefix) {
             this.jdbcPrefix = jdbcPrefix;
         }
+
         public String getJdbcPrefix() {
             return jdbcPrefix;
         }

@@ -1,11 +1,11 @@
 package me.nobeld.noblewhitelist.command.admin;
 
+import me.nobeld.noblewhitelist.NobleWhitelist;
 import me.nobeld.noblewhitelist.command.NWLFindMethod;
-import me.nobeld.noblewhitelist.model.command.SubCommand;
+import me.nobeld.noblewhitelist.language.MessageData;
 import me.nobeld.noblewhitelist.model.command.BaseCommand;
 import me.nobeld.noblewhitelist.model.command.OptionCommand;
-import me.nobeld.noblewhitelist.NobleWhitelist;
-import me.nobeld.noblewhitelist.language.MessageData;
+import me.nobeld.noblewhitelist.model.command.SubCommand;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
@@ -20,6 +20,7 @@ public class FindCommand extends OptionCommand<CommandSender> {
     public FindCommand(NobleWhitelist plugin) {
         super(b -> b.literal("find").permission("noblewhitelist.admin.find"), commands(plugin));
     }
+
     private static List<BaseCommand<CommandSender>> commands(NobleWhitelist plugin) {
         SubCommand<CommandSender> findUuid = new SubCommand<>(b -> b
                 .literal("uuid")

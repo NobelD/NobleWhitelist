@@ -24,22 +24,25 @@ public class NWLRemoveMethod {
             else sendMsg(context, MessageData.serverAmount(false, total), mapper);
         }
     }
+
     public static <T> void uuid(NWLData data, CommandContext<T> context, Function<T, Audience> mapper, UUID uuid) {
         if (data.whitelistData().deleteUser(null, uuid))
             sendMsg(context, MessageData.playerRemoved(uuid), mapper);
         else sendMsg(context, MessageData.playerNotFound(uuid), mapper);
     }
+
     public static <T> void name(NWLData data, CommandContext<T> context, Function<T, Audience> mapper, String name) {
         if (data.whitelistData().deleteUser(name, null))
             sendMsg(context, MessageData.playerRemoved(name), mapper);
         else sendMsg(context, MessageData.playerNotFound(name), mapper);
     }
+
     public static <T> void me(NWLData data, CommandContext<T> context, Function<T, Audience> mapper, PlayerWrapper player) {
         data.whitelistData().getEntry(player)
                 .ifPresentOrElse(d -> {
-                            data.whitelistData().deleteUser(player);
-                            sendMsg(context, MessageData.playerSelfRemoved(), mapper);
-                        }, () -> sendMsg(context, MessageData.playerSelfNotFound(), mapper)
-                );
+                                     data.whitelistData().deleteUser(player);
+                                     sendMsg(context, MessageData.playerSelfRemoved(), mapper);
+                                 }, () -> sendMsg(context, MessageData.playerSelfNotFound(), mapper)
+                                );
     }
 }

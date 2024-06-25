@@ -14,18 +14,20 @@ public class NWLToggleMethod {
     public static <T> void uuid(NWLData data, CommandContext<T> context, Function<T, Audience> mapper, UUID uuid, boolean toggle) {
         data.whitelistData().getEntry(null, uuid, -1)
                 .ifPresentOrElse(d -> {
-                            if (d.isWhitelisted() == toggle)
-                                sendMsg(context, MessageData.playerToggledAlready(toggle), mapper);
-                            else {
-                                data.whitelistData().toggleJoin(d, toggle);
-                                sendMsg(context, MessageData.playerToggled(uuid, toggle), mapper);
-                            }
-                        }, () -> sendMsg(context, MessageData.playerNotFound(uuid), mapper)
-                );
+                                     if (d.isWhitelisted() == toggle)
+                                         sendMsg(context, MessageData.playerToggledAlready(toggle), mapper);
+                                     else {
+                                         data.whitelistData().toggleJoin(d, toggle);
+                                         sendMsg(context, MessageData.playerToggled(uuid, toggle), mapper);
+                                     }
+                                 }, () -> sendMsg(context, MessageData.playerNotFound(uuid), mapper)
+                                );
     }
+
     public static <T> void name(NWLData data, CommandContext<T> context, Function<T, Audience> mapper, String name, boolean toggle) {
         data.whitelistData().getEntry(name, null, -1)
-                .ifPresentOrElse(d -> {
+                .ifPresentOrElse(
+                        d -> {
                             if (d.isWhitelisted() == toggle)
                                 sendMsg(context, MessageData.playerToggledAlready(toggle), mapper);
                             else {
@@ -34,11 +36,13 @@ public class NWLToggleMethod {
                             }
                         },
                         () -> sendMsg(context, MessageData.playerNotFound(name), mapper)
-                );
+                                );
     }
+
     public static <T> void discord(NWLData data, CommandContext<T> context, Function<T, Audience> mapper, long id, boolean toggle) {
         data.whitelistData().getEntry(null, null, id)
-                .ifPresentOrElse(d -> {
+                .ifPresentOrElse(
+                        d -> {
                             if (d.isWhitelisted() == toggle)
                                 sendMsg(context, MessageData.playerToggledAlready(toggle), mapper);
                             else {
@@ -47,6 +51,6 @@ public class NWLToggleMethod {
                             }
                         },
                         () -> sendMsg(context, MessageData.playerNotFound(id), mapper)
-                );
+                                );
     }
 }

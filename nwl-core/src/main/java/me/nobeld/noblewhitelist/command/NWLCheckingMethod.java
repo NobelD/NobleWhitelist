@@ -17,6 +17,7 @@ public class NWLCheckingMethod {
         sendMsg(context, MessageData.statusUuidCheck(data.getConfigD().checkUUID()), mapper);
         sendMsg(context, MessageData.statusPermCheck(data.getConfigD().checkPerm()), mapper);
     }
+
     public static <T> void changeCheck(NWLData data, CommandContext<T> context, Function<T, Audience> mapper, CheckingType type, CheckingOption option) {
         if (data.getConfigD().getChecking(type) == option) {
             sendMsg(context, MessageData.checkingAlready(type, option), mapper);

@@ -16,19 +16,23 @@ import java.util.List;
 import java.util.Map;
 
 import static me.nobeld.noblewhitelist.discord.commands.CommandManager.REQUIREMENTS_KEY;
-import static me.nobeld.noblewhitelist.discord.model.command.BaseCommand.*;
+import static me.nobeld.noblewhitelist.discord.model.command.BaseCommand.getRequirements;
+import static me.nobeld.noblewhitelist.discord.model.command.BaseCommand.replyMsg;
 import static me.nobeld.noblewhitelist.discord.util.DiscordUtil.parseMessage;
 import static org.incendo.cloud.parser.standard.EnumParser.enumParser;
 import static org.incendo.cloud.parser.standard.IntegerParser.integerParser;
 
 public class AdminWhitelist {
     private final NWLDsData data;
+
     public AdminWhitelist(NWLDsData data) {
         this.data = data;
     }
+
     public List<BaseCommand> getCommands() {
         return List.of(list(), on(), off(), permStatus(), permSet(), checkingStatus(), checkingSet());
     }
+
     private SubCommand list() {
         return new SubCommand(b -> b.literal("list", CMDDescription.entryList())
                 .optional("page", integerParser(1))
@@ -47,17 +51,20 @@ public class AdminWhitelist {
                         for (String entry : entries) {
                             sb.append("$$").append(entry).append("$$");
                         }
-                        Map<String,String> m = Map.of("count_total", String.valueOf(list.size()),
-                                "page", String.valueOf(page),
-                                "list_entry", sb.toString().replace("$$$$", "\n").replace("$$", ""));
+                        Map<String, String> m = Map.of("count_total", String.valueOf(list.size()),
+                                                       "page", String.valueOf(page),
+                                                       "list_entry", sb.toString().replace("$$$$", "\n").replace("$$", "")
+                                                      );
 
                         replyMsg(data, c, MessageData.Command.listPage, m);
-                    } else if (page > 1) replyMsg(data, c, MessageData.Error.whitelistPageEmpty, Map.of("page", String.valueOf(page)));
+                    } else if (page > 1)
+                        replyMsg(data, c, MessageData.Error.whitelistPageEmpty, Map.of("page", String.valueOf(page)));
                     else replyMsg(data, c, MessageData.Error.whitelistEmpty);
                 })
         ) {
         };
     }
+
     private SubCommand on() {
         return new SubCommand(b -> b.literal("on", CMDDescription.whitelistOn())
                 .meta(REQUIREMENTS_KEY, getRequirements(data, ConfigData.CommandsOpt.adminOn))
@@ -70,6 +77,7 @@ public class AdminWhitelist {
         ) {
         };
     }
+
     private SubCommand off() {
         return new SubCommand(b -> b.literal("off", CMDDescription.whitelistOff())
                 .meta(REQUIREMENTS_KEY, getRequirements(data, ConfigData.CommandsOpt.adminOff))
@@ -82,6 +90,7 @@ public class AdminWhitelist {
         ) {
         };
     }
+
     private SubCommand permStatus() {
         return new SubCommand(b -> b.literal("permstatus", CMDDescription.permStatus())
                 .meta(REQUIREMENTS_KEY, getRequirements(data, ConfigData.CommandsOpt.adminPermStatus))
@@ -95,6 +104,7 @@ public class AdminWhitelist {
         ) {
         };
     }
+
     private SubCommand permSet() {
         return new SubCommand(b -> b.literal("permset", CMDDescription.permSet())
                 .required("minimum", integerParser(-1))
@@ -108,18 +118,21 @@ public class AdminWhitelist {
         ) {
         };
     }
+
     private SubCommand checkingStatus() {
         return new SubCommand(b -> b.literal("checkstatus", CMDDescription.checkingStatus())
                 .meta(REQUIREMENTS_KEY, getRequirements(data, ConfigData.CommandsOpt.adminCheckStatus))
                 .handler(c ->
-                        replyMsg(data, c, MessageData.Command.checkStatus, Map.of(
-                        "checking_name", cParse(data.getNWL().getConfigD().checkName()),
-                        "checking_uuid", cParse(data.getNWL().getConfigD().checkUUID()),
-                        "checking_perm", cParse(data.getNWL().getConfigD().checkPerm()))
-                ))
+                                 replyMsg(data, c, MessageData.Command.checkStatus, Map.of(
+                                                  "checking_name", cParse(data.getNWL().getConfigD().checkName()),
+                                                  "checking_uuid", cParse(data.getNWL().getConfigD().checkUUID()),
+                                                  "checking_perm", cParse(data.getNWL().getConfigD().checkPerm())
+                                                                                          )
+                                         ))
         ) {
         };
     }
+
     private String cParse(CheckingOption opt) {
         return switch (opt) {
             case DISABLED -> data.getMessageD().getMsg(MessageData.PlaceHolders.checkingDisabled);
@@ -127,6 +140,7 @@ public class AdminWhitelist {
             case REQUIRED -> data.getMessageD().getMsg(MessageData.PlaceHolders.checkingRequired);
         };
     }
+
     private SubCommand checkingSet() {
         return new SubCommand(b -> b.literal("checkset", CMDDescription.checkingSet())
                 .required("type", enumParser(CheckingType.class))

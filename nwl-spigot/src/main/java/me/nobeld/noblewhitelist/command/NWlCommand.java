@@ -30,6 +30,7 @@ public class NWlCommand {
     private final LegacyPaperCommandManager<CommandSender> manager;
     private MinecraftHelp<CommandSender> minecraftHelp;
     private final ConfirmationManager<CommandSender> confirmationManager;
+
     public NWlCommand(NobleWhitelist plugin) {
         this.plugin = plugin;
         manager = new LegacyPaperCommandManager<>(
@@ -58,13 +59,13 @@ public class NWlCommand {
                 .defaultCommandExecutionHandler()
                 .registerTo(manager);
 
-        this.minecraftHelp = MinecraftHelp.<CommandSender>builder()
+        this.minecraftHelp = MinecraftHelp.<CommandSender> builder()
                 .commandManager(manager)
                 .audienceProvider(plugin.getAdventure()::senderAudience)
                 .commandPrefix("/nwl help")
                 .build();
 
-        ConfirmationConfiguration<CommandSender> configuration = ConfirmationConfiguration.<CommandSender>builder()
+        ConfirmationConfiguration<CommandSender> configuration = ConfirmationConfiguration.<CommandSender> builder()
                 .cache(GuavaCache.of(CacheBuilder.newBuilder().build()))
                 .noPendingCommandNotifier(c -> plugin.getAdventure().senderAudience(c).sendMessage(MessageData.confirmationNoMore()))
                 .confirmationRequiredNotifier((s, c) -> {
@@ -73,33 +74,38 @@ public class NWlCommand {
                         sendMsg(s, MessageData.clearSug2());
                     } else sendMsg(s, MessageData.confirmationRequired());
                 })
-        .build();
+                .build();
 
         confirmationManager = ConfirmationManager.confirmationManager(configuration);
         manager.registerCommandPostProcessor(confirmationManager.createPostprocessor());
         start();
     }
+
     public @NotNull MinecraftHelp<CommandSender> minecraftHelp() {
         return this.minecraftHelp;
     }
+
     public void minecraftHelp(final @NotNull MinecraftHelp<CommandSender> minecraftHelp) {
         this.minecraftHelp = minecraftHelp;
     }
+
     public void sendMsg(CommandContext<CommandSender> ctx, Component msg) {
         plugin.getAdventure().senderAudience(ctx.sender()).sendMessage(msg);
     }
+
     public void sendMsg(CommandSender sender, Component msg) {
         plugin.getAdventure().senderAudience(sender).sendMessage(msg);
     }
+
     private void start() {
         final Command.Builder<CommandSender> builder = this.manager
                 .commandBuilder("nwhitelist", Description.of("Command for the whitelist management"), "nwl", "noblewl", "nwhitelist")
                 .permission("noblewhitelist.admin");
 
         this.manager.command(builder.literal("confirm", Description.of("Used to confirm an important command"))
-                .permission("noblewhitelist.admin.confirm")
-                .handler(this.confirmationManager.createExecutionHandler()));
-        
+                                     .permission("noblewhitelist.admin.confirm")
+                                     .handler(this.confirmationManager.createExecutionHandler()));
+
         List<BaseCommand<CommandSender>> commands = new ArrayList<>();
         commands.add(new AddCommand(plugin));
         commands.add(new RemoveCommand(plugin));

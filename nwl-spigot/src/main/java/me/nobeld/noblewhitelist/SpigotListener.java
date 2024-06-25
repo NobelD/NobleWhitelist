@@ -19,6 +19,7 @@ import org.bukkit.event.player.PlayerLoginEvent;
 
 public class SpigotListener implements org.bukkit.event.Listener {
     private final NobleWhitelist data;
+
     public SpigotListener(NobleWhitelist data) {
         this.data = data;
     }
@@ -36,12 +37,14 @@ public class SpigotListener implements org.bukkit.event.Listener {
                 pair.getSecond(), pair.getFirst(), msg, event)
         );
     }
+
     @EventHandler
     public void onWhitelist(WhitelistPassEvent event) {
         if (event.isCancelled()) return;
         if (event.isWhitelistDisabled() || event.canPass()) return;
         disallowJoin(event.getJoinEvent(), event.getMessage());
     }
+
     @SuppressWarnings("deprecation")
     private void disallowJoin(PlayerLoginEvent event, Component msg) {
         if (data.hasPaper()) {
@@ -58,7 +61,7 @@ public class SpigotListener implements org.bukkit.event.Listener {
         }
         if (
                 (player.isOp() || player.hasPermission("noblewhitelist.admin.update")) &&
-                data.getUptChecker().canUpdate(data.getConfigD().get(ConfigData.ServerCF.notifyUpdate), true)
+                        data.getUptChecker().canUpdate(data.getConfigD().get(ConfigData.ServerCF.notifyUpdate), true)
         )
             data.getUptChecker().sendUpdate(data.getAdventure().playerAudience(player));
     }

@@ -40,8 +40,9 @@ public class CommandManager {
             RequirementPostprocessor.of(REQUIREMENTS_KEY, new NWLRequirementFailure());
     private final GuildRequirement guildRe;
     private final MemberRequirement memberRe;
-    // #TODO waiting for cloud button parser for premium suggestion
-    // #TODO waiting for cloud fix to discord options (options being not correct)
+
+    // TODO waiting for cloud button parser for premium suggestion
+    // TODO waiting for cloud fix to discord options (options being not correct)
     public CommandManager(NWLDsData data) {
         this.data = data;
         guildRe = new GuildRequirement(data);
@@ -55,22 +56,27 @@ public class CommandManager {
         cmdManager.discordSettings().set(DiscordSetting.AUTO_REGISTER_SLASH_COMMANDS, false);
         cmdManager.registerCommandPostProcessor(postprocessor);
     }
+
     public GuildRequirement getGuildRequirement() {
         return guildRe;
     }
+
     public MemberRequirement getMemberRe() {
         return memberRe;
     }
+
     public void registerCommands(Guild guild) {
         cmdManager.registerGuildCommands(guild);
     }
+
     public void loadCommands() {
         Command.Builder<JDAInteraction> adminBuilder = cmdManager
                 .commandBuilder("wladmin", CMDDescription.generalAdmin())
                 .apply(CommandScope.guilds())
                 .meta(REQUIREMENTS_KEY, Requirements.of(guildRe, memberRe));
 
-        if (data.getConfigD().get(ConfigData.Discord.serverManagePermission)) adminBuilder = adminBuilder.permission(DiscordPermission.of(Permission.getRaw(Permission.MANAGE_SERVER)));
+        if (data.getConfigD().get(ConfigData.Discord.serverManagePermission))
+            adminBuilder = adminBuilder.permission(DiscordPermission.of(Permission.getRaw(Permission.MANAGE_SERVER)));
 
         final Command.Builder<JDAInteraction> adminC = adminBuilder;
 
@@ -92,6 +98,7 @@ public class CommandManager {
 
         basicCmd.forEach(b -> b.register(cmdManager, basicBuilder));
     }
+
     public JDA5CommandManager<JDAInteraction> getCloudManager() {
         return cmdManager;
     }
