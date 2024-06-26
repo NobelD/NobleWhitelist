@@ -50,7 +50,7 @@ public class JDAManager {
 
     public void enableCommands() {
         if (bot == null) {
-            NobleWhitelist.adv().consoleAudience().sendMessage(AdventureUtil.formatAll("<prefix><red>No active bot was found, commands will not be registered!"));
+            data.getNWL().getAdventure().consoleAudience().sendMessage(AdventureUtil.formatAll("<prefix><red>No active bot was found, commands will not be registered!"));
             return;
         }
         cmdManager = new CommandManager(data);
