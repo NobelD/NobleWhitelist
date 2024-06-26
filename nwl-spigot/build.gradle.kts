@@ -4,7 +4,6 @@ plugins {
 }
 
 group = "me.nobeld.noblewhitelist"
-var realName = "NobleWhitelist"
 var apiType = "spigot"
 version = "2.0.0-SNAPSHOT"
 description = "A simple plugin for whitelist management."
@@ -44,7 +43,7 @@ dependencies {
         exclude(group = "net.kyori")
         exclude(group = "org.incendo")
     }
-    compileOnly("io.papermc.paper", "paper-api", "1.20.2-R0.1-SNAPSHOT")
+    compileOnly("io.papermc.paper", "paper-api", "1.20.4-R0.1-SNAPSHOT")
     implementation("io.papermc", "paperlib", "1.0.7")
 
     implementation("com.alessiodp.libby", "libby-paper", "2.0.0-20240104.190327-5") {
@@ -87,7 +86,7 @@ tasks {
     processResources {
         filteringCharset = Charsets.UTF_8.name()
         val props = mapOf(
-            "name" to realName,
+            "name" to rootProject.extra.get("realName"),
             "version" to project.version,
             "description" to project.description,
             "apiVersion" to "1.17"
@@ -102,7 +101,7 @@ tasks {
     }
 
     shadowJar {
-        archiveBaseName.set("${realName}-${apiType}")
+        archiveBaseName.set("${rootProject.extra.get("lowName")}-${apiType}")
         archiveClassifier.set("")
         fun reloc(pkg: String) = relocate(pkg, "me.nobeld.noblewhitelist.libs.$pkg")
 

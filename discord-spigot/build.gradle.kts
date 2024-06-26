@@ -4,7 +4,6 @@ plugins {
 }
 
 group = "me.nobeld.noblewhitelist.discord"
-var realName = "NWLDiscord"
 var apiType = "spigot"
 version = "2.0.0-SNAPSHOT"
 description = "Discord integration for the NobleWhitelist plugin."
@@ -46,7 +45,7 @@ dependencies {
         exclude(group = "com.github.MinnDevelopment")
         exclude(group = "com.google.code.gson")
     }
-    compileOnly("io.papermc.paper", "paper-api", "1.20.2-R0.1-SNAPSHOT")
+    compileOnly("io.papermc.paper", "paper-api", "1.20.4-R0.1-SNAPSHOT")
 
     compileOnly("com.alessiodp.libby", "libby-paper", "2.0.0-20240104.190327-5") {
         exclude(module = ("libby-core"))
@@ -83,7 +82,7 @@ tasks {
     processResources {
         filteringCharset = Charsets.UTF_8.name()
         val props = mapOf(
-            "name" to realName,
+            "name" to rootProject.extra.get("realNameDS"),
             "version" to project.version,
             "description" to project.description,
             "apiVersion" to "1.17"
@@ -104,7 +103,7 @@ tasks {
             incdep("com.alessiodp.libby:libby-core")
         }
 
-        archiveBaseName.set("${realName}-${apiType}")
+        archiveBaseName.set("${rootProject.extra.get("lowNameDS")}-${apiType}")
         archiveClassifier.set("")
         fun reloc(pkg: String) = relocate(pkg, "me.nobeld.noblewhitelist.discord.libs.$pkg")
         fun relocnwl(pkg: String) = relocate(pkg, "me.nobeld.noblewhitelist.libs.$pkg")
