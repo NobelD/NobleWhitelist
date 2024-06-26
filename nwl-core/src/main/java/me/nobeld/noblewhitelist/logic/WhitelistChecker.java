@@ -74,7 +74,7 @@ public class WhitelistChecker {
         if (entry.isEmpty()) return CheckType.INVALID;
         return checkEntry(entry.get(), player);
     }
-    
+
     public CheckType checkEntry(@NotNull WhitelistEntry entry, @NotNull PlayerWrapper player) {
         return checkEntry(entry, player, false);
     }

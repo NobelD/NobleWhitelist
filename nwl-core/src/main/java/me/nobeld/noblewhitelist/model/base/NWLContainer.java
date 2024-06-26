@@ -14,11 +14,6 @@ import me.nobeld.noblewhitelist.util.AdventureUtil;
 import me.nobeld.noblewhitelist.util.UpdateChecker;
 import net.kyori.adventure.audience.Audience;
 
-import org.jetbrains.annotations.Nullable;
-import java.util.List;
-import java.util.concurrent.ThreadFactory;
-import java.util.function.Function;
-
 public class NWLContainer {
     private final ConfigData config;
     private final MessageData message;
@@ -119,8 +114,9 @@ public class NWLContainer {
             update = new UpdateChecker(data, name, subType, consumer);
             return this;
         }
+
         public Builder loadStorage() {
-            PairData<DataGetter, StorageType> st = StorageLoader.setupStorage(data, config);
+            PairData<DataGetter, StorageType> st = new StorageLoader(data, config).setupStorage();
             storage = st.getFirst();
             type = st.getSecond();
             return this;
