@@ -2,11 +2,8 @@ package me.nobeld.noblewhitelist;
 
 import me.nobeld.noblewhitelist.api.event.AutoWhitelistEvent;
 import me.nobeld.noblewhitelist.api.event.WhitelistPassEvent;
-import me.nobeld.noblewhitelist.model.BPlayer;
 import me.nobeld.noblewhitelist.model.PairData;
-import me.nobeld.noblewhitelist.model.base.NWLData;
 import me.nobeld.noblewhitelist.model.whitelist.SuccessData;
-import me.nobeld.noblewhitelist.util.AdventureUtil;
 import me.nobeld.noblewhitelist.config.ConfigData;
 import me.nobeld.noblewhitelist.util.BukkitAdventure;
 import net.kyori.adventure.text.Component;

@@ -67,7 +67,7 @@ public class StorageLoader {
                         );
                     } else {
                         data.getAdventure().consoleAudience().sendMessage(AdventureUtil.formatAll("<prefix><green>Loading <yellow>local <green>database."));
-                        storageInst = new DatabaseSQLite(data, data.name(), getThreadFactory(), databaseConfig);
+                        storageInst = new DatabaseSQLite(data, data.name(), getThreadFactory(data), databaseConfig);
                     }
                     ((DatabaseSQL) storageInst).createTables();
                 }

@@ -86,21 +86,7 @@ public class WhitelistChecker {
      * @return result of the check
      */
     public CheckType checkEntry(@NotNull WhitelistEntry entry, @NotNull PlayerWrapper player, boolean ignoreUUID) {
-        String enName = entry.getName();
-        if (enName == null) return CheckType.NO_NAME;
-        String plName = player.getName();
-        UUID enUUID = ignoreUUID ? null : entry.getUUID();
-        UUID plUUID = player.getUUID();
-
-        if (enUUID == null) {
-            if (enName.equals(plName)) return CheckType.NO_UUID;
-            else if (enName.equalsIgnoreCase(plName)) return CheckType.NO_UUID_NAME_CAPS;
-            else return CheckType.NOT_MATCH;
-        }
-        if (data.getConfigD().get(ConfigData.WhitelistCF.skipName)) {
-            if (enUUID.equals(plUUID)) return CheckType.SKIPPED_NAME;
-            else return CheckType.NOT_MATCH;
-        }
+        return CheckType.getFromPlayer(entry, player, false, ignoreUUID);
     }
 
     /**
@@ -170,7 +156,7 @@ public class WhitelistChecker {
     public PairData<SuccessData, Boolean> canPass(PlayerWrapper player) {
         Optional<WhitelistEntry> entry = this.data.whitelistData().getEntry(player);
 
-        if (entry.isPresent() && this.data.getConfigD().get(ConfigData.WhitelistCF.enforceNameDiffID) && checkEntry(entry.get(), player) == CheckType.NAME_DIFFERENT_UUID)
+        if (entry.isPresent() && this.data.getConfigD().get(ConfigData.WhitelistCF.enforceNameDiffID) && checkEntry(entry.get(), player).diffUUIDYesName())
             return PairData.of(SuccessData.allFalse(player), false);
 
         SuccessData suc = createSuccess(entry.orElse(null), player);

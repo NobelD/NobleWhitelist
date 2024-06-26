@@ -6,16 +6,16 @@
     "url": "https://modrinth.com/plugin/noble-whitelist",
     "id": "hBuYjABw",
     "latest": {
-      "core": "1.2.4",
-      "spigot": "1.2.4"
+      "core": "2.0.0",
+      "spigot": "2.0.0"
     }
   },
   "NWLDiscord": {
     "url": "https://modrinth.com/plugin/noble-whitelist-discord-integration",
     "id": "WWbtvBwl",
     "latest": {
-      "core": "1.1.3",
-      "spigot": "1.1.3"
+      "core": "2.0.0",
+      "spigot": "2.0.0"
     }
   }
 }

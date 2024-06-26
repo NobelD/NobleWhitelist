@@ -30,6 +30,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ThreadFactory;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import static me.nobeld.noblewhitelist.config.FileManager.separator;
@@ -130,7 +131,7 @@ public class NobleWhitelist extends JavaPlugin implements NWLData {
     
     private void loadExtra() {
         this.api = new NobleWhitelistApi(this);
-        Bukkit.getServer().getPluginManager().registerEvents(new Listener(this), this);
+        Bukkit.getServer().getPluginManager().registerEvents(new SpigotListener(this), this);
         try {
             this.commands = new NWlCommand(this);
         } catch (Throwable e) {

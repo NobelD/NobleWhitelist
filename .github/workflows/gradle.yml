@@ -50,12 +50,12 @@ jobs:
       uses: actions/upload-artifact@v4.3.1
       with:
         name: NobleWhitelist
-        path: NobleWhitelist/build/libs/*.jar
+        path: nwl-spigot/build/libs/*.jar
         if-no-files-found: error
 
     - name: Upload a NWLDiscord
       uses: actions/upload-artifact@v4.3.1
       with:
         name: NWLDiscord
-        path: NWLDiscord/build/libs/*.jar
+        path: discord-spigot/build/libs/*.jar
         if-no-files-found: error
