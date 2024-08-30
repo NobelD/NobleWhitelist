@@ -40,12 +40,15 @@ public class JDAManager {
         this.token = config.configFile().getString("discord.bot-token");
 
         if ((token == null || token.isBlank() || token.isEmpty())) {
-            data.logger().log(Level.SEVERE, "There is no discord bot defined to use.");
-            data.logger().log(Level.SEVERE, "Some features will be disabled.");
+            data.logger().log(Level.SEVERE, "There is no discord bot defined to use.\nSome features will be disabled.");
             return;
         }
         loadChannels(config);
         start();
+    }
+
+    public Optional<Member> getMember(long id) {
+        return parseUserOpt(bot.getGuildById(data.getConfigD().get(ConfigData.Discord.serverID)), bot.getUserById(id));
     }
 
     public void enableCommands() {
@@ -135,6 +138,10 @@ public class JDAManager {
             guild.retrieveMember(user).queue();
         }
         return member;
+    }
+
+    public Optional<Member> parseUserOpt(@Nullable Guild guild, User user) {
+        return Optional.ofNullable(parseUser(guild, user));
     }
 
     public boolean hasRole(@Nullable Guild guild, User user, ConfigContainer<String> cont) {
