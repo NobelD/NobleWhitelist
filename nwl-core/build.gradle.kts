@@ -1,6 +1,6 @@
 plugins {
     id("java")
-    id("com.github.johnrengelman.shadow") version "8.1.1"
+    alias(libs.plugins.shadow)
 }
 
 group = "me.nobeld.noblewhitelist"
@@ -12,36 +12,22 @@ java {
 }
 
 repositories {
-    mavenCentral()
-    maven {
-        name = "sonatype"
-        url = uri("https://s01.oss.sonatype.org/content/repositories/snapshots/")
-    }
-    maven {
-        url = uri("https://repo.extendedclip.com/content/repositories/placeholderapi/")
-    }
-    maven {
-        name = "jitpack.io"
-        url = uri("https://jitpack.io")
-        content {
-            includeGroup("com.github.simplix-softworks")
-        }
-    }
+    maven("https://repo.extendedclip.com/content/repositories/placeholderapi/")
 }
 
 dependencies {
-    implementation("com.github.simplix-softworks", "simplixstorage", "3.2.6")
-    implementation("com.zaxxer", "HikariCP", "5.1.0")
-    implementation("org.xerial", "sqlite-jdbc", "3.44.1.0")
-    implementation("com.google.code.gson", "gson", "2.10.1")
+    implementation(libs.miscSimplixStorage)
+    implementation(libs.dbHikariCP)
+    implementation(libs.dbSqliteJDBC)
+    implementation(libs.miscGson)
 
-    compileOnly("me.clip", "placeholderapi", "2.11.5")
+    //compileOnly("me.clip", "placeholderapi", "2.11.5")
     compileOnly("io.github.miniplaceholders", "miniplaceholders-api", "2.2.3")
 
-    implementation("net.kyori", "adventure-text-minimessage", "4.15.0")
+    implementation(libs.adventureMiniMessage)
 
-    implementation("org.incendo", "cloud-minecraft-extras", "2.0.0-beta.4")
-    implementation("org.incendo", "cloud-processors-confirmation", "1.0.0-beta.2")
+    implementation(libs.cloudMCExtras)
+    implementation(libs.cloudConfirmation)
 }
 
 tasks {

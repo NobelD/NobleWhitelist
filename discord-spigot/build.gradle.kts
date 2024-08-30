@@ -1,10 +1,13 @@
+import xyz.jpenilla.resourcefactory.paper.PaperPluginYaml
+
 plugins {
     id("java")
-    id("com.github.johnrengelman.shadow") version "8.1.1"
+    id("xyz.jpenilla.resource-factory-bukkit-convention")
+    id("xyz.jpenilla.resource-factory-paper-convention")
+    alias(libs.plugins.shadow)
 }
 
 group = "me.nobeld.noblewhitelist.discord"
-var apiType = "spigot"
 version = "2.0.0-SNAPSHOT"
 description = "Discord integration for the NobleWhitelist plugin."
 
@@ -13,11 +16,6 @@ java {
 }
 
 repositories {
-    mavenCentral()
-    maven {
-        name = "sonatype"
-        url = uri("https://s01.oss.sonatype.org/content/repositories/snapshots/")
-    }
     maven {
         name = "papermc"
         url = uri("https://repo.papermc.io/repository/maven-public/")
@@ -26,9 +24,16 @@ repositories {
         name = "jitpack.io"
         url = uri("https://jitpack.io")
         content {
-            includeGroup("com.github.simplix-softworks")
             includeGroup("com.github.MinnDevelopment")
         }
+    }
+    maven {
+        name = "essentialsxReleases"
+        url = uri("https://repo.essentialsx.net/releases")
+    }
+    maven {
+        name = "discordsrv"
+        url = uri("https://nexus.scarsz.me/content/groups/public/")
     }
 }
 
@@ -38,14 +43,15 @@ dependencies {
         exclude(module = "nwl-core")
     }
     implementation(project(":discord-core")) {
-        exclude(module = "nwl-core")
-        exclude(group = "org.incendo")
-        exclude(group = "net.kyori")
-        exclude(group = "net.dv8tion")
-        exclude(group = "com.github.MinnDevelopment")
-        exclude(group = "com.google.code.gson")
+        isTransitive = false
+        //exclude(module = "nwl-core")
+        //exclude(group = "org.incendo")
+        //exclude(group = "net.kyori")
+        //exclude(group = "net.dv8tion")
+        //exclude(group = "com.github.MinnDevelopment")
+        //exclude(group = "com.google.code.gson")
     }
-    compileOnly("io.papermc.paper", "paper-api", "1.20.4-R0.1-SNAPSHOT")
+    compileOnly(libs.paperApi)
 
     compileOnly("com.alessiodp.libby", "libby-paper", "2.0.0-20240104.190327-5") {
         exclude(module = ("libby-core"))
@@ -53,22 +59,26 @@ dependencies {
     compileOnly("com.alessiodp.libby", "libby-bukkit", "2.0.0-20240104.190327-5") {
         exclude(module = ("libby-core"))
     }
-    compileOnly("com.alessiodp.libby", "libby-core", "2.0.0-20240104.190327-5") {
+    compileOnly(libs.miscLibbyCore) {
         exclude(module = ("spigot-api"))
     }
 
-    compileOnly("com.github.simplix-softworks", "simplixstorage", "3.2.6")
-    compileOnly("org.incendo", "cloud-jda5", "1.0.0-beta.2")
-    compileOnly("org.incendo", "cloud-processors-requirements", "1.0.0-beta.2")
+    compileOnly(libs.miscSimplixStorage)
+    compileOnly(libs.cloudJDA)
+    compileOnly(libs.cloudRequeriments)
 
-    compileOnly("net.dv8tion", "JDA", "5.0.0-beta.20") {
+    compileOnly(libs.discordJDA) {
         exclude(module = "opus-java")
     }
-    compileOnly("com.github.MinnDevelopment", "emoji-java", "v6.1.0")
-    compileOnly("club.minnced", "discord-webhooks", "0.8.4") {
+    compileOnly(libs.discordEmojiJava)
+    compileOnly(libs.discordWebhooks) {
         exclude(module = "okhttp")
     }
-    compileOnly("org.apache.logging.log4j", "log4j-core", "2.17.1")
+    compileOnly(libs.miscLog4j)
+
+    compileOnly("net.essentialsx", "EssentialsXDiscord", "2.20.1")
+    compileOnly("net.essentialsx", "EssentialsXDiscordLink", "2.20.1")
+    compileOnly("com.discordsrv", "discordsrv", "1.28.0")
 }
 
 tasks {
@@ -78,19 +88,6 @@ tasks {
     compileJava {
         options.encoding = Charsets.UTF_8.name()
         options.release.set(17)
-    }
-    processResources {
-        filteringCharset = Charsets.UTF_8.name()
-        val props = mapOf(
-            "name" to rootProject.extra.get("realNameDS"),
-            "version" to project.version,
-            "description" to project.description,
-            "apiVersion" to "1.17"
-        )
-        inputs.properties(props)
-        filesMatching("plugin.yml") {
-            expand(props)
-        }
     }
 
     shadowJar {
@@ -103,7 +100,7 @@ tasks {
             incdep("com.alessiodp.libby:libby-core")
         }
 
-        archiveBaseName.set("${rootProject.extra.get("lowNameDS")}-${apiType}")
+        archiveBaseName.set("${rootProject.extra.get("dsLowName")}-${rootProject.extra.get("spigotName")}")
         archiveClassifier.set("")
         fun reloc(pkg: String) = relocate(pkg, "me.nobeld.noblewhitelist.discord.libs.$pkg")
         fun relocnwl(pkg: String) = relocate(pkg, "me.nobeld.noblewhitelist.libs.$pkg")
@@ -137,4 +134,28 @@ tasks {
         reloc("org.jetbrains")
         // reloc("org.incendo")
     }
+}
+
+bukkitPluginYaml {
+    main = "me.nobeld.noblewhitelist.discord.NWLDiscord"
+    name = rootProject.extra.get("dsFormatName").toString()
+    prefix = name
+    version = project.version.toString()
+    description = project.description
+    apiVersion = rootProject.extra.get("apiVersion").toString()
+    author = rootProject.extra.get("projectAuthor").toString()
+    website = rootProject.extra.get("projectRepository").toString()
+    depend.add(rootProject.extra.get("formatName").toString())
+}
+
+paperPluginYaml {
+    main = bukkitPluginYaml.main
+    name = bukkitPluginYaml.name
+    prefix = bukkitPluginYaml.prefix
+    description = bukkitPluginYaml.description
+    version = bukkitPluginYaml.version
+    apiVersion = bukkitPluginYaml.apiVersion
+    author = bukkitPluginYaml.author
+    website = bukkitPluginYaml.website
+    dependencies.server(name= rootProject.extra.get("formatName").toString(), load= PaperPluginYaml.Load.BEFORE, required= true, joinClasspath = true)
 }

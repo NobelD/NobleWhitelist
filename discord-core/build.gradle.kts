@@ -1,6 +1,6 @@
 plugins {
     id("java")
-    id("com.github.johnrengelman.shadow") version "8.1.1"
+    alias(libs.plugins.shadow)
 }
 
 group = "me.nobeld.noblewhitelist.discord"
@@ -12,11 +12,6 @@ java {
 }
 
 repositories {
-    mavenCentral()
-    maven {
-        name = "sonatype"
-        url = uri("https://s01.oss.sonatype.org/content/repositories/snapshots/")
-    }
     maven {
         name = "papermc"
         url = uri("https://repo.papermc.io/repository/maven-public/")
@@ -25,7 +20,6 @@ repositories {
         name = "jitpack.io"
         url = uri("https://jitpack.io")
         content {
-            includeGroup("com.github.simplix-softworks")
             includeGroup("com.github.MinnDevelopment")
         }
     }
@@ -34,21 +28,21 @@ repositories {
 dependencies {
     compileOnly(project(":nwl-core"))
 
-    compileOnly("com.github.simplix-softworks", "simplixstorage", "3.2.6")
-    implementation("org.incendo", "cloud-jda5", "1.0.0-beta.2")
-    implementation("org.incendo", "cloud-processors-requirements", "1.0.0-beta.2")
+    compileOnly(libs.miscSimplixStorage)
+    implementation(libs.cloudJDA)
+    implementation(libs.cloudRequeriments)
 
-    implementation("net.kyori", "adventure-text-minimessage", "4.15.0")
+    implementation(libs.adventureMiniMessage)
 
-    implementation("net.dv8tion", "JDA", "5.0.0-beta.20") {
+    implementation(libs.discordJDA) {
         exclude(module = "opus-java")
     }
-    implementation("com.github.MinnDevelopment", "emoji-java", "v6.1.0")
-    implementation("club.minnced", "discord-webhooks", "0.8.4") {
+    implementation(libs.discordEmojiJava)
+    implementation(libs.discordWebhooks) {
         exclude(module = "okhttp")
     }
-    compileOnly("org.apache.logging.log4j", "log4j-core", "2.17.1")
-    implementation("com.google.code.gson", "gson", "2.10.1")
+    compileOnly(libs.miscLog4j)
+    implementation(libs.miscGson)
 }
 
 tasks {
