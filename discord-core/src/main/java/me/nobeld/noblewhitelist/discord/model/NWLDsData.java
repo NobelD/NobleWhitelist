@@ -5,7 +5,7 @@ import me.nobeld.noblewhitelist.discord.config.ConfigData;
 import me.nobeld.noblewhitelist.discord.config.MessageData;
 import me.nobeld.noblewhitelist.model.base.BaseVersioning;
 import me.nobeld.noblewhitelist.model.base.NWLData;
-import me.nobeld.noblewhitelist.util.UpdateChecker;
+import me.nobeld.noblewhitelist.misc.UpdateChecker;
 
 import java.io.InputStream;
 

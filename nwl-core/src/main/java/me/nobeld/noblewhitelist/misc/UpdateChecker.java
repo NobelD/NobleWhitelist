@@ -1,4 +1,4 @@
-package me.nobeld.noblewhitelist.util;
+package me.nobeld.noblewhitelist.misc;
 
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;

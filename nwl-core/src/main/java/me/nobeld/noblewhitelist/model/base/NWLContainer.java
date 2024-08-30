@@ -11,7 +11,7 @@ import me.nobeld.noblewhitelist.model.storage.DataGetter;
 import me.nobeld.noblewhitelist.model.storage.StorageType;
 import me.nobeld.noblewhitelist.storage.root.DatabaseSQL;
 import me.nobeld.noblewhitelist.util.AdventureUtil;
-import me.nobeld.noblewhitelist.util.UpdateChecker;
+import me.nobeld.noblewhitelist.misc.UpdateChecker;
 import net.kyori.adventure.audience.Audience;
 
 public class NWLContainer {

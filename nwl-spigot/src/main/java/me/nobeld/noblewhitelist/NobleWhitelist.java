@@ -14,6 +14,7 @@ import me.nobeld.noblewhitelist.language.MessageData;
 import me.nobeld.noblewhitelist.logic.StorageLoader;
 import me.nobeld.noblewhitelist.logic.WhitelistChecker;
 import me.nobeld.noblewhitelist.logic.WhitelistData;
+import me.nobeld.noblewhitelist.misc.UpdateChecker;
 import me.nobeld.noblewhitelist.model.PairData;
 import me.nobeld.noblewhitelist.model.base.AdvPlatformManager;
 import me.nobeld.noblewhitelist.model.base.NWLContainer;
@@ -154,11 +155,8 @@ public class NobleWhitelist extends JavaPlugin implements NWLData {
 
     @Override
     public ThreadFactory createThread(String name) {
-        // Code from https://github.com/games647/FastLogin
         return new ThreadFactoryBuilder()
                 .setNameFormat(name)
-                // Hikari create daemons by default. We could use daemon threads for our own scheduler too
-                // because we safely shut down
                 .setDaemon(true)
                 .build();
     }

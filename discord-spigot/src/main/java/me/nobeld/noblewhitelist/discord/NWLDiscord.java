@@ -11,7 +11,7 @@ import me.nobeld.noblewhitelist.model.PairData;
 import me.nobeld.noblewhitelist.model.base.NWLData;
 import me.nobeld.noblewhitelist.util.AdventureUtil;
 import me.nobeld.noblewhitelist.util.SpigotMetrics;
-import me.nobeld.noblewhitelist.util.UpdateChecker;
+import me.nobeld.noblewhitelist.misc.UpdateChecker;
 import org.bukkit.Bukkit;
 import org.bukkit.event.HandlerList;
 import org.bukkit.plugin.Plugin;
