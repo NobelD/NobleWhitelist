@@ -4,7 +4,6 @@ import me.nobeld.noblewhitelist.config.ConfigData;
 import me.nobeld.noblewhitelist.model.PairData;
 import me.nobeld.noblewhitelist.model.base.NWLData;
 import me.nobeld.noblewhitelist.model.base.PlayerWrapper;
-import me.nobeld.noblewhitelist.model.checking.CheckingOption;
 import me.nobeld.noblewhitelist.model.whitelist.CheckType;
 import me.nobeld.noblewhitelist.model.whitelist.SuccessData;
 import me.nobeld.noblewhitelist.model.whitelist.SuccessEnum;
@@ -159,21 +158,12 @@ public class WhitelistChecker {
         if (entry.isPresent() && this.data.getConfigD().get(ConfigData.WhitelistCF.enforceNameDiffID) && checkEntry(entry.get(), player).diffUUIDYesName())
             return PairData.of(SuccessData.allFalse(player), false);
 
-        SuccessData suc = createSuccess(entry.orElse(null), player);
+        final SuccessData suc = createSuccess(entry.orElse(null), player);
 
-        CheckingOption name = this.data.getConfigD().checkName();
-        CheckingOption uuid = this.data.getConfigD().checkUUID();
-        CheckingOption perm = this.data.getConfigD().checkPerm();
-
-        boolean result;
-        if (name.isRequired() && !suc.onlyName()) result = false;
-        else if (uuid.isRequired() && !suc.onlyUuid()) result = false;
-        else if (perm.isRequired() && !suc.onlyPerm()) result = false;
-        else if (name.isDisabled()) result = suc.uuid() || suc.perm();
-        else if (uuid.isDisabled()) result = suc.name() || suc.perm();
-        else if (perm.isDisabled()) result = suc.name() || suc.uuid();
-        else result = suc.hasAny();
-
-        return PairData.of(suc, result);
+        return PairData.of(suc, suc.forCheck(
+                this.data.getConfigD().checkName(),
+                this.data.getConfigD().checkUUID(),
+                this.data.getConfigD().checkPerm()
+                                            ));
     }
 }

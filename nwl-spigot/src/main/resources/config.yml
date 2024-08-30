@@ -8,10 +8,9 @@ whitelist:
   # Useful if you want to enable the whitelist time later and keep the players who joined in the whitelist.
   auto-register: false
   # Posible values for checking:
-  # DISABLED - will not be used when checking.
-  # OPTIONAL - will be an option when checking.
-  # REQUIRED - will be necessary for the player
-  # if all disabled, then the whitelist will not block players even if its enabled.
+  # DISABLED - will be ignored when checking, if all are disabled the player will always be able to join.
+  # OPTIONAL - will be an option when checking, when multiple are optional at least one of these needs to match.
+  # REQUIRED - will be always necessary for the player to join.
   # The bypass permission is "noblewhitelist.bypass" or had op.
   # If name and uuid are required, then this will not allow adding players with the command if both the name and uuid are not specified.
   checking:
