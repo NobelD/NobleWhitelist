@@ -1,6 +1,7 @@
 package me.nobeld.noblewhitelist.config;
 
 import de.leonhard.storage.internal.FlatFile;
+import de.leonhard.storage.sections.FlatFileSection;
 import me.nobeld.noblewhitelist.NobleWhitelist;
 import me.nobeld.noblewhitelist.model.checking.CheckingOption;
 import me.nobeld.noblewhitelist.model.checking.CheckingType;
@@ -8,6 +9,8 @@ import me.nobeld.noblewhitelist.model.storage.ConfigContainer;
 
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.logging.Level;
 
 public class ConfigData {
@@ -38,25 +41,31 @@ public class ConfigData {
         toUpperCase(WhitelistCF.checkUUID);
         toUpperCase(WhitelistCF.checkPerm);
 
+        List<String> remove = new ArrayList<>();
+
         if (get(ServerCF.configVersion) <= 2) {
-            configFile().remove("whitelist.count-op-as-bypass");
+            remove.add("whitelist.count-op-as-bypass");
 
             boolean oldClose = configFile().get("storage.close-if-failed", false);
             if (oldClose) configFile().set("storage.action-if-fail", "CLOSE");
             else configFile().set("storage.action-if-fail", "NONE");
-            configFile().remove("storage.close-if-failed");
+            remove.add("storage.close-if-failed");
 
             set(ServerCF.configVersion, 3);
         }
 
-        if (configFile().get("whitelist.max-uuid-list") != null) {
-            configFile().remove("whitelist.max-uuid-list");
+        if (configFile().contains("whitelist.max-uuid-list")) {
+            remove.add("whitelist.max-uuid-list");
             configFile().set(StorageCF.storageType.path(), "yaml");
         }
-        if (configFile().getSection("incompatibilities").singleLayerKeySet().isEmpty()) return;
-        configFile().getSection("incompatibilities").remove("check-invalid-char");
-        configFile().getSection("incompatibilities").remove("to-use");
-        configFile().getSection("incompatibilities").remove("to-change");
+        if (!configFile().getSection("incompatibilities").singleLayerKeySet().isEmpty()) {
+            FlatFileSection sec = configFile().getSection("incompatibilities");
+            remove.add("incompatibilities.check-invalid-char");
+            remove.add("incompatibilities.to-use");
+            remove.add("incompatibilities.to-change");
+        }
+        if (!remove.isEmpty())
+            configFile().removeAll(remove.toArray(new String[0]));
     }
     public String getPrefix() {
         return configFile().getString("messages.prefix");
@@ -66,8 +75,9 @@ public class ConfigData {
     }
     private void toUpperCase(ConfigContainer<?> cont) {
         String string = configFile().getString(cont.path());
-        string = string.toUpperCase();
-        configFile().set(cont.path(), string);
+        String s1 = string.toUpperCase();
+        if (!string.equals(s1))
+            configFile().set(cont.path(), s1);
     }
     public <T> T get(ConfigContainer<T> container) {
         try {
@@ -107,6 +117,8 @@ public class ConfigData {
         public static final ConfigContainer<Integer> permissionMinimum = new ConfigContainer<>("whitelist.permission-minimum-number", -1);
         public static final ConfigContainer<Boolean> autoRegister = new ConfigContainer<>("whitelist.auto-register", false);
         public static final ConfigContainer<Boolean> enforceNameDiffID = new ConfigContainer<>("whitelist.enforce-uuid-if-different-name", false);
+        public static final ConfigContainer<Boolean> useCustomPermission = new ConfigContainer<>("whitelist.use-custom-permission", false);
+        public static final ConfigContainer<String> customPermission = new ConfigContainer<>("whitelist.custom-permission", "");
     }
     public static class SkipCF {
         public static final ConfigContainer<Boolean> skipUUID = new ConfigContainer<>("skip.skip-uuid-save", false);

@@ -8,18 +8,21 @@ whitelist:
   # If you have a low-performance server this can help a little.
   skip-name-change: false
   # Posible values for checking:
-  # DISABLED - will not be used when checking.
-  # OPTIONAL - will be an option when checking.
-  # REQUIRED - will be necessary for the player
-  # if all disabled, then the whitelist will not block players even if its enabled.
-  # The bypass permission is "noblewhitelist.bypass" or had op.
+  # DISABLED - will be ignored when checking, if all are disabled the player will always be able to join.
+  # OPTIONAL - will be an option when checking, when multiple are optional at least one of these needs to match.
+  # REQUIRED - will be always necessary for the player to join.
+  # The bypass permission can be changed (default is "noblewhitelist.bypass") or had op.
   # If name and uuid are required, then this will not allow adding players with the command if both the name and uuid are not specified.
   checking:
     name: OPTIONAL
     uuid: OPTIONAL
     perm: DISABLED
-  # Makes the plugin to only count op players for the bypass permission (and disables the bypass permission)
+  # Makes the plugin to only count op players for the bypass permission (disables other bypass permission methods)
   only-op-as-permission: false
+  # Enables the use of a custom permission, when enabled the permission by number is disabled.
+  use-custom-permission: false
+  # The permission to check for the player.
+  custom-permission: "example.permission"
   # Defines the minimum allowed bypass permission number (noblewhitelist.bypass.<number>)
   # Set to -1 to disable the permission numbers (noblewhitelist.bypass ignores number)
   permission-minimum-number: -1
