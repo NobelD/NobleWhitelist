@@ -8,7 +8,6 @@ import me.nobeld.noblewhitelist.discord.model.NWLDContainer;
 import me.nobeld.noblewhitelist.discord.model.NWLDsData;
 import me.nobeld.noblewhitelist.model.PairData;
 import me.nobeld.noblewhitelist.model.base.NWLData;
-import me.nobeld.noblewhitelist.util.AdventureUtil;
 import me.nobeld.noblewhitelist.util.SpigotMetrics;
 import me.nobeld.noblewhitelist.util.UpdateChecker;
 import me.nobeld.noblewhitelist.discord.config.MessageData;
@@ -43,13 +42,7 @@ public class NWLDiscord extends JavaPlugin implements NWLDsData {
                 .loadFiles(getDataFolder().getPath(), PairData.of("config.yml", FileManager.FileType.YAML), PairData.of("messages.yml", FileManager.FileType.YAML))
                 .load(() -> Bukkit.getServer().getPluginManager().registerEvents(new Listener(this), this))
                 .loadJDA()
-                .loadUpdateChecker(
-                        "NWLDiscord",
-                        "spigot",
-                        (a, l, p) -> {
-                            a.sendMessage(AdventureUtil.formatAll("<prefix><#F1B65C>It seems that you are not using the latest version of <gold>NWL Discord <dark_green>| <#F1B65C>Latest: <#FF8B4D>" + l));
-                            a.sendMessage(AdventureUtil.formatAll("<prefix><#F1B65C>Download it at: <#75CDFF>" + p));
-                        })
+                .loadUpdateChecker("NWLDiscord", "spigot")
                 .printMessage()
                 .load(() -> {
                     SpigotMetrics metrics = new SpigotMetrics(this, 20417);

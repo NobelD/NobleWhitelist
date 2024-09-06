@@ -57,8 +57,8 @@ public class Listener implements org.bukkit.event.Listener {
         }
         if (
                 (player.isOp() || player.hasPermission("noblewhitelist.admin.update")) &&
-                data.getUptChecker().canUpdate(data.getConfigD().get(ConfigData.ServerCF.notifyUpdate), true)
+                data.getConfigD().get(ConfigData.ServerCF.notifyUpdate)
         )
-            data.getUptChecker().sendUpdate(data.getAdventure().playerAudience(player));
+            data.getUptChecker().sendStatus(data.getAdventure().playerAudience(player), true);
     }
 }
