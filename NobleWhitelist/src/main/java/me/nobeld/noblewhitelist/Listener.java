@@ -23,6 +23,8 @@ public class Listener implements org.bukkit.event.Listener {
     }
     @EventHandler(priority = EventPriority.HIGHEST)
     public void onLogin(PlayerLoginEvent event) {
+        if (!(event.getResult() == PlayerLoginEvent.Result.ALLOWED || event.getResult() == PlayerLoginEvent.Result.KICK_WHITELIST))
+            return;
         Player player = event.getPlayer();
         Component msg = data.getMessageD().kickMsg(player.getName());
         if (data.isBlocked()) {
@@ -57,8 +59,8 @@ public class Listener implements org.bukkit.event.Listener {
         }
         if (
                 (player.isOp() || player.hasPermission("noblewhitelist.admin.update")) &&
-                data.getUptChecker().canUpdate(data.getConfigD().get(ConfigData.ServerCF.notifyUpdate), true)
+                data.getConfigD().get(ConfigData.ServerCF.notifyUpdate)
         )
-            data.getUptChecker().sendUpdate(data.getAdventure().playerAudience(player));
+            data.getUptChecker().sendStatus(data.getAdventure().playerAudience(player), true);
     }
 }

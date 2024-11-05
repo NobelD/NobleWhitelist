@@ -41,8 +41,7 @@ public class Listener implements org.bukkit.event.Listener {
     @EventHandler
     public void onPlayerJoin(PlayerJoinEvent event) {
         Player player = event.getPlayer();
-        if (!player.isOp() || !data.getUptChecker().canUpdate(data.getConfigD().get(ConfigData.notifyUpdate), true)) return;
-
-        data.getUptChecker().sendUpdate(BPlayer.of(player).getAsAudience());
+        if (!player.isOp() || !data.getConfigD().get(ConfigData.notifyUpdate)) return;
+        data.getUptChecker().sendStatus(BPlayer.of(player).getAsAudience(), true);
     }
 }

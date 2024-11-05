@@ -9,10 +9,8 @@ import me.nobeld.noblewhitelist.discord.config.ConfigData;
 import me.nobeld.noblewhitelist.discord.config.MessageData;
 import me.nobeld.noblewhitelist.discord.util.LibsManager;
 import me.nobeld.noblewhitelist.model.PairData;
-import me.nobeld.noblewhitelist.model.base.TriConsumer;
 import me.nobeld.noblewhitelist.util.AdventureUtil;
 import me.nobeld.noblewhitelist.util.UpdateChecker;
-import net.kyori.adventure.audience.Audience;
 
 import javax.annotation.Nullable;
 import java.util.List;
@@ -78,8 +76,8 @@ public class NWLDContainer {
             this.message.messageFile();
             return this;
         }
-        public Builder loadUpdateChecker(String name, String subType, TriConsumer<Audience, String, String> consumer) {
-            update = new UpdateChecker(data, name, subType, consumer);
+        public Builder loadUpdateChecker(String name, String subType) {
+            update = new UpdateChecker(data, name, subType);
             return this;
         }
         public Builder loadJDA() {
@@ -88,8 +86,8 @@ public class NWLDContainer {
         }
         public Builder printMessage() {
             NobleWhitelist.adv().consoleAudience().sendMessage(AdventureUtil.formatAll("<prefix><green>Loaded Discord integration!"));
-            if (update.canUpdate(config.get(ConfigData.notifyUpdate), false))
-                update.sendUpdate(NobleWhitelist.adv().consoleAudience());
+            if (config.get(ConfigData.notifyUpdate))
+                update.sendStatus(NobleWhitelist.adv().consoleAudience(), true);
             return this;
         }
         public Builder load(Runnable runnable) {

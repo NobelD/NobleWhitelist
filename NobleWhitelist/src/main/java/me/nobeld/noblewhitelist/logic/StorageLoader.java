@@ -76,7 +76,7 @@ public class StorageLoader {
             NobleWhitelist.adv().consoleAudience().sendMessage(AdventureUtil.formatAll("<prefix><green>The whitelist storage was loaded."));
             data.setBlocked(false);
         } catch (Exception e) {
-            switch(config.get(ConfigData.StorageCF.failAction)) {
+            switch(config.getEnum(ConfigData.StorageCF.failAction)) {
                 case CLOSE -> {
                     NobleWhitelist.log(Level.SEVERE, "Failed to setup storage, the server will be closed.", e);
                     data.closeServer();

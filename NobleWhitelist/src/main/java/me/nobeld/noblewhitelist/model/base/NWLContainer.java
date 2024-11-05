@@ -15,7 +15,6 @@ import me.nobeld.noblewhitelist.storage.root.DatabaseSQL;
 import me.nobeld.noblewhitelist.util.AdventureUtil;
 import me.nobeld.noblewhitelist.util.LibsManager;
 import me.nobeld.noblewhitelist.util.UpdateChecker;
-import net.kyori.adventure.audience.Audience;
 
 import javax.annotation.Nullable;
 import java.util.List;
@@ -107,8 +106,8 @@ public class NWLContainer {
             data.getAdventure();
             return this;
         }
-        public Builder loadUpdateChecker(String name, String subType, TriConsumer<Audience, String, String> consumer) {
-            update = new UpdateChecker(data, name, subType, consumer);
+        public Builder loadUpdateChecker(String name, String subType) {
+            update = new UpdateChecker(data, name, subType);
             return this;
         }
         public Builder loadStorage() {
@@ -128,8 +127,8 @@ public class NWLContainer {
             data.getAdventure().consoleAudience().sendMessage(AdventureUtil.formatAll("<prefix><green>Loaded <yellow>" + total + " <green>whitelist entries."));
             if (!type.isDatabase() && total >= 100) data.getAdventure().consoleAudience().sendMessage(AdventureUtil.formatAll("<prefix><green>Mind in use database as storage type since there is a lot of entries."));
 
-            if (update.canUpdate(config.get(ConfigData.ServerCF.notifyUpdate), false)) {
-                update.sendUpdate(data.getAdventure().consoleAudience());
+            if (config.get(ConfigData.ServerCF.notifyUpdate)) {
+                update.sendStatus(data.getAdventure().consoleAudience(), false);
             }
             return this;
         }
