@@ -2,7 +2,7 @@ plugins {
     id("java")
 }
 
-group = "me.nobeld.minecraft.noblewhitelist"
+group = "me.nobeld.noblewhitelist"
 version = "1.0.0"
 
 repositories {
@@ -10,10 +10,7 @@ repositories {
 }
 
 dependencies {
-    testImplementation(platform("org.junit:junit-bom:5.9.1"))
-    testImplementation("org.junit.jupiter:junit-jupiter")
 }
 
-tasks.test {
-    useJUnitPlatform()
+tasks {
 }
