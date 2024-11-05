@@ -87,24 +87,36 @@ public class ConfigData {
                 if (s.isBlank() || s.isEmpty()) val = null;
             }
             return val;
-        } catch (Exception e) {
-            NobleWhitelist.log(Level.WARNING, "An error occurred while loading the path: '" + container.path() + "', using default instead: " + container.def(), e);
+        } catch (Throwable e) {
+            if (e instanceof Exception ex) {
+                NobleWhitelist.log(Level.WARNING, "An error occurred while loading the path: '" + container.path() + "', using default instead: " + container.def(), ex);
+            } else {
+                NobleWhitelist.log(Level.WARNING, "Error '" + e.getMessage() +"' for path: '" + container.path() + "'");
+            }
             return container.def();
         }
     }
     public <X extends Enum<X>> X getEnum(ConfigContainer<X> container) {
         try {
             return configFile().getEnum(container.path(), container.def().getDeclaringClass());
-        } catch (Exception e) {
-            NobleWhitelist.log(Level.SEVERE, "An error occurred while loading the enum from path: '" + container.path() + "using default instead: " + container.def().toString(), e);
+        } catch (Throwable e) {
+            if (e instanceof Exception ex) {
+                NobleWhitelist.log(Level.SEVERE, "An error occurred while loading the enum from path: '" + container.path() + "using default instead: " + container.def().toString(), ex);
+            } else {
+                NobleWhitelist.log(Level.WARNING, "Error '" + e.getMessage() +"' for path: '" + container.path() + "'");
+            }
             return container.def();
         }
     }
     public <T> void set(ConfigContainer<T> container, T value) {
         try {
             configFile().set(container.path(), value);
-        } catch (Exception e) {
-            NobleWhitelist.log(Level.WARNING, "An error occurred while setting data to the path: '" + container.path() + "'", e);
+        } catch (Throwable e) {
+            if (e instanceof Exception ex) {
+                NobleWhitelist.log(Level.WARNING, "An error occurred while setting data to the path: '" + container.path() + "'", ex);
+            } else {
+                NobleWhitelist.log(Level.WARNING, "Error '" + e.getMessage() +"' for path: '" + container.path() + "'");
+            }
         }
     }
     public static class WhitelistCF {
