@@ -2,11 +2,11 @@ package me.nobeld.noblewhitelist.discord;
 
 import me.nobeld.noblewhitelist.api.event.AutoWhitelistEvent;
 import me.nobeld.noblewhitelist.api.event.WhitelistPassEvent;
-import me.nobeld.noblewhitelist.discord.model.NWLDsData;
 import me.nobeld.noblewhitelist.discord.util.DiscordUtil;
 import me.nobeld.noblewhitelist.discord.config.ConfigData;
 import me.nobeld.noblewhitelist.discord.config.MessageData;
 import me.nobeld.noblewhitelist.model.BPlayer;
+import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.player.PlayerJoinEvent;
@@ -15,8 +15,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class Listener implements org.bukkit.event.Listener {
-    private final NWLDsData data;
-    public Listener(NWLDsData data) {
+    private final NWLDiscord data;
+    public Listener(NWLDiscord data) {
         this.data = data;
     }
     @EventHandler
@@ -42,6 +42,6 @@ public class Listener implements org.bukkit.event.Listener {
     public void onPlayerJoin(PlayerJoinEvent event) {
         Player player = event.getPlayer();
         if (!player.isOp() || !data.getConfigD().get(ConfigData.notifyUpdate)) return;
-        data.getUptChecker().sendStatus(BPlayer.of(player).getAsAudience(), true);
+        Bukkit.getScheduler().runTaskAsynchronously(data, () -> data.getUptChecker().sendStatus(BPlayer.of(player).getAsAudience(), true));
     }
 }

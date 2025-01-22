@@ -51,7 +51,7 @@ public class NobleWhitelist extends JavaPlugin implements NWLData {
                 .loadLibs(new BukkitLibraryManager(this), null)
                 .loadFiles(getDataFolder().getPath(), PairData.of("config.yml", FileManager.FileType.YAML))
                 .loadAdventure()
-                .loadUpdateChecker("NobleWhitelist", "spigot")
+                .loadUpdateChecker("NobleWhitelist", "spigot", Runtime.version().feature() >= 21 ? null : "spigot-j17")
                 .load(() -> {
                     if (Bukkit.getPluginManager().getPlugin("PlaceholderAPI") != null) {
                         new NWLPAPIExpansion(this).register();

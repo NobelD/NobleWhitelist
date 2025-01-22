@@ -4,7 +4,6 @@ import me.nobeld.noblewhitelist.api.event.AutoWhitelistEvent;
 import me.nobeld.noblewhitelist.api.event.WhitelistPassEvent;
 import me.nobeld.noblewhitelist.model.BPlayer;
 import me.nobeld.noblewhitelist.model.PairData;
-import me.nobeld.noblewhitelist.model.base.NWLData;
 import me.nobeld.noblewhitelist.model.whitelist.SuccessData;
 import me.nobeld.noblewhitelist.util.AdventureUtil;
 import me.nobeld.noblewhitelist.config.ConfigData;
@@ -17,8 +16,8 @@ import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerLoginEvent;
 
 public class Listener implements org.bukkit.event.Listener {
-    private final NWLData data;
-    public Listener(NWLData data) {
+    private final NobleWhitelist data;
+    public Listener(NobleWhitelist data) {
         this.data = data;
     }
     @EventHandler(priority = EventPriority.HIGHEST)
@@ -61,6 +60,6 @@ public class Listener implements org.bukkit.event.Listener {
                 (player.isOp() || player.hasPermission("noblewhitelist.admin.update")) &&
                 data.getConfigD().get(ConfigData.ServerCF.notifyUpdate)
         )
-            data.getUptChecker().sendStatus(data.getAdventure().playerAudience(player), true);
+            Bukkit.getScheduler().runTaskAsynchronously(data, () -> data.getUptChecker().sendStatus(data.getAdventure().playerAudience(player), true));
     }
 }

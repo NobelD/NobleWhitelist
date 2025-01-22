@@ -15,8 +15,8 @@ import me.nobeld.noblewhitelist.storage.root.DatabaseSQL;
 import me.nobeld.noblewhitelist.util.AdventureUtil;
 import me.nobeld.noblewhitelist.util.LibsManager;
 import me.nobeld.noblewhitelist.util.UpdateChecker;
+import org.jetbrains.annotations.Nullable;
 
-import javax.annotation.Nullable;
 import java.util.List;
 
 public class NWLContainer {
@@ -106,8 +106,8 @@ public class NWLContainer {
             data.getAdventure();
             return this;
         }
-        public Builder loadUpdateChecker(String name, String subType) {
-            update = new UpdateChecker(data, name, subType);
+        public Builder loadUpdateChecker(String name, String subType, @Nullable String extraType) {
+            update = new UpdateChecker(data, name, subType, extraType);
             return this;
         }
         public Builder loadStorage() {

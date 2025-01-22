@@ -3,6 +3,7 @@ package me.nobeld.noblewhitelist.util;
 import io.papermc.lib.PaperLib;
 import me.nobeld.noblewhitelist.NobleWhitelist;
 import org.bukkit.Bukkit;
+import org.bukkit.plugin.java.JavaPlugin;
 
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
@@ -23,18 +24,18 @@ public class ServerUtil {
     public static boolean hasBukkit() {
         return craftBukkit;
     }
-    public static boolean craftBukkitWarning() {
+    public static boolean craftBukkitWarning(JavaPlugin plugin) {
         if (hasBukkit() && !hasSpigot()) {
-            incompatibleApi("craftBukkit");
+            incompatibleApi(plugin, "craftBukkit");
             return true;
         }
         return false;
     }
-    public static void incompatibleApi(String string) {
-        Bukkit.getLogger().log(Level.SEVERE, "You are running the server on " + string + ", this api is not compatible and the plugin will be disabled, consider using PaperMC.");
+    public static void incompatibleApi(JavaPlugin plugin, String string) {
+        plugin.getLogger().log(Level.SEVERE, "You are running the server on " + string + ", this api is not compatible and the plugin will be disabled, consider using PaperMC.");
     }
-    public static void incompatibleVer(String string, String ver) {
-        Bukkit.getLogger().log(Level.SEVERE, "You are running the server on " + string + ", this version is not compatible and the plugin will be disabled, consider updating to minimum " + ver + ".");
+    public static void incompatibleVer(JavaPlugin plugin, String string, String ver) {
+        plugin.getLogger().log(Level.SEVERE, "You are running the server on " + string + ", this version is not compatible and the plugin will be disabled, consider updating to minimum " + ver + ".");
     }
     public static boolean hasClass(String clazz) {
         try {
@@ -56,12 +57,12 @@ public class ServerUtil {
         return b ? "yes" : "no";
     }
     public static boolean canRun(NobleWhitelist plugin) {
-        if (craftBukkitWarning()) {
+        if (craftBukkitWarning(plugin)) {
            Bukkit.getPluginManager().disablePlugin(plugin);
            return false;
         }
         if (PaperLib.getMinecraftVersion() < 16) {
-           incompatibleVer(Bukkit.getVersion(), "1.16.x");
+           incompatibleVer(plugin, Bukkit.getVersion(), "1.16.x");
            Bukkit.getPluginManager().disablePlugin(plugin);
            return false;
         }
