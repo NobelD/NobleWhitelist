@@ -1,7 +1,6 @@
 package me.nobeld.noblewhitelist.config;
 
 import de.leonhard.storage.internal.FlatFile;
-import de.leonhard.storage.sections.FlatFileSection;
 import me.nobeld.noblewhitelist.NobleWhitelist;
 import me.nobeld.noblewhitelist.model.checking.CheckingOption;
 import me.nobeld.noblewhitelist.model.checking.CheckingType;
@@ -37,9 +36,6 @@ public class ConfigData {
         return configFile;
     }
     public void refreshData() {
-        toUpperCase(WhitelistCF.checkName);
-        toUpperCase(WhitelistCF.checkUUID);
-        toUpperCase(WhitelistCF.checkPerm);
 
         List<String> remove = new ArrayList<>();
 
@@ -58,8 +54,7 @@ public class ConfigData {
             remove.add("whitelist.max-uuid-list");
             configFile().set(StorageCF.storageType.path(), "yaml");
         }
-        if (!configFile().getSection("incompatibilities").singleLayerKeySet().isEmpty()) {
-            FlatFileSection sec = configFile().getSection("incompatibilities");
+        if (configFile().get("incompatibilities") != null) {
             remove.add("incompatibilities.check-invalid-char");
             remove.add("incompatibilities.to-use");
             remove.add("incompatibilities.to-change");
@@ -73,12 +68,6 @@ public class ConfigData {
     public boolean usePrefix() {
         return configFile().getBoolean("messages.use-prefix");
     }
-    private void toUpperCase(ConfigContainer<?> cont) {
-        String string = configFile().getString(cont.path());
-        String s1 = string.toUpperCase();
-        if (!string.equals(s1))
-            configFile().set(cont.path(), s1);
-    }
     public <T> T get(ConfigContainer<T> container) {
         try {
             T val;
@@ -90,6 +79,19 @@ public class ConfigData {
         } catch (Throwable e) {
             if (e instanceof Exception ex) {
                 NobleWhitelist.log(Level.WARNING, "An error occurred while loading the path: '" + container.path() + "', using default instead: " + container.def(), ex);
+            } else {
+                NobleWhitelist.log(Level.WARNING, "Error '" + e.getMessage() +"' for path: '" + container.path() + "'");
+            }
+            return container.def();
+        }
+    }
+    public <X extends Enum<X>> X getEnumUpper(ConfigContainer<X> container) {
+        try {
+            String str = configFile().getString(container.path());
+            return Enum.valueOf(container.def().getDeclaringClass(), str.toUpperCase());
+        } catch (Throwable e) {
+            if (e instanceof Exception ex) {
+                NobleWhitelist.log(Level.SEVERE, "An error occurred while loading the enum from path: '" + container.path() + "using default instead: " + container.def().toString(), ex);
             } else {
                 NobleWhitelist.log(Level.WARNING, "Error '" + e.getMessage() +"' for path: '" + container.path() + "'");
             }
@@ -142,6 +144,12 @@ public class ConfigData {
         public static final ConfigContainer<String> storageDBName = new ConfigContainer<>("storage.database", "");
         public static final ConfigContainer<String> storagePassword = new ConfigContainer<>("storage.password", "");
         public static final ConfigContainer<String> storageUser = new ConfigContainer<>("storage.user", "");
+        public static final ConfigContainer<Integer> storageTimeout = new ConfigContainer<>("storage.connection-timeout", 30);
+        public static final ConfigContainer<Integer> storageLifetime = new ConfigContainer<>("storage.max-lifetime", 30);
+        public static final ConfigContainer<Boolean> storageUseSSL = new ConfigContainer<>("storage.use-ssk", false);
+        public static final ConfigContainer<Boolean> storagePublicKeyRetrieval = new ConfigContainer<>("storage.allow-public-key-retrieval", false);
+        public static final ConfigContainer<String> storagePublicKeyFile = new ConfigContainer<>("storage.server-rsa-public-key-file", "");
+        public static final ConfigContainer<String> storageSSLMode = new ConfigContainer<>("storage.ssl-mode", "required");
         public static final ConfigContainer<FailAction> failAction = new ConfigContainer<>("storage.action-if-fail", FailAction.NONE);
         public static final ConfigContainer<String> failCommand = new ConfigContainer<>("storage.command-if-fail", "");
     }
@@ -170,13 +178,13 @@ public class ConfigData {
         configFile().set(c.path(), result.name());
     }
     public CheckingOption checkName() {
-        return getEnum(WhitelistCF.checkName);
+        return getEnumUpper(WhitelistCF.checkName);
     }
     public CheckingOption checkUUID() {
-        return getEnum(WhitelistCF.checkUUID);
+        return getEnumUpper(WhitelistCF.checkUUID);
     }
     public CheckingOption checkPerm() {
-        return getEnum(WhitelistCF.checkPerm);
+        return getEnumUpper(WhitelistCF.checkPerm);
     }
     public enum FailAction {
         NONE,

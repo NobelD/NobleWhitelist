@@ -51,12 +51,18 @@ public class StorageLoader {
                 }
                 default -> {
                     HikariConfig databaseConfig = new HikariConfig();
-                    databaseConfig.setConnectionTimeout(30000L);
-                    databaseConfig.setMaxLifetime(30000L);
+                    databaseConfig.setConnectionTimeout(config.get(ConfigData.StorageCF.storageTimeout) * 1_000L);
+                    databaseConfig.setMaxLifetime(config.get(ConfigData.StorageCF.storageLifetime) * 1_000L);
                     if (storageType.isRemoteDatabase()) {
                         NobleWhitelist.adv().consoleAudience().sendMessage(AdventureUtil.formatAll("<prefix><green>Connecting to <yellow>remote database <green>for whitelist."));
                         databaseConfig.setUsername(config.get(ConfigData.StorageCF.storageUser));
                         databaseConfig.setPassword(config.get(ConfigData.StorageCF.storagePassword));
+
+                        if (config.get(ConfigData.StorageCF.storageUseSSL)) {
+                            databaseConfig.addDataSourceProperty("allowPublicKeyRetrieval", config.get(ConfigData.StorageCF.storagePublicKeyRetrieval));
+                            databaseConfig.addDataSourceProperty("serverRSAPublicKeyFile", config.get(ConfigData.StorageCF.storagePublicKeyFile));
+                            databaseConfig.addDataSourceProperty("sslMode", config.get(ConfigData.StorageCF.storageSSLMode));
+                        }
                         storageInst = new DatabaseMySQL(
                                 data.name(),
                                 getThreadFactory(data),
@@ -76,7 +82,7 @@ public class StorageLoader {
             NobleWhitelist.adv().consoleAudience().sendMessage(AdventureUtil.formatAll("<prefix><green>The whitelist storage was loaded."));
             data.setBlocked(false);
         } catch (Exception e) {
-            switch(config.getEnum(ConfigData.StorageCF.failAction)) {
+            switch(config.getEnumUpper(ConfigData.StorageCF.failAction)) {
                 case CLOSE -> {
                     NobleWhitelist.log(Level.SEVERE, "Failed to setup storage, the server will be closed.", e);
                     data.closeServer();

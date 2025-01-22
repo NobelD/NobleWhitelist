@@ -37,18 +37,26 @@ skip:
 storage:
   # The storage type to be used, migration of data is made manually.
   # It's necessary to restart the server to apply changes.
-  # mysql - Remote storage that can be used in multiple server.
-  # sqlite - Faster storage for easy management when expecting a lot of players.
-  # yaml - Simple editable storage and easy to use.
-  # json - Faster storage than yaml, a little confusing to read.
-  # toml - Faster as json and easier to read as yaml.
+  # MSYQL - Remote storage that can be used in multiple server.
+  # SQLITE - Faster storage for easy management when expecting a lot of players.
+  # YAML - Simple editable storage and easy to use.
+  # JSON - Faster storage than yaml, a little confusing to read.
+  # TOML - Faster as json and easier to read as yaml.
   storage-type: sqlite
-  # It's not necessary to fill unless using remote databases.
+  # It's not necessary to fill this part unless you are using a remote databases.
   host: ''
   port: 3306
   database: ''
   user: ''
   password: ''
+  # These are extra advanced options to manage the database.
+  # <!> Only enable and use if you know what are you doing, these settings may
+  #connection-timeout: 30
+  #max-lifetime: 30
+  #use-ssl: false
+  #allow-public-key-retrieval: false
+  #server-rsa-public-key-file: ""
+  #ssl-mode: required
   # Executes the placed actions if the server cannot connect to the database when loaded.
   # You can use /nwl reload to reconnect to the database and this will be applied.
   # Actions:
