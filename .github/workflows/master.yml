@@ -37,10 +37,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: ${{ matrix.os }} Java ${{ matrix.java }} build results
-          #path: ${{ github.workspace }}/**/build/libs/*
-          path: |
-            ${{ github.workspace }}/NobleWhitelist/build/libs/
-            ${{ github.workspace }}/NWLDiscord/build/libs/
+          path: ${{ github.workspace }}/*/build/libs/
           retention-days: 5
 
       - name: Upload test results
@@ -48,10 +45,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: ${{ matrix.os }} Java ${{ matrix.java }} test results
-          #path: ${{ github.workspace }}/**/build/reports/*
-          path: |
-            ${{ github.workspace }}/NobleWhitelist/build/reports/
-            ${{ github.workspace }}/NWLDiscord/build/reports/
+          path: ${{ github.workspace }}/*/build/reports/
           retention-days: 5
 
   release:
