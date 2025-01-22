@@ -3,6 +3,7 @@ package me.nobeld.noblewhitelist.discord.commands;
 import io.leangen.geantyref.TypeToken;
 import me.nobeld.noblewhitelist.discord.commands.admin.AdminFind;
 import me.nobeld.noblewhitelist.discord.commands.admin.AdminModify;
+import me.nobeld.noblewhitelist.discord.commands.admin.AdminSend;
 import me.nobeld.noblewhitelist.discord.commands.admin.AdminWhitelist;
 import me.nobeld.noblewhitelist.discord.commands.basic.BasicAccounts;
 import me.nobeld.noblewhitelist.discord.commands.basic.BasicModify;
@@ -78,6 +79,7 @@ public class CommandManager {
         adminCmd.addAll(new AdminFind(data).getCommands());
         adminCmd.addAll(new AdminModify(data).getCommands());
         adminCmd.addAll(new AdminWhitelist(data).getCommands());
+        adminCmd.add(new AdminSend(data).command());
 
         adminCmd.forEach(b -> b.register(cmdManager, adminC));
 

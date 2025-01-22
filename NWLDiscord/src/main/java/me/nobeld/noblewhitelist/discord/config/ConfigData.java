@@ -1,7 +1,6 @@
 package me.nobeld.noblewhitelist.discord.config;
 
 import de.leonhard.storage.internal.FlatFile;
-import de.leonhard.storage.sections.FlatFileSection;
 import me.nobeld.noblewhitelist.config.FileManager;
 import me.nobeld.noblewhitelist.discord.NWLDiscord;
 import me.nobeld.noblewhitelist.discord.model.NWLDsData;
@@ -72,14 +71,8 @@ public class ConfigData {
             return container.def();
         }
     }
-    public FlatFileSection getSection(ConfigContainer<?> container) {
-        try {
-            return configFile().getSection(container.path());
-        } catch (Exception e) {
-            NWLDiscord.log(Level.WARNING, "An error occurred while loading the path: '" + container.path() + "'");
-            NWLDiscord.log(Level.WARNING, e.getMessage());
-            return null;
-        }
+    public Object getRaw(ConfigContainer<?> container) {
+        return configFile().get(container.path());
     }
     public List<String> getList(ConfigContainer<String> container) {
         try {

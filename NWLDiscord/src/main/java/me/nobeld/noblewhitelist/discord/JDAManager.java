@@ -2,6 +2,7 @@ package me.nobeld.noblewhitelist.discord;
 
 import me.nobeld.noblewhitelist.NobleWhitelist;
 import me.nobeld.noblewhitelist.discord.commands.CommandManager;
+import me.nobeld.noblewhitelist.discord.commands.InteractionListener;
 import me.nobeld.noblewhitelist.discord.config.ConfigData;
 import me.nobeld.noblewhitelist.discord.model.NWLDsData;
 import me.nobeld.noblewhitelist.discord.util.DiscordUtil;
@@ -44,6 +45,9 @@ public class JDAManager {
         loadChannels(config);
         start();
     }
+    public JDA getJDA() {
+        return bot;
+    }
     public void enableCommands() {
         if (bot == null) {
             NobleWhitelist.adv().consoleAudience().sendMessage(AdventureUtil.formatAll("<prefix><red>No active bot was found, commands will not be registered!"));
@@ -60,12 +64,19 @@ public class JDAManager {
             return;
         }
         cmdManager.registerCommands(guild);
+        bot.addEventListener(new InteractionListener(data));
     }
     public CommandManager getCommandManager() {
         return cmdManager;
     }
+    @SuppressWarnings("unchecked")
     private void loadChannels(ConfigData config) {
-        channels.addAll(config.getSection(ConfigData.channelsID).singleLayerKeySet());
+        try {
+            Object o = config.getRaw(ConfigData.channelsID);
+            Map<String, ?> map = (Map<String, ?>) o;
+            channels.addAll(map.keySet());
+        } catch (ClassCastException ignored) {
+        }
     }
     private void start() {
         if (token == null || token.isEmpty() || token.isBlank()) {
@@ -102,7 +113,7 @@ public class JDAManager {
         return matchChannel(ch, cont);
     }
     public boolean matchChannel(TextChannel channel, ConfigContainer<String> cont) {
-        List<String> channels = data.getConfigD().getSection(cont).getStringList("channel");
+        List<String> channels = data.getConfigD().configFile().getStringList(cont.path() + ".channel");
         if (channels == null || channels.isEmpty()) return false;
         List<TextChannel> permittedChannels = new ArrayList<>();
 
@@ -127,7 +138,7 @@ public class JDAManager {
         return hasRole(member, cont);
     }
     public boolean hasRole(Member member, ConfigContainer<String> cont) {
-        List<String> roles = data.getConfigD().getSection(cont).getStringList("role");
+        List<String> roles = data.getConfigD().configFile().getStringList(cont.path() + ".role");
         if (roles == null || roles.isEmpty()) return false;
         if (data.getConfigD().get(ConfigData.roleEveryone) && roles.contains("everyone")) {
             return true;
@@ -231,7 +242,7 @@ public class JDAManager {
         long id = -1;
         for (String s : channels) {
             if (!s.equalsIgnoreCase(channel)) continue;
-            String i = data.getConfigD().getSection(ConfigData.channelsID).getString(s);
+            String i = data.getConfigD().configFile().getString(ConfigData.channelsID.path() + "." + s);
             if (i == null || i.isEmpty() || i.isBlank()) return null;
             try {
                 id = Long.parseLong(i.trim());

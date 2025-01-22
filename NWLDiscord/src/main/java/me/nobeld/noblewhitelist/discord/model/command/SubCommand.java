@@ -6,7 +6,7 @@ import org.incendo.cloud.discord.jda5.JDAInteraction;
 
 import java.util.function.Function;
 
-public abstract class SubCommand extends BaseCommand {
+public class SubCommand extends BaseCommand {
     public SubCommand(Function<Command.Builder<JDAInteraction>, Command.Builder<JDAInteraction>> builder) {
         super(builder);
     }

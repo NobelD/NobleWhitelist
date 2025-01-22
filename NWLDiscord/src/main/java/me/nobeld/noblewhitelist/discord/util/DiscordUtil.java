@@ -4,12 +4,13 @@ import de.leonhard.storage.sections.FlatFileSection;
 import me.nobeld.noblewhitelist.discord.model.NWLDsData;
 import me.nobeld.noblewhitelist.model.storage.ConfigContainer;
 import net.dv8tion.jda.api.EmbedBuilder;
+import net.dv8tion.jda.api.JDA;
+import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.MessageEmbed;
 import net.dv8tion.jda.api.entities.channel.concrete.TextChannel;
 import net.dv8tion.jda.api.entities.emoji.Emoji;
-import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
-import net.dv8tion.jda.api.interactions.components.buttons.Button;
+import net.dv8tion.jda.api.requests.RestAction;
 import net.dv8tion.jda.api.utils.messages.MessageCreateBuilder;
 import net.dv8tion.jda.api.utils.messages.MessageCreateData;
 import org.apache.logging.log4j.core.lookup.StrSubstitutor;
@@ -26,23 +27,44 @@ public class DiscordUtil {
     public static MessageCreateData createEmbed(MessageEmbed embed) {
         return new MessageCreateBuilder().addEmbeds(embed).build();
     }
+    public static RestAction<Message> getMessageFromLink(JDA bot, String path) {
+        String base = path.replace("https://discord.com/channels/", "");
+        String[] split = base.split("/", 3);
+        if (split.length != 3) {
+            return null;
+        }
+        Guild guild;
+        try {
+            long id = Long.parseLong(split[0]);
+            guild = bot.getGuildById(id);
+        } catch (Exception e) {
+            return null;
+        }
+        if (guild == null) {
+            return null;
+        }
+        TextChannel channel;
+        try {
+            long id = Long.parseLong(split[1]);
+            channel = guild.getTextChannelById(id);
+        } catch (Exception e) {
+            return null;
+        }
+        if (channel == null) {
+            return null;
+        }
+        try {
+            long id = Long.parseLong(split[2]);
+            return channel.retrieveMessageById(id);
+        } catch (Exception e) {
+            return null;
+        }
+    }
     public static String parseMessage(String base, Map<String, String> map) {
         if (map == null || map.isEmpty()) return base;
         StrSubstitutor sub = new StrSubstitutor(map, "<", ">");
         String round = sub.replace(base);
         return sub.replace(round);
-    }
-    public static void replyMessageConfirm(NWLDsData data, SlashCommandInteractionEvent event, ConfigContainer<?> cont) {
-        //TODO premium suggestion
-        FlatFileSection sec = data.getMessageD().getMsgSec(cont);
-        MessageCreateData msg = getMessage(data, cont, null);
-        if (msg == null) return;
-
-        FlatFileSection extra = sec.getSection("extra");
-        Button accept = Button.success("nwl_suggest_yes", extra.get("accept", "yes")); //.withEmoji();
-        Button denegate = Button.danger("nwl_suggest_no", extra.get("denied", "no"));
-
-        event.reply(msg).setEphemeral(sec.get("ephemeral", false)).addActionRow(accept, denegate).queue();
     }
     /**
      * Create a message from a specified section of a file.
