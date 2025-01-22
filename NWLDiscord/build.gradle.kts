@@ -132,7 +132,7 @@ tasks {
             if (!ver.endsWith("-SNAPSHOT")) {
                 val shadowFile = shadowJar.get().archiveFile.get().asFile
                 val result = rootProject.layout.buildDirectory.get().asFile.toPath()
-                    .resolve("libs" + File.separator + shadowFile.name + ".jar")
+                    .resolve("libs" + File.separator + shadowFile.nameWithoutExtension + ".jar")
                 result.toFile().mkdirs()
                 Files.move(shadowFile.toPath(), result, StandardCopyOption.REPLACE_EXISTING)
             }
