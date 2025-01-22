@@ -3,7 +3,7 @@ name: Test and Release
 on:
   push:
     branches:
-      - 'main'
+      - 'master'
   schedule:
     # PaperMC doesn't change version numbers for latest releases meaning the build may break
     # unexpectedly. Build every so often so that we know if a breaking change has been published
