@@ -112,10 +112,11 @@ tasks {
         doLast {
             val ver = version.toString()
             if (!ver.endsWith("-SNAPSHOT")) {
-                val nt = rootProject.layout.buildDirectory.get().asFile.toPath()
-                    .resolve("libs" + File.separator + project.name + ".jar")
-                nt.toFile().mkdirs()
-                Files.move(shadowJar.get().archiveFile.get().asFile.toPath(), nt, StandardCopyOption.REPLACE_EXISTING)
+                val shadowFile = shadowJar.get().archiveFile.get().asFile
+                val result = rootProject.layout.buildDirectory.get().asFile.toPath()
+                    .resolve("libs" + File.separator + shadowFile.name + ".jar")
+                result.toFile().mkdirs()
+                Files.move(shadowFile.toPath(), result, StandardCopyOption.REPLACE_EXISTING)
             }
         }
     }

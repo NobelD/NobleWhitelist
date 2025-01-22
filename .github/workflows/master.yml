@@ -37,7 +37,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: ${{ matrix.os }} Java ${{ matrix.java }} build results
-          path: ${{ github.workspace }}/*/build/libs/
+          path: ${{ github.workspace }}/**/build/libs/*
           retention-days: 5
 
       - name: Upload test results
@@ -45,7 +45,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: ${{ matrix.os }} Java ${{ matrix.java }} test results
-          path: ${{ github.workspace }}/*/build/reports/
+          path: ${{ github.workspace }}/**/build/reports/*
           retention-days: 5
 
   release:
@@ -59,7 +59,7 @@ jobs:
       - name: Common Setup
         uses: ./.github/actions/common-setup
         with:
-          java-version: 21
+          java-version: 17
 
       - name: Publish with Gradle
         run: ./gradlew release
@@ -84,7 +84,7 @@ jobs:
       - name: Common Setup
         uses: ./.github/actions/common-setup
         with:
-          java-version: 21
+          java-version: 17
 
       - name: Retrieve Project Name
         run: echo "PROJECT_NAME=$(${{github.workspace}}/gradlew -q printProjectName)" >> $GITHUB_ENV
