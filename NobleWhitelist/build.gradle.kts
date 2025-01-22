@@ -1,10 +1,13 @@
+import java.nio.file.Files
+import java.nio.file.StandardCopyOption
+
 plugins {
     id("java")
     id("com.gradleup.shadow") version "9.0.0-beta5"
 }
 
 group = "me.nobeld.noblewhitelist"
-version = "1.2.5"
+version = "1.2.6"
 description = "A simple plugin for whitelist management."
 
 java {
@@ -96,5 +99,24 @@ tasks {
         reloc("org.jetbrains")
         reloc("org.json")
         reloc("org.incendo")
+    }
+    // Used by discord workflow
+    register("printProjectName") {
+        doLast {
+            println(project.name)
+        }
+    }
+    // Used to draft a release
+    register("release") {
+        dependsOn(build)
+        doLast {
+            val ver = version.toString()
+            if (!ver.endsWith("-SNAPSHOT")) {
+                val nt = rootProject.layout.buildDirectory.get().asFile.toPath()
+                    .resolve("libs" + File.separator + project.name + ".jar")
+                nt.toFile().mkdirs()
+                Files.move(shadowJar.get().archiveFile.get().asFile.toPath(), nt, StandardCopyOption.REPLACE_EXISTING)
+            }
+        }
     }
 }
