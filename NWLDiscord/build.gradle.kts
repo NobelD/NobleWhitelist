@@ -1,6 +1,6 @@
 plugins {
     id("java")
-    id("com.github.johnrengelman.shadow") version "8.1.1"
+    id("com.gradleup.shadow") version "9.0.0-beta5"
 }
 
 group = "me.nobeld.noblewhitelist.discord"
@@ -33,9 +33,9 @@ repositories {
 
 dependencies {
     compileOnly(project(":NobleWhitelist"))
-    compileOnly("io.papermc.paper", "paper-api", "1.20.2-R0.1-SNAPSHOT")
+    compileOnly("io.papermc.paper", "paper-api", "1.20.4-R0.1-SNAPSHOT")
 
-    implementation("com.alessiodp.libby", "libby-bukkit", "2.0.0-20240104.190327-5") {
+    implementation("com.alessiodp.libby", "libby-bukkit", "2.0.0-SNAPSHOT") {
         exclude(module=("spigot-api"))
     }
     compileOnly("com.github.simplix-softworks","simplixstorage","3.2.6")
