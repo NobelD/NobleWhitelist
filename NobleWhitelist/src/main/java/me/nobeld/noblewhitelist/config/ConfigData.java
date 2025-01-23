@@ -146,7 +146,7 @@ public class ConfigData {
         public static final ConfigContainer<String> storageUser = new ConfigContainer<>("storage.user", "");
         public static final ConfigContainer<Integer> storageTimeout = new ConfigContainer<>("storage.connection-timeout", 30);
         public static final ConfigContainer<Integer> storageLifetime = new ConfigContainer<>("storage.max-lifetime", 30);
-        public static final ConfigContainer<Boolean> storageUseSSL = new ConfigContainer<>("storage.use-ssk", false);
+        public static final ConfigContainer<Boolean> storageUseSSL = new ConfigContainer<>("storage.use-ssl", false);
         public static final ConfigContainer<Boolean> storagePublicKeyRetrieval = new ConfigContainer<>("storage.allow-public-key-retrieval", false);
         public static final ConfigContainer<String> storagePublicKeyFile = new ConfigContainer<>("storage.server-rsa-public-key-file", "");
         public static final ConfigContainer<String> storageSSLMode = new ConfigContainer<>("storage.ssl-mode", "required");
