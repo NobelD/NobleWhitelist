@@ -17,7 +17,7 @@ import java.util.logging.Level;
 
 public class StorageLoader {
     public static PairData<DataGetter, StorageType> setupStorage(NWLData data, ConfigData config) {
-        String type = (config.get(ConfigData.StorageCF.storageType)).toLowerCase();
+        String type = config.get(ConfigData.StorageCF.storageType).toLowerCase();
         DataGetter storageInst = null;
         StorageType storageType;
 

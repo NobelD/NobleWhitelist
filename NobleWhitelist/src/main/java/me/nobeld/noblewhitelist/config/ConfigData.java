@@ -70,12 +70,7 @@ public class ConfigData {
     }
     public <T> T get(ConfigContainer<T> container) {
         try {
-            T val;
-            val = configFile().get(container.path(), container.def());
-            if (val instanceof String s) {
-                if (s.isBlank() || s.isEmpty()) val = null;
-            }
-            return val;
+            return configFile().get(container.path(), container.def());
         } catch (Throwable e) {
             if (e instanceof Exception ex) {
                 NobleWhitelist.log(Level.WARNING, "An error occurred while loading the path: '" + container.path() + "', using default instead: " + container.def(), ex);

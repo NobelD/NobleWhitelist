@@ -37,7 +37,7 @@ skip:
 storage:
   # The storage type to be used, migration of data is made manually.
   # It's necessary to restart the server to apply changes.
-  # MSYQL - Remote storage that can be used in multiple server.
+  # MYSQL - Remote storage that can be used in multiple server.
   # SQLITE - Faster storage for easy management when expecting a lot of players.
   # YAML - Simple editable storage and easy to use.
   # JSON - Faster storage than yaml, a little confusing to read.

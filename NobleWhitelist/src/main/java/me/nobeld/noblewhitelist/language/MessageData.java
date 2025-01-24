@@ -8,6 +8,7 @@ import me.nobeld.noblewhitelist.model.storage.StorageType;
 import me.nobeld.noblewhitelist.util.AdventureUtil;
 import me.nobeld.noblewhitelist.model.whitelist.WhitelistEntry;
 import net.kyori.adventure.text.Component;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.UUID;
 
@@ -18,14 +19,18 @@ public class MessageData {
         this.data = data;
     }
     // Config
+    @Nullable
+    private static String parseString(@Nullable String string) {
+        return string == null || string.isBlank() || string.isEmpty() ? null : string;
+    }
     public Component warningNameConsole(String name) {
-        return AdventureUtil.formatName(data.getConfigD().get(ConfigData.MessagesCF.nameChangeConsole), name);
+        return AdventureUtil.formatName(parseString(data.getConfigD().get(ConfigData.MessagesCF.nameChangeConsole)), name);
     }
     public Component warningNamePlayer(String name) {
-        return AdventureUtil.formatName(data.getConfigD().get(ConfigData.MessagesCF.nameChangePlayer), name);
+        return AdventureUtil.formatName(parseString(data.getConfigD().get(ConfigData.MessagesCF.nameChangePlayer)), name);
     }
     public Component kickMsg(String name) {
-        return AdventureUtil.formatName(data.getConfigD().get(ConfigData.MessagesCF.kickMsg), name);
+        return AdventureUtil.formatName(parseString(data.getConfigD().get(ConfigData.MessagesCF.kickMsg)), name);
     }
     // Commands
     public static Component serverEmpty(boolean type) {
