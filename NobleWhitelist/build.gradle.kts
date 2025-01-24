@@ -7,7 +7,7 @@ plugins {
 }
 
 group = "me.nobeld.noblewhitelist"
-version = "1.2.6"
+version = "1.2.7"
 description = "A simple plugin for whitelist management."
 
 java {
@@ -31,7 +31,7 @@ repositories {
         name = "jitpack.io"
         url = uri("https://jitpack.io")
         content {
-            includeGroup("com.github.simplix-softworks")
+            includeGroup("com.github.nobeld")
         }
     }
 }
@@ -42,7 +42,7 @@ dependencies {
     implementation("com.alessiodp.libby", "libby-bukkit", "2.0.0-SNAPSHOT") {
         exclude(module=("spigot-api"))
     }
-    compileOnly("com.github.simplix-softworks","simplixstorage","3.2.6")
+    compileOnly("com.github.nobeld","simplixstorage","3.2.9-rc.5")
     compileOnly("com.zaxxer", "HikariCP", "5.1.0")
     compileOnly("org.xerial", "sqlite-jdbc", "3.44.1.0")
 

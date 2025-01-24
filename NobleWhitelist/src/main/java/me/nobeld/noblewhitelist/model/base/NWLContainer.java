@@ -14,6 +14,7 @@ import me.nobeld.noblewhitelist.model.storage.StorageType;
 import me.nobeld.noblewhitelist.storage.root.DatabaseSQL;
 import me.nobeld.noblewhitelist.util.AdventureUtil;
 import me.nobeld.noblewhitelist.util.LibsManager;
+import me.nobeld.noblewhitelist.util.SimplixCommon;
 import me.nobeld.noblewhitelist.util.UpdateChecker;
 import org.jetbrains.annotations.Nullable;
 
@@ -96,6 +97,7 @@ public class NWLContainer {
             return this;
         }
         public Builder loadFiles(String path, PairData<String, FileManager.FileType> config) {
+            SimplixCommon.setupCommon(data.logger());
             this.config = new ConfigData(path, config.getFirst(), config.getSecond());
             AdventureUtil.replaceData(() -> this.config.usePrefix(), () -> this.config.getPrefix());
             this.message = new MessageData(data);

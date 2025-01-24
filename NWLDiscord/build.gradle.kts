@@ -28,7 +28,7 @@ repositories {
         name = "jitpack.io"
         url = uri("https://jitpack.io")
         content {
-            includeGroup("com.github.simplix-softworks")
+            includeGroup("com.github.nobeld")
             includeGroup("com.github.MinnDevelopment")
         }
     }
@@ -41,7 +41,7 @@ dependencies {
     implementation("com.alessiodp.libby", "libby-bukkit", "2.0.0-SNAPSHOT") {
         exclude(module=("spigot-api"))
     }
-    compileOnly("com.github.simplix-softworks","simplixstorage","3.2.6")
+    compileOnly("com.github.nobeld","simplixstorage","3.2.9-rc.5")
     compileOnly("org.incendo", "cloud-jda5", "1.0.0-beta.2")
     compileOnly("org.incendo", "cloud-processors-requirements", "1.0.0-beta.2")
 

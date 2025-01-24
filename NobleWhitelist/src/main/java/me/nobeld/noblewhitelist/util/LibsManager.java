@@ -48,9 +48,9 @@ public class LibsManager {
 
         //Storage Library
         libraries.add(Library.builder()
-                .groupId("com{}github{}simplix-softworks")
+                .groupId("com{}github{}nobeld")
                 .artifactId("simplixstorage")
-                .version("3.2.6")
+                .version("3.2.9-rc.5")
                 .relocate(reloc("com{}esotericsoftware"))
                 .relocate(reloc("de{}leonhard"))
                 .repository("https://jitpack.io")
