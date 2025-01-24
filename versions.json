@@ -6,9 +6,9 @@
     "url": "https://modrinth.com/plugin/noble-whitelist",
     "id": "hBuYjABw",
     "latest": {
-      "core": "1.2.6",
-      "spigot": "1.2.6",
-      "spigot-j17": "1.2.6"
+      "core": "1.2.7",
+      "spigot": "1.2.7",
+      "spigot-j17": "1.2.7"
     }
   },
   "NWLDiscord": {
