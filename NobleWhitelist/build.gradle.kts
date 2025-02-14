@@ -32,6 +32,7 @@ repositories {
         url = uri("https://jitpack.io")
         content {
             includeGroup("com.github.nobeld")
+            includeGroup("com.github.nobeld.libby")
         }
     }
 }
@@ -39,25 +40,35 @@ repositories {
 dependencies {
     compileOnly("io.papermc.paper", "paper-api", "1.20.4-R0.1-SNAPSHOT")
     implementation("io.papermc", "paperlib", "1.0.7")
-    implementation("com.alessiodp.libby", "libby-bukkit", "2.0.0-SNAPSHOT") {
+    implementation("com.github.nobeld.libby", "libby-bukkit", "2.0.0-beta.1") {
+        exclude(module=("spigot-api"))
+        exclude(module=("libby-core"))
+    }
+    implementation("com.github.nobeld.libby", "libby-core", "2.0.0-beta.1") {
         exclude(module=("spigot-api"))
     }
     compileOnly("com.github.nobeld","simplixstorage","3.2.9-rc.5")
     compileOnly("com.zaxxer", "HikariCP", "5.1.0")
     compileOnly("org.xerial", "sqlite-jdbc", "3.44.1.0")
 
-    compileOnly("me.clip", "placeholderapi", "2.11.5")
-    compileOnly("io.github.miniplaceholders", "miniplaceholders-api", "2.2.3")
+    compileOnly("me.clip", "placeholderapi", "2.11.6") {
+        isTransitive = false
+    }
+    compileOnly("io.github.miniplaceholders", "miniplaceholders-api", "2.2.3") {
+        isTransitive = false
+    }
 
-    compileOnly("net.kyori","adventure-platform-bukkit","4.3.3")
-    compileOnly("net.kyori","adventure-text-minimessage","4.17.0")
+    compileOnly("net.kyori","adventure-platform-bukkit","4.3.4") {
+        exclude(module= "net.kyori", group= "adventure-api")
+    }
+    compileOnly("net.kyori","adventure-text-minimessage","4.18.0")
 
-    compileOnly("org.incendo", "cloud-paper", "2.0.0-beta.9")
-    compileOnly("org.incendo", "cloud-minecraft-extras", "2.0.0-beta.9") {
+    compileOnly("org.incendo", "cloud-paper", "2.0.0-beta.10")
+    compileOnly("org.incendo", "cloud-minecraft-extras", "2.0.0-beta.10") {
         exclude(module=("adventure-text-minimessage"))
         exclude(module=("adventure-api"))
     }
-    compileOnly("org.incendo", "cloud-processors-confirmation", "1.0.0-beta.3") {
+    compileOnly("org.incendo", "cloud-processors-confirmation", "1.0.0-rc.1") {
         exclude(module=("cloud-core"))
     }
 }

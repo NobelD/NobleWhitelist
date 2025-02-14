@@ -30,19 +30,71 @@ public class LibsManager {
     }
     public void loadLibraries(@Nullable List<Library> additional) {
         Set<Library> libraries = new HashSet<>();
-
         //Adventure libraries
         libraries.add(Library.builder()
                 .groupId("net{}kyori")
                 .artifactId("adventure-platform-bukkit")
-                .version("4.3.3")
-                .resolveTransitiveDependencies(true)
+                .version("4.3.4")
+                .build());
+
+        libraries.add(Library.builder()
+                .groupId("net{}kyori")
+                .artifactId("adventure-platform-api")
+                .version("4.3.4")
+                .build());
+
+        libraries.add(Library.builder()
+                .groupId("net{}kyori")
+                .artifactId("adventure-text-serializer-bungeecord")
+                .version("4.3.4")
+                .build());
+
+        libraries.add(Library.builder()
+                .groupId("net{}kyori")
+                .artifactId("adventure-text-serializer-legacy")
+                .version("4.18.0")
+                .build());
+
+        libraries.add(Library.builder()
+                .groupId("net{}kyori")
+                .artifactId("adventure-nbt")
+                .version("4.18.0")
+                .build());
+
+        libraries.add(Library.builder()
+                .groupId("net{}kyori")
+                .artifactId("adventure-text-serializer-json")
+                .version("4.18.0")
+                .build());
+
+        libraries.add(Library.builder()
+                .groupId("net{}kyori")
+                .artifactId("adventure-text-serializer-gson-legacy-impl")
+                .version("4.18.0")
+                .build());
+
+        libraries.add(Library.builder()
+                .groupId("net{}kyori")
+                .artifactId("adventure-text-serializer-json-legacy-impl")
+                .version("4.18.0")
+                .build());
+
+        libraries.add(Library.builder()
+                .groupId("net{}kyori")
+                .artifactId("adventure-platform-facet")
+                .version("4.3.4")
+                .build());
+
+        libraries.add(Library.builder()
+                .groupId("net{}kyori")
+                .artifactId("adventure-platform-viaversion")
+                .version("4.3.4")
                 .build());
 
         libraries.add(Library.builder()
                 .groupId("net{}kyori")
                 .artifactId("adventure-text-minimessage")
-                .version("4.17.0")
+                .version("4.18.0")
                 .resolveTransitiveDependencies(true)
                 .build());
 
@@ -55,6 +107,7 @@ public class LibsManager {
                 .relocate(reloc("de{}leonhard"))
                 .repository("https://jitpack.io")
                 .resolveTransitiveDependencies(true)
+                .excludeTransitiveDependency("org{}jetbrains", "annotations")
                 .build());
 
         //Database library
@@ -69,7 +122,15 @@ public class LibsManager {
         libraries.add(Library.builder()
                 .groupId("org{}incendo")
                 .artifactId("cloud-paper")
-                .version("2.0.0-beta.9")
+                .version("2.0.0-beta.10")
+                .relocate(reloc("org{}incendo"))
+                .resolveTransitiveDependencies(true)
+                .build());
+
+        libraries.add(Library.builder()
+                .groupId("org{}incendo")
+                .artifactId("cloud-core")
+                .version("2.0.0")
                 .relocate(reloc("org{}incendo"))
                 .resolveTransitiveDependencies(true)
                 .build());
@@ -77,30 +138,17 @@ public class LibsManager {
         libraries.add(Library.builder()
                 .groupId("org{}incendo")
                 .artifactId("cloud-minecraft-extras")
-                .version("2.0.0-beta.9")
+                .version("2.0.0-beta.10")
                 .relocate(reloc("org{}incendo"))
-                .excludeTransitiveDependency("org{}incendo", "cloud-annotations")
-                .excludeTransitiveDependency("org{}incendo", "cloud-core")
-                .excludeTransitiveDependency("net{}kyori", "adventure-api")
-                .excludeTransitiveDependency("net{}kyori", "adventure-text-minimessage")
-                .excludeTransitiveDependency("net{}kyori", "adventure-text-serializer-plain")
-                .resolveTransitiveDependencies(true)
                 .build());
 
         libraries.add(Library.builder()
                 .groupId("org{}incendo")
                 .artifactId("cloud-processors-confirmation")
-                .version("1.0.0-beta.3")
+                .version("1.0.0-rc.1")
                 .relocate(reloc("org{}incendo"))
                 .excludeTransitiveDependency("org{}incendo", "cloud-core")
-                .build());
-
-        libraries.add(Library.builder()
-                .groupId("org{}incendo")
-                .artifactId("cloud-processors-common")
-                .version("1.0.0-beta.3")
-                .relocate(reloc("org{}incendo"))
-                .excludeTransitiveDependency("org{}incendo", "cloud-core")
+                .resolveTransitiveDependencies(true)
                 .build());
 
         if (additional != null && !additional.isEmpty()) libraries.addAll(additional);

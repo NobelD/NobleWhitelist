@@ -27,19 +27,17 @@ public class LibsManager {
     private Relocation reloc(String path) {
         return new Relocation(path, "me{}nobeld{}noblewhitelist{}discord{}libs{}" + path);
     }
-    //#TODO Fix relocation (unsupported class file major version by the relocator)
+    private Relocation nwlreloc(String path) {
+        return new Relocation(path, "me{}nobeld{}noblewhitelist{}libs{}" + path);
+    }
     public void loadLibraries(@Nullable List<Library> additional) {
         Set<Library> libraries = new HashSet<>();
 
         libraries.add(Library.builder()
                 .groupId("org{}incendo")
                 .artifactId("cloud-jda5")
-                .version("1.0.0-beta.2")
-                .excludeTransitiveDependency("net{}dv8tion", "JDA")
-                .resolveTransitiveDependencies(true)
-                .build());
-                /*
-                .relocate(reloc("org{}incendo"))
+                .version("1.0.0-beta.3")
+                .relocate(nwlreloc("org{}incendo"))
                 .relocate(reloc("net{}dv8tion{}jda"))
                 .relocate(reloc("com{}iwebpp{}crypto"))
                 .relocate(reloc("gnu{}trove"))
@@ -49,33 +47,34 @@ public class LibsManager {
                 .relocate(reloc("com{}fasterxml{}jackson{}annotations"))
                 .relocate(reloc("com{}vdurmont{}emoji"))
                 .relocate(reloc("org{}json"))
-                .build());*/
+                .build());
+
+        libraries.add(Library.builder()
+                .groupId("org{}incendo")
+                .artifactId("cloud-discord-common")
+                .version("1.0.0-beta.3")
+                .relocate(nwlreloc("org{}incendo"))
+                .build());
 
         libraries.add(Library.builder()
                 .groupId("org{}incendo")
                 .artifactId("cloud-processors-requirements")
-                .version("1.0.0-beta.2")
-                .excludeTransitiveDependency("org{}incendo", "cloud-core")
+                .version("1.0.0-rc.1")
+                .relocate(nwlreloc("org{}incendo"))
                 .build());
 
         libraries.add(Library.builder()
                 .groupId("org{}incendo")
                 .artifactId("cloud-processors-common")
-                .version("1.0.0-beta.2")
-                .excludeTransitiveDependency("org{}incendo", "cloud-core")
+                .version("1.0.0-rc.1")
+                .relocate(nwlreloc("org{}incendo"))
                 .build());
 
         libraries.add(Library.builder()
                 .groupId("net.dv8tion")
                 .artifactId("JDA")
-                .version("5.0.0-beta.20")
-                .excludeTransitiveDependency("org{}jetbrains{}kotlin", "kotlin-stdlib")
-                .excludeTransitiveDependency("org{}jetbrains{}kotlin", "kotlin-stdlib-common")
-                .excludeTransitiveDependency("org{}jetbrains{}kotlin", "kotlin-stdlib-jdk7")
-                .excludeTransitiveDependency("org{}jetbrains{}kotlin", "kotlin-stdlib-jdk8")
+                .version("5.3.0")
                 .resolveTransitiveDependencies(true)
-                .build());
-                /*
                 .relocate(reloc("net{}dv8tion{}jda"))
                 .relocate(reloc("com{}iwebpp{}crypto"))
                 .relocate(reloc("gnu{}trove"))
@@ -85,27 +84,22 @@ public class LibsManager {
                 .relocate(reloc("com{}fasterxml{}jackson{}annotations"))
                 .relocate(reloc("com{}vdurmont{}emoji"))
                 .relocate(reloc("org{}json"))
-                .build());*/
+                .build());
 
         libraries.add(Library.builder()
                 .groupId("com{}github{}minndevelopment")
                 .artifactId("emoji-java")
                 .version("v6.1.0")
                 .repository("https://jitpack.io")
-                .excludeTransitiveDependency("org{}jetbrains{}kotlin", "kotlin-stdlib")
-                .excludeTransitiveDependency("org{}jetbrains{}kotlin", "kotlin-stdlib-common")
-                .excludeTransitiveDependency("org{}jetbrains{}kotlin", "kotlin-stdlib-jdk7")
-                .excludeTransitiveDependency("org{}jetbrains{}kotlin", "kotlin-stdlib-jdk8")
-                .resolveTransitiveDependencies(true)
+                .relocate(reloc("com{}vdurmont{}emoji"))
                 .build());
-                //.relocate(reloc("com{}vdurmont{}emoji"))
 
         libraries.add(Library.builder()
                 .groupId("club{}minnced")
                 .artifactId("discord-webhooks")
                 .version("0.8.4")
+                .relocate(reloc("club{}minnced{}discord{}webhook"))
                 .build());
-                //.relocate(reloc("club{}minnced{}discord{}webhook"))
 
         libraries.add(Library.builder()
                 .groupId("org{}slf4j")

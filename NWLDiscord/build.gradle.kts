@@ -29,6 +29,7 @@ repositories {
         url = uri("https://jitpack.io")
         content {
             includeGroup("com.github.nobeld")
+            includeGroup("com.github.nobeld.libby")
             includeGroup("com.github.MinnDevelopment")
         }
     }
@@ -38,14 +39,18 @@ dependencies {
     compileOnly(project(":NobleWhitelist"))
     compileOnly("io.papermc.paper", "paper-api", "1.20.4-R0.1-SNAPSHOT")
 
-    implementation("com.alessiodp.libby", "libby-bukkit", "2.0.0-SNAPSHOT") {
+    compileOnly("com.github.nobeld.libby", "libby-bukkit", "2.0.0-beta.1") {
+        exclude(module=("spigot-api"))
+        exclude(module=("libby-core"))
+    }
+    compileOnly("com.github.nobeld.libby", "libby-core", "2.0.0-beta.1") {
         exclude(module=("spigot-api"))
     }
     compileOnly("com.github.nobeld","simplixstorage","3.2.9-rc.5")
-    compileOnly("org.incendo", "cloud-jda5", "1.0.0-beta.2")
-    compileOnly("org.incendo", "cloud-processors-requirements", "1.0.0-beta.2")
+    compileOnly("org.incendo", "cloud-jda5", "1.0.0-beta.3")
+    compileOnly("org.incendo", "cloud-processors-requirements", "1.0.0-rc.1")
 
-    compileOnly("net.dv8tion", "JDA", "5.0.0-beta.20") {
+    compileOnly("net.dv8tion", "JDA", "5.3.0") {
         exclude(module= "opus-java")
     }
     compileOnly("com.github.MinnDevelopment", "emoji-java", "v6.1.0")
@@ -81,18 +86,12 @@ tasks {
     }
 
     shadowJar {
-        dependencies {
-            include(dependency("com.alessiodp.libby:libby-bukkit"))
-            include(dependency("com.alessiodp.libby:libby-core"))
-        }
-
         archiveClassifier.set("")
         fun reloc(pkg: String) = relocate(pkg, "me.nobeld.noblewhitelist.discord.libs.$pkg")
         fun nwlreloc(pkg: String) = relocate(pkg, "me.nobeld.noblewhitelist.libs.$pkg")
 
         // JDA
         //#TODO Fix relocation
-        /*
         reloc("net.dv8tion.jda")
         reloc("com.neovisionaries.ws")
         reloc("okhttp3")
@@ -109,14 +108,13 @@ tasks {
 
         // discord-webhooks
         reloc("club.minnced.discord.webhook")
-        */
 
-        reloc("com.alessiodp.libby")
+        nwlreloc("com.alessiodp.libby")
         nwlreloc("com.esotericsoftware")
         nwlreloc("de.leonhard")
         reloc("org.intellij")
         reloc("org.jetbrains")
-        // reloc("org.incendo")
+        nwlreloc("org.incendo")
     }
     // Used by discord workflow
     register("printProjectName") {
