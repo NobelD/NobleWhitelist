@@ -90,6 +90,13 @@ public abstract class BaseCommand {
         }
         return false;
     }
+    public static boolean insufficientUser(NWLDsData data, CommandContext<JDAInteraction> c, String val1, String val2, long val3) {
+        if ((val1 != null || val2 != null) && val3 > 0L) {
+            return false;
+        }
+        replyMsg(data, c, MessageData.Error.insufficientData);
+        return true;
+    }
     public static PairData<Boolean, UUID> invalidUUID(NWLDsData data, CommandContext<JDAInteraction> c, @Nullable String uuid) {
         if (uuid == null) {
             return PairData.of(false, null);

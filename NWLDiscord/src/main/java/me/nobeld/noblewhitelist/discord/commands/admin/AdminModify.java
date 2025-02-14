@@ -129,7 +129,7 @@ public class AdminModify {
                         return;
                     }
 
-                    if (insufficientData(data, c, name, uuid, id)) return;
+                    if (insufficientUser(data, c, name, uuid, id)) return;
                     UUID realuuid;
                     PairData<Boolean, UUID> pair = invalidUUID(data, c, uuid);
                     if (pair.getFirst()) return;
@@ -174,7 +174,7 @@ public class AdminModify {
                     Optional<WhitelistEntry> entry = data.getNWL().whitelistData().getEntry(name, realuuid, id);
 
                     if (entry.isPresent()) {
-                        data.getNWL().whitelistData().linkDiscord(entry.get(), id);
+                        data.getNWL().whitelistData().unlinkDiscord(entry.get());
                         Map<String, String> m = data.getMessageD().baseHolder(entry.get());
 
                         replyMsg(data, c, MessageData.Command.userUnLink, m);
