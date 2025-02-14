@@ -38,8 +38,8 @@ public class JDAManager {
         this.data = data;
         token = config.configFile().getString("discord.bot-token");
         if ((token == null || token.isBlank() || token.isEmpty())) {
-            data.logger().log(Level.SEVERE, "There is no discord bot defined to use.");
-            data.logger().log(Level.SEVERE, "Some features will be disabled.");
+            NobleWhitelist.adv().consoleAudience().sendMessage(AdventureUtil.formatAll("<prefix><red>There is no discord bot defined to use."));
+            NobleWhitelist.adv().consoleAudience().sendMessage(AdventureUtil.formatAll("<prefix><red>Some features will be disabled."));
             return;
         }
         loadChannels(config);
@@ -50,7 +50,6 @@ public class JDAManager {
     }
     public void enableCommands() {
         if (bot == null) {
-            NobleWhitelist.adv().consoleAudience().sendMessage(AdventureUtil.formatAll("<prefix><red>No active bot was found, commands will not be registered!"));
             return;
         }
         cmdManager = new CommandManager(data);
@@ -80,12 +79,11 @@ public class JDAManager {
     }
     private void start() {
         if (token == null || token.isEmpty() || token.isBlank()) {
-            NWLDiscord.log(Level.SEVERE, "The bot token is missing, the bot will not be enabled.");
             data.disable();
             return;
         }
         try {
-            NobleWhitelist.adv().consoleAudience().sendMessage(AdventureUtil.formatAll("<prefix><yellow>Loading Discord Bot!"));
+            NobleWhitelist.adv().consoleAudience().sendMessage(AdventureUtil.formatAll("<prefix><yellow>Loading Discord Bot..."));
             bot = JDABuilder
                     .createDefault(token)
                     .enableIntents(GatewayIntent.GUILD_MEMBERS)
@@ -95,8 +93,7 @@ public class JDAManager {
             bot.awaitReady();
             NobleWhitelist.adv().consoleAudience().sendMessage(AdventureUtil.formatAll("<prefix><green>Loaded Discord Bot!"));
         } catch (Exception e) {
-            NWLDiscord.log(Level.SEVERE, "An error occurred while enabling the discord bot, be sure the token is valid.");
-            NWLDiscord.log(Level.SEVERE, e.getMessage());
+            NWLDiscord.getPlugin().logger().log(Level.SEVERE, "An error occurred while enabling the discord bot.", e);
             data.disable();
             return;
         }

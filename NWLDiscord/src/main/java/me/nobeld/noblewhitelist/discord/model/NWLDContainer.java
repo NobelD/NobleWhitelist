@@ -85,7 +85,7 @@ public class NWLDContainer {
             return this;
         }
         public Builder printMessage() {
-            NobleWhitelist.adv().consoleAudience().sendMessage(AdventureUtil.formatAll("<prefix><green>Loaded Discord integration!"));
+            NobleWhitelist.adv().consoleAudience().sendMessage(AdventureUtil.formatAll("<prefix><green>Loaded Discord integration Plugin!"));
             if (config.get(ConfigData.notifyUpdate))
                 update.sendStatus(NobleWhitelist.adv().consoleAudience(), true);
             return this;
