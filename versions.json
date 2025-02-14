@@ -1,14 +1,16 @@
 {
   "repository": "https://github.com/NobelD/NobleWhitelist",
-  "support": "https://discord.gg/CMbuPp7hpf",
   "issues": "https://github.com/NobelD/NobleWhitelist/issues",
+  "wiki": "https://github.com/NobelD/NobleWhitelist/wiki",
+  "support": "https://discord.gg/CMbuPp7hpf",
+  "discord-support": "https://discord.gg/CMbuPp7hpf",
   "NobleWhitelist": {
     "url": "https://modrinth.com/plugin/noble-whitelist",
     "id": "hBuYjABw",
     "latest": {
       "core": "1.2.7",
       "spigot": "1.2.7",
-      "spigot-j17": "1.2.7"
+      "spigot-mc17": "1.2.7"
     }
   },
   "NWLDiscord": {
@@ -17,7 +19,7 @@
     "latest": {
       "core": "1.1.5",
       "spigot": "1.1.5",
-      "spigot-j17": "1.1.5"
+      "spigot-mc17": "1.1.5"
     }
   }
 }

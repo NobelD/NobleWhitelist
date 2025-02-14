@@ -438,21 +438,25 @@ public class UpdateChecker {
             String discordUrl = null;
             String supportUrl = null;
 
-            String wiki = containsToString(json, "wiki");
-            if (wiki != null) {
-                wikiUrl = wiki;
-            }
             String repo = containsToString(json, "repository");
             if (repo != null) {
                 repoUrl = repo;
             }
+            String is = containsToString(json, "issues");
+            if (is != null) {
+                issuesUrl = is;
+            }
+            String wiki = containsToString(json, "wiki");
+            if (wiki != null) {
+                wikiUrl = wiki;
+            }
+            String sup = containsToString(json, "support");
+            if (sup != null) {
+                supportUrl = sup;
+            }
             String ds = containsToString(json, "discord-support");
             if (ds != null) {
                 discordUrl = ds;
-            }
-            String sup = containsToString(json, "support");
-            if (ds != null) {
-                supportUrl = sup;
             }
             return new UsefulLinks(repoUrl, issuesUrl, wikiUrl, supportUrl, discordUrl);
         }
