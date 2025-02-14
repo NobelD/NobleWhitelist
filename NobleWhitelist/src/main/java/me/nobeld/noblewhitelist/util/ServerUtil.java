@@ -24,6 +24,12 @@ public class ServerUtil {
     public static boolean hasBukkit() {
         return craftBukkit;
     }
+    public static int getVersion() {
+        return PaperLib.getMinecraftVersion();
+    }
+    public static int getPatchVersion() {
+        return PaperLib.getMinecraftPatchVersion();
+    }
     public static boolean craftBukkitWarning(JavaPlugin plugin) {
         if (hasBukkit() && !hasSpigot()) {
             incompatibleApi(plugin, "craftBukkit");

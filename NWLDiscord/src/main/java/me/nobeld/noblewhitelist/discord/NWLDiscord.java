@@ -8,6 +8,7 @@ import me.nobeld.noblewhitelist.discord.model.NWLDContainer;
 import me.nobeld.noblewhitelist.discord.model.NWLDsData;
 import me.nobeld.noblewhitelist.model.PairData;
 import me.nobeld.noblewhitelist.model.base.NWLData;
+import me.nobeld.noblewhitelist.util.ServerUtil;
 import me.nobeld.noblewhitelist.util.SpigotMetrics;
 import me.nobeld.noblewhitelist.util.UpdateChecker;
 import me.nobeld.noblewhitelist.discord.config.MessageData;
@@ -42,7 +43,7 @@ public class NWLDiscord extends JavaPlugin implements NWLDsData {
                 .loadFiles(getDataFolder().getPath(), PairData.of("config.yml", FileManager.FileType.YAML), PairData.of("messages.yml", FileManager.FileType.YAML))
                 .load(() -> Bukkit.getServer().getPluginManager().registerEvents(new Listener(this), this))
                 .loadJDA()
-                .loadUpdateChecker("NWLDiscord", "spigot", Runtime.version().feature() >= 21 ? null : "spigot-j17")
+                .loadUpdateChecker("NWLDiscord", "spigot", ServerUtil.getVersion() > 17 ? null : "spigot-mc17")
                 .printMessage()
                 .load(() -> {
                     SpigotMetrics metrics = new SpigotMetrics(this, 20417);
