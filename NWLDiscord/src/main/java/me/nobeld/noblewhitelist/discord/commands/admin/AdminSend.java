@@ -1,11 +1,13 @@
 package me.nobeld.noblewhitelist.discord.commands.admin;
 
+import de.leonhard.storage.sections.FlatFileSection;
 import me.nobeld.noblewhitelist.discord.JDAManager;
 import me.nobeld.noblewhitelist.discord.commands.InteractionListener;
 import me.nobeld.noblewhitelist.discord.config.ConfigData;
 import me.nobeld.noblewhitelist.discord.model.NWLDsData;
 import me.nobeld.noblewhitelist.discord.model.command.SubCommand;
 import me.nobeld.noblewhitelist.discord.util.DiscordUtil;
+import me.nobeld.noblewhitelist.model.storage.ConfigContainer;
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.channel.Channel;
 import net.dv8tion.jda.api.entities.channel.ChannelType;
@@ -21,16 +23,19 @@ import net.dv8tion.jda.api.utils.messages.MessageCreateBuilder;
 import net.dv8tion.jda.api.utils.messages.MessageCreateData;
 import net.dv8tion.jda.api.utils.messages.MessageEditData;
 import org.incendo.cloud.description.Description;
+import org.incendo.cloud.discord.jda5.JDAParser;
+import org.incendo.cloud.discord.slash.DiscordChoices;
+import org.incendo.cloud.parser.standard.BooleanParser;
+import org.incendo.cloud.parser.standard.StringParser;
 
+import java.util.Arrays;
 import java.util.Optional;
 import java.util.function.Consumer;
 import java.util.logging.Level;
 
 import static me.nobeld.noblewhitelist.discord.commands.CommandManager.REQUIREMENTS_KEY;
 import static me.nobeld.noblewhitelist.discord.model.command.BaseCommand.*;
-import static org.incendo.cloud.discord.jda5.JDAParser.channelParser;
-import static org.incendo.cloud.parser.standard.EnumParser.enumParser;
-import static org.incendo.cloud.parser.standard.StringParser.stringParser;
+import static me.nobeld.noblewhitelist.discord.util.DiscordUtil.isNullEmpty;
 
 public class AdminSend {
     private final NWLDsData data;
@@ -57,13 +62,17 @@ public class AdminSend {
     }
 
     public SubCommand command() {
-        return new SubCommand(b -> b.literal("send", Description.of("Experimental feature, little customizable."))
-                .optional("content", stringParser())
-                .optional("button", stringParser())
-                .optional("type", enumParser(ButtonType.class))
-                .optional("emoji", stringParser())
-                .optional("channel", channelParser())
-                .optional("message", stringParser())
+        return new SubCommand(b -> b.literal("send", Description.of("Experimental feature, little customizable."))  
+                .optional("path", StringParser.greedyStringParser())
+                .optional("content", StringParser.greedyStringParser())
+                .optional("button", StringParser.greedyStringParser())
+                .optional("type", StringParser.greedyStringParser(),
+                          DiscordChoices.strings(Arrays.stream(ButtonType.values())
+                                                    .map(v -> v.name().toLowerCase()).toList()))
+                .optional("emoji", StringParser.greedyStringParser())
+                .optional("channel", JDAParser.channelParser())
+                .optional("edit", StringParser.greedyStringParser())
+                .optional("disabled", BooleanParser.booleanParser())
                 .meta(REQUIREMENTS_KEY, getRequirements(data, ConfigData.CommandsOpt.adminAdd))
                 .handler(c -> {
                     if (invalidInteraction(data, c)) return;
@@ -72,25 +81,77 @@ public class AdminSend {
 
                     final Channel channel = Optional.ofNullable(e.getOption("channel"))
                             .<Channel>map(OptionMapping::getAsChannel).orElse(e.getChannel());
-                    final Optional<String> strMsg = Optional.ofNullable(e.getOption("message")).map(OptionMapping::getAsString);
-                    if (channel == null && strMsg.isEmpty()) {
+                    final Optional<String> strEdit = Optional.ofNullable(e.getOption("edit")).map(OptionMapping::getAsString);
+                    if ((channel == null || channel.getType() != ChannelType.TEXT) && strEdit.isEmpty()) {
                         replyMsg(c, "No location to send the message was found.", true);
                         return;
                     }
+                    final Optional<String> path = Optional.ofNullable(e.getOption("path")).map(OptionMapping::getAsString);
+                    final Optional<Boolean> disabled = Optional.ofNullable(e.getOption("disabled")).map(OptionMapping::getAsBoolean);
 
-                    Emoji emoji = Optional.ofNullable(e.getOption("emoji")).map(o -> {
-                        try {
-                            return Emoji.fromFormatted(o.getAsString());
-                        } catch (Exception ex) {
-                            return null;
+                    if (path.isPresent()) {
+                        ConfigContainer<String> view = new ConfigContainer<>(path.get(), "");
+                        MessageCreateData msg = DiscordUtil.getMessage(data, view);
+                        if (msg == null) {
+                            replyMsg(c, "No message was found to use.", true);
+                            return;
                         }
-                    }).orElse(null);
+                        FlatFileSection section = data.getMessageD().getMsgSec(view);
+                        String button = section.getRaw("extras.button", "");
+                        String emoji = section.getRaw("extras.emoji", "");
+                        String type = section.getRaw("extras.type", "");
+                        boolean shouldEdit = strEdit.isPresent();
+                        if (isNullEmpty(button)) {
+                            button = shouldEdit ? null : "Whitelist";
+                        }
+                        final ActionRow row;
+                        if (button != null) {
+                            Button bt = Button.of(
+                                    Optional.ofNullable(type).map(o -> ButtonType.valueOf(o.toUpperCase()))
+                                            .orElse(ButtonType.SECONDARY).getStyle(),
+                                    InteractionListener.MENU_OPEN_BUTTON_ID,
+                                    button,
+                                    Optional.ofNullable(emoji).map(DiscordUtil::toEmoji).orElse(null)
+                                                 );
+                            if (disabled.filter(o -> o).isPresent()) {
+                                bt = bt.asDisabled();
+                            }
+                            row = ActionRow.of(bt);
+                        } else {
+                            row = null;
+                        }
+                        if (shouldEdit) {
+                            RestAction<Message> message = DiscordUtil.getMessageFromLink(manager.getJDA(), strEdit.get());
+                            if (message == null) {
+                                replyMsg(c, "No message was found to edit.", true);
+                                return;
+                            }
+                            message.queue(m -> {
+                                if (m.getAuthor() != manager.getJDA().getSelfUser()) {
+                                    replyMsg(c, "Cannot edit messages of another user!", true);
+                                    return;
+                                }
+                                m.editMessage(MessageEditData.fromCreateData(msg)).queue();
+                                if (row != null) {
+                                    m.editMessageComponents(row).queue();
+                                }
+                                replyMsg(c, "Message was edited", true);
+                            });
+                        } else {
+                            TextChannel ch = (TextChannel) channel;
+                            ch.sendMessage(msg).addComponents(row).queue(v -> replyMsg(c, "Message was send", true));
+                        }
+                        return;
+                    }
+
+                    Emoji emoji = Optional.ofNullable(e.getOption("emoji")).map(OptionMapping::getAsString)
+                            .map(DiscordUtil::toEmoji).orElse(null);
 
                     Optional<String> desc = Optional.ofNullable(e.getOption("button")).map(OptionMapping::getAsString);
                     Optional<String> content = Optional.ofNullable(e.getOption("content")).map(OptionMapping::getAsString);
 
-                    if (strMsg.isPresent()) {
-                        RestAction<Message> message = DiscordUtil.getMessageFromLink(manager.getJDA(), strMsg.get());
+                    if (strEdit.isPresent()) {
+                        RestAction<Message> message = DiscordUtil.getMessageFromLink(manager.getJDA(), strEdit.get());
                         if (message == null) {
                             replyMsg(c, "No message was found to edit", true);
                             return;
@@ -110,7 +171,11 @@ public class AdminSend {
                                 data.logger().log(Level.WARNING, "Message could not be edited: " + m.getJumpUrl(), e);
                             };
                             if (button.isPresent()) {
-                                ActionRow row = ActionRow.of(button.get());
+                                Button bt = button.get();
+                                if (disabled.filter(o -> o).isPresent()) {
+                                    bt = bt.asDisabled();
+                                }
+                                ActionRow row = ActionRow.of(bt);
                                 if (action.isEmpty()) {
                                     m.editMessageComponents(row).queue(suc, er);
                                 } else {

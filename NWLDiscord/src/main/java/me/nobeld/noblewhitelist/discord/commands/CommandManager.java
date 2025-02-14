@@ -41,8 +41,7 @@ public class CommandManager {
             RequirementPostprocessor.of(REQUIREMENTS_KEY, new NWLRequirementFailure());
     private final GuildRequirement guildRe;
     private final MemberRequirement memberRe;
-    // #TODO waiting for cloud button parser for premium suggestion
-    // #TODO waiting for cloud fix to discord options (options being not correct)
+    // #TODO fix cloud discord options parser (uses incorrect order)
     public CommandManager(NWLDsData data) {
         this.data = data;
         guildRe = new GuildRequirement(data);

@@ -1,5 +1,6 @@
 package me.nobeld.noblewhitelist.discord.util;
 
+import com.vdurmont.emoji.EmojiParser;
 import de.leonhard.storage.sections.FlatFileSection;
 import me.nobeld.noblewhitelist.discord.model.NWLDsData;
 import me.nobeld.noblewhitelist.model.storage.ConfigContainer;
@@ -14,6 +15,7 @@ import net.dv8tion.jda.api.requests.RestAction;
 import net.dv8tion.jda.api.utils.messages.MessageCreateBuilder;
 import net.dv8tion.jda.api.utils.messages.MessageCreateData;
 import org.apache.logging.log4j.core.lookup.StrSubstitutor;
+import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.Nullable;
 
 import java.awt.*;
@@ -195,5 +197,24 @@ public class DiscordUtil {
                 message.addReaction(s).queue();
             }
         });
+    }
+    public static Emoji toEmoji(String raw) {
+        if (isNullEmpty(raw)) return null;
+        if (raw.startsWith(":") && raw.endsWith(":")) {
+            return Emoji.fromUnicode(EmojiParser.parseToUnicode(raw));
+        }
+        try {
+            return Emoji.fromFormatted(raw);
+        } catch (Exception ignored) {
+        }
+        return null;
+    }
+    @Contract("null -> false")
+    public static boolean nonNullEmpty(@Nullable String value) {
+        return !isNullEmpty(value);
+    }
+    @Contract("null -> true")
+    public static boolean isNullEmpty(@Nullable String value) {
+        return value == null || value.isEmpty() || value.isBlank();
     }
 }
