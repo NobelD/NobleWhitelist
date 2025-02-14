@@ -53,7 +53,7 @@ public class WhitelistCommand {
                 .permission("noblewhitelist.admin.status")
                 .handler(c -> {
                     sendMsg(c, MessageData.statusHeader());
-                    sendMsg(c, MessageData.statusVersion(plugin.getUptChecker().version));
+                    sendMsg(c, MessageData.statusVersion(plugin.version()));
                     sendMsg(c, MessageData.statusWhitelistSize(plugin.getStorage().getTotal()));
                     sendMsg(c, MessageData.statusWhitelistActive(plugin.getConfigD().get(ConfigData.WhitelistCF.whitelistActive)));
                     sendMsg(c, MessageData.statusNameCheck(plugin.getConfigD().checkName()));
@@ -63,6 +63,11 @@ public class WhitelistCommand {
                 })
         ) {
         };
-        return List.of(list, clearList, reload, status);
+        SubCommand support = new SubCommand(b -> b.literal("support")
+                .permission("noblewhitelist.admin.support")
+                .handler(c -> plugin.getUptChecker().sendSupport(c.sender()))
+        ) {
+        };
+        return List.of(list, clearList, reload, status, support);
     }
 }

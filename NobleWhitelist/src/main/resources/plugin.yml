@@ -54,6 +54,9 @@ permissions:
   noblewhitelist.admin.status:
     description: "Permission to get the plugin status"
     default: op
+  noblewhitelist.admin.support:
+    description: "Permission to get more info about the plugin"
+    default: op
   noblewhitelist.admin.find:
     description: "Permission to find the whitelist data from a player"
     default: op
