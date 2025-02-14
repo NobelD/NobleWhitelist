@@ -6,30 +6,37 @@ import com.google.gson.JsonParser;
 import me.nobeld.noblewhitelist.NobleWhitelist;
 import me.nobeld.noblewhitelist.model.base.BaseVersioning;
 import net.kyori.adventure.audience.Audience;
+import org.jetbrains.annotations.Contract;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.Objects;
+import java.util.Optional;
 import java.util.logging.Level;
 
 public class UpdateChecker {
     public BaseVersioning data;
-    public final String version;
-    private String url = "https://github.com/NobelD/NobleWhitelist";
+    public final Version version;
+    private static UsefulLinks links = null;
+
+    private String downloadUrl = "https://github.com/NobelD/NobleWhitelist";
     private final String name;
     private final String subType;
     private final String extraType;
     private long lastCheck = 0;
-    private String latest;
+    private Version latest;
     @Nullable
-    private String latestExtra = null;
+    private Version latestExtra = null;
 
     public UpdateChecker(BaseVersioning data, String name, String subType, @Nullable String extraType) {
         this.data = data;
         this.name = name;
         this.subType = subType;
-        this.version = data.version();
+        this.version = Version.create(data.version());
         this.extraType = extraType;
     }
 
@@ -40,35 +47,71 @@ public class UpdateChecker {
     public UpdateStatus githubCheck() {
         return githubCheck(true);
     }
+    @Nullable
+    private static String containsToString(JsonObject obj, String name) {
+        return obj.has(name) ? obj.get(name).getAsString() : null;
+    }
     private UpdateStatus readJson(JsonElement element) {
         JsonObject json = element.getAsJsonObject();
+        if (links == null) {
+            links = UsefulLinks.create(json);
+        }
+        if (!json.has(name)) {
+            return UpdateStatus.NO_DATA;
+        }
         JsonObject type = json.get(name).getAsJsonObject();
-        url = type.get("url").getAsString();
+        String url = containsToString(type, "url");
+        if (url != null) {
+            this.downloadUrl = url;
+        }
+        if (!type.has("latest")) {
+            return UpdateStatus.NO_DATA;
+        }
         JsonObject lo = type.get("latest").getAsJsonObject();
-        latest = lo.has(subType) ? lo.get(subType).getAsString() : null;
+        latest = lo.has(subType) ? Version.create(lo.get(subType).getAsString()) : null;
 
         // If no latest is found cannot compare with extra
-        if (latest == null) return UpdateStatus.NO_DATA;
+        if (latest == null || version == null) {
+            return UpdateStatus.NO_DATA;
+        }
         if (extraType != null) {
-            latestExtra = lo.has(extraType) ? lo.get(extraType).getAsString() : null;
+            latestExtra = lo.has(extraType) ? Version.create(lo.get(extraType).getAsString()) : null;
         }
 
-        // If last equals the version no need to compare more.
-        if (latest.equals(version)) {
-            return UpdateStatus.SAME_VERSION;
-        } else if (version.endsWith("-SNAPSHOT")) { // If version is snapshot compare if latest is a stable version
-            String s = version.replace("-SNAPSHOT", "");
-            if ((latestExtra != null && latestExtra.equals(s)) || latest.equals(s))
-                return UpdateStatus.SAME_SNAPSHOT;
-            return UpdateStatus.VERSION_RELEASE_AVAILABLE;
-        } else if (latestExtra != null) { // If extra exist and equals this version.
-            if (latestExtra.equals(version)) return UpdateStatus.SAME_EXTRA;
-            return UpdateStatus.AVAILABLE_EXTRA;
+        if (latestExtra != null && !latestExtra.matchExact(latest)) {
+            UpdateStatus status = compare(version, latestExtra);
+            if (status == UpdateStatus.AVAILABLE) return UpdateStatus.AVAILABLE_EXTRA;
+            else if (status == UpdateStatus.SAME) return UpdateStatus.SAME_EXTRA;
+            else return status;
+        } else {
+            return compare(version, latest);
         }
-        // If no check match then a version is available.
-        return UpdateStatus.VERSION_AVAILABLE;
+    }
+    private UpdateStatus compare(@NotNull Version version, @NotNull Version other) {
+        if (version.isSnapshot()) {
+            return switch (version.resolve(other)) {
+                case 0 -> UpdateStatus.LESSER;
+                case 1 -> other.isSnapshot() ? UpdateStatus.SAME_SNAPSHOT : UpdateStatus.AVAILABLE_RELEASE;
+                default -> UpdateStatus.AVAILABLE;
+            };
+        } else if (version.hasExtra()) {
+            return switch (version.resolve(other)) {
+                case 0 -> UpdateStatus.LESSER;
+                case 1 -> other.isSnapshot() ? UpdateStatus.LESSER : UpdateStatus.AVAILABLE_OTHER;
+                default -> UpdateStatus.AVAILABLE_OTHER;
+            };
+        } else {
+            return switch (version.resolve(other)) {
+                case 0 -> UpdateStatus.LESSER;
+                case 1 -> other.isSnapshot() ? UpdateStatus.LESSER : UpdateStatus.SAME;
+                default -> UpdateStatus.AVAILABLE;
+            };
+        }
     }
     public UpdateStatus githubCheck(boolean cooldown) {
+        if (version == null) {
+            return UpdateStatus.NO_DATA;
+        }
         if (cooldown) {
             if (System.currentTimeMillis() < lastCheck + 1800000)
                 return UpdateStatus.COOLDOWN;
@@ -102,76 +145,129 @@ public class UpdateChecker {
 
         if (!status.canPrint()) return false;
 
+        String version = this.version.asString();
+        String latest = this.latest.asString();
         switch (status) {
             case AVAILABLE_EXTRA -> {
-                audience.sendMessage(AdventureUtil.formatAll(prefix + "<#F1B65C>It seems that you are not using the latest version of <gold>" + name));
+                String latestExtra = Objects.requireNonNull(this.latestExtra, "invalid").asString();
+                audience.sendMessage(AdventureUtil.formatAll(prefix + "<#F1B65C>There is a new update for <gold>" + name));
                 audience.sendMessage(AdventureUtil.formatAll(prefix + "<#F1B65C>Your version: <#FF8B4D>" + version + " <yellow>| <#F1B65C>Latest: <#6FEF22>" + latestExtra));
                 audience.sendMessage(AdventureUtil.formatAll(prefix + "<#F1B65C>It also seems it is the latest available for you server, check FAQ for more info!"));
-                audience.sendMessage(AdventureUtil.formatAll(prefix + "<#F1B65C>Download it at: <#75CDFF>" + url));
+                audience.sendMessage(AdventureUtil.formatAll(prefix + "<#F1B65C>Download it at: <#75CDFF>" + downloadUrl));
             }
             case SAME_EXTRA -> {
+                String latestExtra = Objects.requireNonNull(this.latestExtra, "invalid").asString();
                 audience.sendMessage(AdventureUtil.formatAll(prefix + "<#F1B65C>It seems there is a new version but is not available for your server. <gold>(<#FF8B4D>" + latestExtra + " - <#6FEF22>" + latest + "<gold>)"));
                 audience.sendMessage(AdventureUtil.formatAll(prefix + "<#F1B65C>Nothing to worry but you may be missing some new features, check FAQ for more info!"));
+                audience.sendMessage(AdventureUtil.formatAll(prefix + "<#F1B65C>Wiki link: <#75CDFF>" + getUsefulLinks().wiki));
             }
-            case VERSION_RELEASE_AVAILABLE -> {
-                audience.sendMessage(AdventureUtil.formatAll(prefix + "<#F1B65C>You are using a experimental version of <gold>" + name + "<#F1B65C>, consider to update to a stable version!"));
+            case AVAILABLE_RELEASE -> {
+                audience.sendMessage(AdventureUtil.formatAll(prefix + "<#F1B65C>There is a new update for <gold>" + name + "<#F1B65C>"));
+                audience.sendMessage(AdventureUtil.formatAll(prefix + "<#F1B65C>You are using an experimental version, consider to update to the stable version!"));
                 audience.sendMessage(AdventureUtil.formatAll(prefix + "<#F1B65C>Your version: <#FF8B4D>" + version + " <yellow>| <#F1B65C>Latest: <#6FEF22>" + latest));
-                audience.sendMessage(AdventureUtil.formatAll(prefix + "<#F1B65C>Download it at: <#75CDFF>" + url));
+                audience.sendMessage(AdventureUtil.formatAll(prefix + "<#F1B65C>Download it at: <#75CDFF>" + downloadUrl));
             }
-            default -> {
+            case AVAILABLE_OTHER -> {
                 audience.sendMessage(AdventureUtil.formatAll(prefix + "<#F1B65C>It seems that you are not using the latest version of <gold>" + name));
                 audience.sendMessage(AdventureUtil.formatAll(prefix + "<#F1B65C>Your version: <#FF8B4D>" + version + " <yellow>| <#F1B65C>Latest: <#6FEF22>" + latest));
-                audience.sendMessage(AdventureUtil.formatAll(prefix + "<#F1B65C>Download it at: <#75CDFF>" + url));
+                audience.sendMessage(AdventureUtil.formatAll(prefix + "<#F1B65C>Download it at: <#75CDFF>" + downloadUrl));
+            }
+            default -> {
+                audience.sendMessage(AdventureUtil.formatAll(prefix + "<#F1B65C>There is a new update for <gold>" + name));
+                audience.sendMessage(AdventureUtil.formatAll(prefix + "<#F1B65C>Your version: <#FF8B4D>" + version + " <yellow>| <#F1B65C>Latest: <#6FEF22>" + latest));
+                audience.sendMessage(AdventureUtil.formatAll(prefix + "<#F1B65C>Download it at: <#75CDFF>" + downloadUrl));
             }
         }
         return true;
     }
-    public String getLatest() {
+    public void sendSupport(Audience audience) {
+        sendSupport(audience, "<prefix>");
+    }
+    public void sendSupport(Audience audience, String prefix) {
+        getUsefulLinks();
+        audience.sendMessage(AdventureUtil.formatAll(prefix + "<#FF9CBB><bold>Useful links about the plugin:"));
+        audience.sendMessage(AdventureUtil.formatAll(prefix + "<#F1B65C>Repository: <#F07DF0>" + links.repository));
+        audience.sendMessage(AdventureUtil.formatAll(prefix + "<#F1B65C>Issues: <#F07DF0>" + links.issues));
+        audience.sendMessage(AdventureUtil.formatAll(prefix + "<#F1B65C>Wiki: <#F07DF0>" + links.wiki));
+        if (links.support != null && !links.support.equals(links.discord)) {
+            audience.sendMessage(AdventureUtil.formatAll(prefix + "<#F1B65C>Support: " + links.support));
+        }
+        if (links.discord != null) {
+            audience.sendMessage(AdventureUtil.formatAll(prefix + "<#F1B65C>Discord Support Server: " + links.discord));
+        }
+    }
+    public String getName() {
+        return name;
+    }
+    public String getSubType() {
+        return subType;
+    }
+    public Optional<String> getExtraType() {
+        return Optional.ofNullable(extraType);
+    }
+    public Version getLatest() {
         return latest;
     }
-    public String getUrl() {
-        return url;
+    public Optional<Version> getLatestExtra() {
+        return Optional.ofNullable(latestExtra);
+    }
+    public String getDownloadUrl() {
+        return downloadUrl;
+    }
+    public static UsefulLinks getUsefulLinks() {
+        if (links == null) {
+            links = UsefulLinks.empty();
+        }
+        return links;
     }
     public enum UpdateStatus {
         /**
-         * Same extra version but not main version
+         * Same extra version.
          */
         SAME_EXTRA,
         /**
-         * Same extra version but not main version
+         * Same extra version and latest is available.
          */
         AVAILABLE_EXTRA,
         /**
-         * Same version
+         * The newer version is lesser that this version.
          */
-        SAME_VERSION,
+        LESSER,
         /**
-         * Same version but this instance is snapshot
+         * Same version.
+         */
+        SAME,
+        /**
+         * Same snapshot versions.
          */
         SAME_SNAPSHOT,
         /**
-         * A new version is available
+         * A new version is available.
          */
-        VERSION_AVAILABLE,
+        AVAILABLE,
         /**
-         * A new version is available and is release from this instance.
+         * A new version is available.
          */
-        VERSION_RELEASE_AVAILABLE,
+        AVAILABLE_OTHER,
+        /**
+         * This version is snapshot and the stable version is available.
+         */
+        AVAILABLE_RELEASE,
         /**
          * No data exist.
          */
         NO_DATA,
         /**
-         * Can not reach the data.
+         * Cannot reach the data.
          */
         CANT_REACH,
         /**
-         * The update checker is on cooldown
+         * The update checker is on cooldown.
          */
         COOLDOWN;
 
         public boolean canUpdate() {
-            return this == VERSION_AVAILABLE || this == VERSION_RELEASE_AVAILABLE || this == AVAILABLE_EXTRA;
+            return this == AVAILABLE || this == AVAILABLE_RELEASE || this == AVAILABLE_EXTRA || this == AVAILABLE_OTHER;
         }
 
         public boolean canPrint() {
@@ -179,11 +275,186 @@ public class UpdateChecker {
         }
 
         public boolean isSame() {
-            return this == SAME_VERSION || this == SAME_SNAPSHOT || this == SAME_EXTRA;
+            return this == SAME || this == SAME_SNAPSHOT || this == SAME_EXTRA;
         }
 
         public boolean noExist() {
             return this == NO_DATA || this == CANT_REACH;
+        }
+    }
+
+    public record Version(@NotNull Integer[] ver, @Nullable String extra) {
+        @Nullable
+        @Contract("null -> null")
+        public static Version create(String str) {
+            if (str == null || str.isEmpty() || str.isBlank()) {
+                return null;
+            }
+            String[] type = str.trim().split("-", 2);
+            String extra = type.length == 2 ? type[1] : null;
+            String[] ver = type[0].split("\\.");
+            ArrayList<Integer> list = new ArrayList<>();
+            try {
+                for (String s : ver) {
+                    int i = Integer.parseInt(s);
+                    if (i < 0) {
+                        throw new NumberFormatException("negative number");
+                    }
+                    list.add(i);
+                }
+            } catch (NumberFormatException ex) {
+                return null;
+            }
+            Integer[] array = list.toArray(Integer[]::new);
+            return new Version(array, extra);
+        }
+
+        public boolean hasExtra() {
+            return extra != null;
+        }
+
+        public boolean isSnapshot() {
+            return extra != null && extra.equalsIgnoreCase("snapshot");
+        }
+
+        public boolean isStable() {
+            return extra == null;
+        }
+
+        public boolean isNotStable() {
+            if (this.extra != null) {
+                String extra = this.extra.toLowerCase();
+                return extra.startsWith("snapshot") || extra.startsWith("beta") || extra.startsWith("alpha")
+                        || extra.startsWith("rc");
+            }
+            return false;
+        }
+
+        @Contract("null -> false")
+        public boolean isGreater(@Nullable Version other) {
+            return other != null && resolve(other) == 2;
+        }
+
+        @Contract("null -> false")
+        public boolean isSame(@Nullable Version other) {
+            return other != null && resolve(other) == 1;
+        }
+
+        @Contract("null -> false")
+        public boolean isLesser(@Nullable Version other) {
+            return other != null && resolve(other) == 0;
+        }
+
+        @Contract("null -> false")
+        public boolean matchExtra(@Nullable Version other) {
+            if (other == null) {
+                return false;
+            }
+            if (this.extra() == null) {
+                return other.extra() == null;
+            } else {
+                return this.extra().equalsIgnoreCase(other.extra());
+            }
+        }
+
+        @Contract("null -> false")
+        public boolean matchExact(@Nullable Version other) {
+            return isSame(other) && matchExtra(other);
+        }
+
+        /**
+         * @return 2 if the other is major, 1 if the version is same, 0 if lesser
+         */
+        public int resolve(@NotNull Version other) {
+            return resolve(this.ver(), other.ver());
+        }
+
+        /**
+         * @return 2 if the other is major, 1 if the version is same, 0 if lesser
+         */
+        public static int resolve(@NotNull Version version, @NotNull Version other) {
+            return resolve(version.ver(), other.ver());
+        }
+
+        /**
+         * @return 2 if the other is major, 1 if the version is same, 0 if lesser
+         */
+        public static int resolve(@NotNull Integer[] array, @NotNull Integer[] other) {
+            return subResolve(array, other, 0);
+        }
+
+        /**
+         * @return 2 if the other is major, 1 if the version is same, 0 if lesser
+         */
+        private static int subResolve(@NotNull Integer[] array, @NotNull Integer[] other, int index) {
+            int plus = index + 1;
+            if (array.length < plus) {
+                if (other.length < plus) {
+                    return 1;
+                } else {
+                    return 2;
+                }
+            } else if (other.length < plus) {
+                return 0;
+            }
+            int val1 = array[index];
+            int val2 = other[index];
+            if (val1 == val2) {
+                return subResolve(array, other, plus);
+            } else if (val1 < val2) {
+                return 2;
+            } else {
+                return 0;
+            }
+        }
+
+        public String asString() {
+            StringBuilder builder = new StringBuilder();
+            for (Integer i : ver) {
+                if (builder.isEmpty()) {
+                    builder.append(i);
+                } else {
+                    builder.append(".").append(i);
+                }
+            }
+            if (hasExtra()) {
+                builder.append("-").append(extra());
+            }
+            return builder.toString();
+        }
+    }
+
+    public record UsefulLinks(String repository, String issues, String wiki, String support, String discord) {
+        private static UsefulLinks empty() {
+            final String repoUrl = "https://github.com/NobelD/NobleWhitelist";
+            final String issuesUrl = "https://github.com/NobelD/NobleWhitelist/issues";
+            final String wikiUrl = "https://github.com/NobelD/NobleWhitelist/wiki";
+            return new UsefulLinks(repoUrl, issuesUrl, wikiUrl, null, null);
+        }
+        private static UsefulLinks create(JsonObject json) {
+            String repoUrl = "https://github.com/NobelD/NobleWhitelist";
+            String issuesUrl = "https://github.com/NobelD/NobleWhitelist/issues";
+            String wikiUrl = "https://github.com/NobelD/NobleWhitelist/wiki";
+            String discordUrl = null;
+            String supportUrl = null;
+
+            String wiki = containsToString(json, "wiki");
+            if (wiki != null) {
+                wikiUrl = wiki;
+            }
+            String repo = containsToString(json, "repository");
+            if (repo != null) {
+                repoUrl = repo;
+            }
+            String ds = containsToString(json, "discord-support");
+            if (ds != null) {
+                discordUrl = ds;
+            }
+            String sup = containsToString(json, "support");
+            if (ds != null) {
+                supportUrl = sup;
+            }
+            return new UsefulLinks(repoUrl, issuesUrl, wikiUrl, supportUrl, discordUrl);
         }
     }
 }
