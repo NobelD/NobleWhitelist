@@ -123,6 +123,14 @@ public class WhitelistData {
         saveEntry(data);
     }
     /**
+     * Unlinks the discord id from a player entry.
+     * @param data entry of the player
+     */
+    public void unlinkDiscord(@NotNull WhitelistEntry data) {
+        data.setDiscordID(-1);
+        saveEntry(data);
+    }
+    /**
      * Deletes the entry from the storage
      * @param entry entry of the player
      */
