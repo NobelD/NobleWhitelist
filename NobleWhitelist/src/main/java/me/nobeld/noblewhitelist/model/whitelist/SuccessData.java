@@ -62,7 +62,7 @@ public record SuccessData(PlayerWrapper player, boolean name, boolean uuid, bool
                 u = true;
             }
             case OPTIONAL -> {
-                u = this.name;
+                u = this.uuid;
                 if (u && !optional)
                     optional = true;
             }
@@ -76,7 +76,7 @@ public record SuccessData(PlayerWrapper player, boolean name, boolean uuid, bool
                 p = true;
             }
             case OPTIONAL -> {
-                p = this.name;
+                p = this.perm;
                 if (p && !optional)
                     optional = true;
             }
