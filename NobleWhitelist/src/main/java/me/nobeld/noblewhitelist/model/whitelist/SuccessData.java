@@ -2,31 +2,47 @@ package me.nobeld.noblewhitelist.model.whitelist;
 
 import me.nobeld.noblewhitelist.model.base.PlayerWrapper;
 import me.nobeld.noblewhitelist.model.checking.CheckingOption;
+import org.jetbrains.annotations.Nullable;
 
-public record SuccessData(PlayerWrapper player, boolean name, boolean uuid, boolean perm) {
+public record SuccessData(PlayerWrapper player, @Nullable Boolean name, @Nullable Boolean uuid, boolean perm) {
     public boolean hasAny() {
-        return name || uuid || perm;
+        return (name != null && name) || (uuid != null && uuid) || perm;
     }
     public boolean hasAll() {
-        return name && uuid && perm;
+        return (name != null && name) && (uuid != null && uuid) && perm;
     }
     public boolean isNormal() {
-        return name && uuid;
+        return (name != null && name) && (uuid != null && uuid);
     }
     public boolean isWhitelisted() {
-        return name || uuid;
+        return (name != null && name) || (uuid != null && uuid);
     }
     public boolean isBypass() {
         return perm;
     }
-    public boolean onlyName() {
-        return name && !(uuid || perm);
+    public boolean onlyHasName() {
+        return (name != null && name) && !(uuid != null || perm);
     }
-    public boolean onlyUuid() {
-        return uuid && !(name || perm);
+    public boolean onlyHasUuid() {
+        return (uuid != null && uuid) && !(name != null || perm);
     }
-    public boolean onlyPerm() {
-        return perm && !(name || uuid);
+    public boolean onlyHasPerm() {
+        return perm && !(name != null || uuid != null);
+    }
+    public boolean matchByName() {
+        return (name != null && name) && !((uuid != null && !uuid) || perm);
+    }
+    public boolean matchByUuid() {
+        return (uuid != null && uuid) && !((name != null && !name) || perm);
+    }
+    public boolean matchByPerm() {
+        return perm && !((name != null && !name) || (uuid != null && !uuid));
+    }
+    public boolean hasEmpty() {
+        return name == null || uuid == null;
+    }
+    public boolean hasNoEmpty() {
+        return name != null && uuid != null;
     }
 
     /**
@@ -42,32 +58,40 @@ public record SuccessData(PlayerWrapper player, boolean name, boolean uuid, bool
     public boolean forCheck(CheckingOption name, CheckingOption uuid, CheckingOption perm) {
         boolean optional = false;
         final boolean n;
-        switch (name) {
-            case REQUIRED -> {
-                if (!this.name) return false;
-                n = true;
+        if (this.name != null) {
+            switch (name) {
+                case REQUIRED -> {
+                    if (!this.name) return false;
+                    n = true;
+                }
+                case OPTIONAL -> {
+                    n = this.name;
+                    if (n)
+                        optional = true;
+                }
+                case DISABLED -> n = true;
+                default -> n = this.name;
             }
-            case OPTIONAL -> {
-                n = this.name;
-                if (n)
-                    optional = true;
-            }
-            case DISABLED -> n = true;
-            default -> n = this.name;
+        } else {
+            n = true;
         }
         final boolean u;
-        switch (uuid) {
-            case REQUIRED -> {
-                if (!this.uuid) return false;
-                u = true;
+        if (this.uuid != null) {
+            switch (uuid) {
+                case REQUIRED -> {
+                    if (!this.uuid) return false;
+                    u = true;
+                }
+                case OPTIONAL -> {
+                    u = this.uuid;
+                    if (u && !optional)
+                        optional = true;
+                }
+                case DISABLED -> u = true;
+                default -> u = this.uuid;
             }
-            case OPTIONAL -> {
-                u = this.uuid;
-                if (u && !optional)
-                    optional = true;
-            }
-            case DISABLED -> u = true;
-            default -> u = this.uuid;
+        } else {
+            u = true;
         }
         final boolean p;
         switch (perm) {
@@ -92,12 +116,15 @@ public record SuccessData(PlayerWrapper player, boolean name, boolean uuid, bool
     public SuccessEnum successEnum() {
         if (hasAll()) return SuccessEnum.ALL;
         if (isNormal()) return SuccessEnum.NORMAL;
-        if (onlyName()) return SuccessEnum.ONLY_NAME;
-        if (onlyUuid()) return SuccessEnum.ONLY_UUID;
-        if (onlyPerm()) return SuccessEnum.BYPASS;
+        if (matchByName()) return SuccessEnum.ONLY_NAME;
+        if (matchByUuid()) return SuccessEnum.ONLY_UUID;
+        if (matchByPerm()) return SuccessEnum.BYPASS;
         return SuccessEnum.NONE;
     }
     public static SuccessData allFalse(PlayerWrapper player) {
         return new SuccessData(player, false, false, false);
+    }
+    public static SuccessData allEmpty(PlayerWrapper player) {
+        return new SuccessData(player, null, null, false);
     }
 }

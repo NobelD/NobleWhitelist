@@ -52,11 +52,15 @@ public class WhitelistChecker {
      * @return the success data of the player
      */
     public SuccessData createSuccess(@Nullable WhitelistEntry entry, @NotNull PlayerWrapper player) {
-        boolean name = false;
-        boolean uuid = false;
+        Boolean name = null;
+        Boolean uuid = null;
         if (entry != null) {
-            name = entry.getOptName().isPresent();
-            uuid = entry.getOptUUID().isPresent();
+            if (entry.getOptName().isPresent()) {
+                name = entry.getOptName().get().equalsIgnoreCase(player.getName());
+            }
+            if (entry.getOptUUID().isPresent()) {
+                uuid = entry.getOptUUID().get().equals(player.getUUID());
+            }
         }
         boolean perm = permissionCheck(player);
 
@@ -179,8 +183,11 @@ public class WhitelistChecker {
     public PairData<SuccessData, Boolean> canPass(PlayerWrapper player) {
         Optional<WhitelistEntry> entry = this.data.whitelistData().getEntry(player);
 
-        if (entry.isPresent() && this.data.getConfigD().get(ConfigData.WhitelistCF.enforceNameDiffID) && checkEntry(entry.get(), player) == CheckType.NAME_DIFFERENT_UUID)
-            return PairData.of(SuccessData.allFalse(player), false);
+        if (entry.isPresent() && this.data.getConfigD().get(ConfigData.WhitelistCF.enforceNameDiffID)) {
+            CheckType type = checkEntry(entry.get(), player);
+            if (type == CheckType.NAME_DIFFERENT_UUID || type == CheckType.NAME_CAPS_DIFFERENT_UUID)
+                return PairData.of(SuccessData.allFalse(player), false);
+        }
 
         final SuccessData suc = createSuccess(entry.orElse(null), player);
 
