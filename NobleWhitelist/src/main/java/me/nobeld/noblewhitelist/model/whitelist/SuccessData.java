@@ -58,40 +58,42 @@ public record SuccessData(PlayerWrapper player, @Nullable Boolean name, @Nullabl
     public boolean forCheck(CheckingOption name, CheckingOption uuid, CheckingOption perm) {
         boolean optional = false;
         final boolean n;
-        if (this.name != null) {
-            switch (name) {
-                case REQUIRED -> {
-                    if (!this.name) return false;
+        switch (name) {
+            case REQUIRED -> {
+                if (this.name == null || !this.name) return false;
+                n = true;
+            }
+            case OPTIONAL -> {
+                if (this.name != null) {
+                    n = this.name;
+                    if (n) {
+                        optional = true;
+                    }
+                } else {
                     n = true;
                 }
-                case OPTIONAL -> {
-                    n = this.name;
-                    if (n)
-                        optional = true;
-                }
-                case DISABLED -> n = true;
-                default -> n = this.name;
             }
-        } else {
-            n = true;
+            case DISABLED -> n = true;
+            default -> n = this.name == null || this.name;
         }
         final boolean u;
-        if (this.uuid != null) {
-            switch (uuid) {
-                case REQUIRED -> {
-                    if (!this.uuid) return false;
+        switch (uuid) {
+            case REQUIRED -> {
+                if (this.uuid == null || !this.uuid) return false;
+                u = true;
+            }
+            case OPTIONAL -> {
+                if (this.uuid != null) {
+                    u = this.uuid;
+                    if (u && !optional) {
+                        optional = true;
+                    }
+                } else {
                     u = true;
                 }
-                case OPTIONAL -> {
-                    u = this.uuid;
-                    if (u && !optional)
-                        optional = true;
-                }
-                case DISABLED -> u = true;
-                default -> u = this.uuid;
             }
-        } else {
-            u = true;
+            case DISABLED -> u = true;
+            default -> u = this.uuid == null || this.uuid;
         }
         final boolean p;
         switch (perm) {
@@ -107,8 +109,10 @@ public record SuccessData(PlayerWrapper player, @Nullable Boolean name, @Nullabl
             case DISABLED -> p = true;
             default -> p = this.perm;
         }
-        if ((name.isOptional() || uuid.isOptional() || perm.isOptional()) && optional) {
-            return true;
+        if ((name.isOptional() || uuid.isOptional() || perm.isOptional())) {
+            if (!optional) {
+                return name.isRequired() ? n : uuid.isRequired() ? u : perm.isRequired() && p;
+            }
         }
         return n && u && p;
     }
