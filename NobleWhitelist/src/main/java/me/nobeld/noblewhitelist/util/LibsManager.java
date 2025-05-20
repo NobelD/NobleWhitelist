@@ -31,72 +31,86 @@ public class LibsManager {
     public void loadLibraries(@Nullable List<Library> additional) {
         Set<Library> libraries = new HashSet<>();
         //Adventure libraries
-        libraries.add(Library.builder()
-                .groupId("net{}kyori")
-                .artifactId("adventure-platform-bukkit")
-                .version("4.3.4")
-                .build());
+        if (!ServerUtil.hasAdventure()) {
+            libraries.add(Library.builder()
+                                  .groupId("net{}kyori")
+                                  .artifactId("adventure-platform-bukkit")
+                                  .version("4.4.0")
+                                  .build());
 
-        libraries.add(Library.builder()
-                .groupId("net{}kyori")
-                .artifactId("adventure-platform-api")
-                .version("4.3.4")
-                .build());
+            libraries.add(Library.builder()
+                                  .groupId("net{}kyori")
+                                  .artifactId("adventure-platform-api")
+                                  .version("4.4.0")
+                                  .build());
 
-        libraries.add(Library.builder()
-                .groupId("net{}kyori")
-                .artifactId("adventure-text-serializer-bungeecord")
-                .version("4.3.4")
-                .build());
+            libraries.add(Library.builder()
+                                  .groupId("net{}kyori")
+                                  .artifactId("adventure-text-serializer-bungeecord")
+                                  .version("4.4.0")
+                                  .build());
 
-        libraries.add(Library.builder()
-                .groupId("net{}kyori")
-                .artifactId("adventure-text-serializer-legacy")
-                .version("4.18.0")
-                .build());
+            libraries.add(Library.builder()
+                                  .groupId("net{}kyori")
+                                  .artifactId("adventure-text-serializer-legacy")
+                                  .version("4.21.0")
+                                  .build());
 
-        libraries.add(Library.builder()
-                .groupId("net{}kyori")
-                .artifactId("adventure-nbt")
-                .version("4.18.0")
-                .build());
+            libraries.add(Library.builder()
+                                  .groupId("net{}kyori")
+                                  .artifactId("adventure-nbt")
+                                  .version("4.21.0")
+                                  .build());
 
-        libraries.add(Library.builder()
-                .groupId("net{}kyori")
-                .artifactId("adventure-text-serializer-json")
-                .version("4.18.0")
-                .build());
+            libraries.add(Library.builder()
+                                  .groupId("net{}kyori")
+                                  .artifactId("adventure-text-serializer-gson")
+                                  .version("4.21.0")
+                                  .build());
 
-        libraries.add(Library.builder()
-                .groupId("net{}kyori")
-                .artifactId("adventure-text-serializer-gson-legacy-impl")
-                .version("4.18.0")
-                .build());
+            libraries.add(Library.builder()
+                                  .groupId("net{}kyori")
+                                  .artifactId("adventure-text-serializer-json")
+                                  .version("4.21.0")
+                                  .build());
 
-        libraries.add(Library.builder()
-                .groupId("net{}kyori")
-                .artifactId("adventure-text-serializer-json-legacy-impl")
-                .version("4.18.0")
-                .build());
+            libraries.add(Library.builder()
+                                  .groupId("net{}kyori")
+                                  .artifactId("adventure-text-serializer-gson-legacy-impl")
+                                  .version("4.21.0")
+                                  .build());
 
-        libraries.add(Library.builder()
-                .groupId("net{}kyori")
-                .artifactId("adventure-platform-facet")
-                .version("4.3.4")
-                .build());
+            libraries.add(Library.builder()
+                                  .groupId("net{}kyori")
+                                  .artifactId("adventure-text-serializer-json-legacy-impl")
+                                  .version("4.21.0")
+                                  .build());
 
-        libraries.add(Library.builder()
-                .groupId("net{}kyori")
-                .artifactId("adventure-platform-viaversion")
-                .version("4.3.4")
-                .build());
+            libraries.add(Library.builder()
+                                  .groupId("net{}kyori")
+                                  .artifactId("adventure-platform-facet")
+                                  .version("4.4.0")
+                                  .build());
 
-        libraries.add(Library.builder()
-                .groupId("net{}kyori")
-                .artifactId("adventure-text-minimessage")
-                .version("4.18.0")
-                .resolveTransitiveDependencies(true)
-                .build());
+            libraries.add(Library.builder()
+                                  .groupId("net{}kyori")
+                                  .artifactId("adventure-platform-viaversion")
+                                  .version("4.4.0")
+                                  .build());
+
+            libraries.add(Library.builder()
+                                  .groupId("net{}kyori")
+                                  .artifactId("adventure-text-minimessage")
+                                  .version("4.21.0")
+                                  .resolveTransitiveDependencies(true)
+                                  .build());
+
+            libraries.add(Library.builder()
+                                  .groupId("net{}kyori")
+                                  .artifactId("option")
+                                  .version("1.1.0")
+                                  .build());
+        }
 
         //Storage Library
         libraries.add(Library.builder()

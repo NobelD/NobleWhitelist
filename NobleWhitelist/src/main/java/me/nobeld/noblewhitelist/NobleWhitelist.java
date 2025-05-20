@@ -12,12 +12,14 @@ import me.nobeld.noblewhitelist.logic.StorageLoader;
 import me.nobeld.noblewhitelist.logic.WhitelistChecker;
 import me.nobeld.noblewhitelist.logic.WhitelistData;
 import me.nobeld.noblewhitelist.model.PairData;
-import me.nobeld.noblewhitelist.model.base.AdvPlatformManager;
 import me.nobeld.noblewhitelist.model.base.NWLContainer;
 import me.nobeld.noblewhitelist.model.base.NWLData;
 import me.nobeld.noblewhitelist.model.storage.DataGetter;
 import me.nobeld.noblewhitelist.model.storage.StorageType;
 import me.nobeld.noblewhitelist.storage.root.DatabaseSQL;
+import me.nobeld.noblewhitelist.temp.BukkitAdventure;
+import me.nobeld.noblewhitelist.temp.BukkitAdventureLike;
+import me.nobeld.noblewhitelist.temp.PaperAdventure;
 import me.nobeld.noblewhitelist.util.*;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -39,7 +41,7 @@ public class NobleWhitelist extends JavaPlugin implements NWLData {
     private StorageType storageType = StorageType.NONE;
     private ConfigData configData;
     private MessageData messageData;
-    private static BukkitAdventure adventure = null;
+    private static BukkitAdventureLike adventure = null;
     private boolean blocked = false;
     @Override
     public void onEnable() {
@@ -119,7 +121,7 @@ public class NobleWhitelist extends JavaPlugin implements NWLData {
     public NobleWhitelistApi getApi() {
         return this.api;
     }
-    public static BukkitAdventure adv() {
+    public static BukkitAdventureLike adv() {
         return adventure;
     }
     public NWlCommand getCommand() {
@@ -143,10 +145,14 @@ public class NobleWhitelist extends JavaPlugin implements NWLData {
         return this.storage;
     }
     @Override
-    public AdvPlatformManager getAdventure() {
+    public BukkitAdventureLike getAdventure() {
         if (adventure == null) {
-            adventure = new BukkitAdventure(this);
-            adventure.createAdventure();
+            if (ServerUtil.hasPaper()) {
+                adventure = new PaperAdventure();
+            } else {
+                adventure = new BukkitAdventure(this);
+                adventure.createAdventure();
+            }
         }
         return adventure;
     }

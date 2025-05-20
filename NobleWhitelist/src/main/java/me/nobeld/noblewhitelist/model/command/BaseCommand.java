@@ -16,7 +16,7 @@ public class BaseCommand {
     }
     public static void sendMsg(CommandContext<? extends CommandSender> c, Component msg) {
         CommandSender sender = c.sender();
-        NobleWhitelist.adv().adventure().sender(sender).sendMessage(msg);
+        NobleWhitelist.adv().senderAudience(sender).sendMessage(msg);
     }
     public void register(CommandManager<CommandSender> mng, Command.Builder<CommandSender> builder) {
         mng.command(getCommand(builder));

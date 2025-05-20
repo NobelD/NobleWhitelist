@@ -50,7 +50,7 @@ public class NWlCommand {
             manager.registerAsynchronousCompletions();
         }
 
-        MinecraftExceptionHandler.create(NobleWhitelist.adv().adventure()::sender)
+        MinecraftExceptionHandler.create(NobleWhitelist.adv()::senderAudience)
                 .defaultInvalidSyntaxHandler()
                 .defaultInvalidSenderHandler()
                 .defaultNoPermissionHandler()
@@ -60,13 +60,13 @@ public class NWlCommand {
 
         this.minecraftHelp = MinecraftHelp.<CommandSender>builder()
                 .commandManager(manager)
-                .audienceProvider(NobleWhitelist.adv().adventure()::sender)
+                .audienceProvider(NobleWhitelist.adv()::senderAudience)
                 .commandPrefix("/nwl help")
                 .build();
 
         ConfirmationConfiguration<CommandSender> configuration = ConfirmationConfiguration.<CommandSender>builder()
                 .cache(GuavaCache.of(CacheBuilder.newBuilder().build()))
-                .noPendingCommandNotifier(c -> NobleWhitelist.adv().adventure().sender(c).sendMessage(MessageData.confirmationNoMore()))
+                .noPendingCommandNotifier(c -> NobleWhitelist.adv().senderAudience(c).sendMessage(MessageData.confirmationNoMore()))
                 .confirmationRequiredNotifier((s, c) -> {
                     if (c.command().rootComponent().name().equals("clear")) {
                         sendMsg(s, MessageData.clearSug1());
@@ -86,10 +86,10 @@ public class NWlCommand {
         this.minecraftHelp = minecraftHelp;
     }
     public void sendMsg(CommandContext<CommandSender> ctx, Component msg) {
-        NobleWhitelist.adv().adventure().sender(ctx.sender()).sendMessage(msg);
+        NobleWhitelist.adv().senderAudience(ctx.sender()).sendMessage(msg);
     }
     public void sendMsg(CommandSender sender, Component msg) {
-        NobleWhitelist.adv().adventure().sender(sender).sendMessage(msg);
+        NobleWhitelist.adv().senderAudience(sender).sendMessage(msg);
     }
     private void start() {
         final Command.Builder<CommandSender> builder = this.manager

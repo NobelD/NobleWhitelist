@@ -15,6 +15,7 @@ public class ServerUtil {
     private static final boolean craftBukkit = hasClass("org.bukkit.Bukkit");
     private static final boolean spigot = PaperLib.isSpigot();
     private static final boolean paper = PaperLib.isPaper();
+    private static final boolean adventure = paper || hasClass("net.kyori.adventure.Adventure");
     public static boolean hasPaper() {
         return paper;
     }
@@ -23,6 +24,9 @@ public class ServerUtil {
     }
     public static boolean hasBukkit() {
         return craftBukkit;
+    }
+    public static boolean hasAdventure() {
+        return adventure;
     }
     public static int getVersion() {
         return PaperLib.getMinecraftVersion();

@@ -169,7 +169,7 @@ public class MessageData {
         return AdventureUtil.formatAll("<prefix><#FBC36F>The whitelist is already <#99EAFE>" + (status ? "on" : "off") + ".");
     }
     public static Component whitelistChanged(boolean status) {
-        return AdventureUtil.formatAll("<prefix><#FBC36F>The whitelist was set to <#99EAFE>" + (status ? "on" : "off"));
+        return AdventureUtil.formatAll("<prefix><#FBC36F>The whitelist was set to <#99EAFE>" + (status ? "on" : "off") + ".");
     }
     public static Component confirmationRequired() {
         return AdventureUtil.formatAll("<prefix><#FBC36F>Use <#FF6040>/nwl confirm <#FBC36F>to confirm this action.");
