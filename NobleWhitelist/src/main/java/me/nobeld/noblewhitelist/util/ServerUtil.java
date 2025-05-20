@@ -34,16 +34,6 @@ public class ServerUtil {
     public static int getPatchVersion() {
         return PaperLib.getMinecraftPatchVersion();
     }
-    public static boolean craftBukkitWarning(JavaPlugin plugin) {
-        if (hasBukkit() && !hasSpigot()) {
-            incompatibleApi(plugin, "craftBukkit");
-            return true;
-        }
-        return false;
-    }
-    public static void incompatibleApi(JavaPlugin plugin, String string) {
-        plugin.getLogger().log(Level.SEVERE, "You are running the server on " + string + ", this api is not compatible and the plugin will be disabled, consider using PaperMC.");
-    }
     public static void incompatibleVer(JavaPlugin plugin, String string, String ver) {
         plugin.getLogger().log(Level.SEVERE, "You are running the server on " + string + ", this version is not compatible and the plugin will be disabled, consider updating to minimum " + ver + ".");
     }
@@ -67,12 +57,8 @@ public class ServerUtil {
         return b ? "yes" : "no";
     }
     public static boolean canRun(NobleWhitelist plugin) {
-        if (craftBukkitWarning(plugin)) {
-           Bukkit.getPluginManager().disablePlugin(plugin);
-           return false;
-        }
-        if (PaperLib.getMinecraftVersion() < 16) {
-           incompatibleVer(plugin, Bukkit.getVersion(), "1.16.x");
+        if (PaperLib.getMinecraftVersion() < 18) {
+           incompatibleVer(plugin, Bukkit.getVersion(), "1.18.x");
            Bukkit.getPluginManager().disablePlugin(plugin);
            return false;
         }
