@@ -43,7 +43,7 @@ public class NWLDiscord extends JavaPlugin implements NWLDsData {
                 .loadFiles(getDataFolder().getPath(), PairData.of("config.yml", FileManager.FileType.YAML), PairData.of("messages.yml", FileManager.FileType.YAML))
                 .load(() -> Bukkit.getServer().getPluginManager().registerEvents(new Listener(this), this))
                 .loadJDA()
-                .loadUpdateChecker("NWLDiscord", "spigot", ServerUtil.getVersion() > 17 ? Runtime.version().feature() >= 21 ? null : "spigot-j17" : "spigot-mc17")
+                .loadUpdateChecker("NWLDiscord", "bukkit", ServerUtil.getVersion() > 17 ? Runtime.version().feature() >= 21 ? null : "spigot-j17" : "spigot-mc17")
                 .printMessage()
                 .load(() -> {
                     SpigotMetrics metrics = new SpigotMetrics(this, 20417);
