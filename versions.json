@@ -18,9 +18,11 @@
     "url": "https://modrinth.com/plugin/noble-whitelist-discord-integration",
     "id": "WWbtvBwl",
     "latest": {
-      "core": "1.1.6",
-      "spigot": "1.1.6",
-      "spigot-j17": "1.2.6",
+      "core": "1.1.7",
+      "bukkit": "1.1.7",
+
+      "spigot": "1.1.7",
+      "spigot-j17": "1.1.7",
       "spigot-mc17": "1.1.5"
     }
   }
