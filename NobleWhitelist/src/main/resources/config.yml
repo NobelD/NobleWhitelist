@@ -66,6 +66,12 @@ storage:
   # COMMAND - executes a command
   action-if-fail: NONE
   command-if-fail: ""
+vanilla-whitelist:
+  # Available values:
+  # DISABLED - disables the vanilla whitelist command and ignores it
+  # IGNORE - ignores the vanilla whitelist
+  # NONE - does nothing
+  modify-type: DISABLED
 messages:
   prefix: "<bold><#17B90C>N<#7FD024>Whitelist</bold> <grey>>"
   use-prefix: true

@@ -5,6 +5,7 @@ import me.nobeld.noblewhitelist.NobleWhitelist;
 import me.nobeld.noblewhitelist.model.checking.CheckingOption;
 import me.nobeld.noblewhitelist.model.checking.CheckingType;
 import me.nobeld.noblewhitelist.model.storage.ConfigContainer;
+import me.nobeld.noblewhitelist.model.whitelist.VanillaWhitelistType;
 
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -128,6 +129,7 @@ public class ConfigData {
         public static final ConfigContainer<Boolean> enforceNameDiffID = new ConfigContainer<>("whitelist.enforce-uuid-if-different-name", false);
         public static final ConfigContainer<Boolean> useCustomPermission = new ConfigContainer<>("whitelist.use-custom-permission", false);
         public static final ConfigContainer<String> customPermission = new ConfigContainer<>("whitelist.custom-permission", "");
+        public static final ConfigContainer<VanillaWhitelistType> vanillaWhitelistType = new ConfigContainer<>("vanilla-whitelist.modify-type", VanillaWhitelistType.IGNORE);
     }
     public static class SkipCF {
         public static final ConfigContainer<Boolean> skipUUID = new ConfigContainer<>("skip.skip-uuid-save", false);
