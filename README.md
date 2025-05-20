@@ -7,7 +7,7 @@ Also, this plugin has a discord integration to be used by users or managed from 
 
 ## Versions:
 - This plugin support all spigot base software (paper is recommended)
-- This plugin only support versions from 1.17+
+- This plugin only support versions from 1.18+ and java 21+
 
 ## Noble Whitelist Links:
 
