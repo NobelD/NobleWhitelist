@@ -2,7 +2,7 @@ package me.nobeld.noblewhitelist.model.whitelist;
 
 /**
  * <pre>
- * Name - true if the name match (ignoring capitalization)
+ * Name - true if the name match
  * Caps - true if the capitalization of the name match
  * UUID - true if the uuid match
  * </pre>
