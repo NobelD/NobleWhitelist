@@ -58,10 +58,10 @@ dependencies {
         isTransitive = false
     }
 
-    compileOnly("net.kyori","adventure-platform-bukkit","4.4.0") {
+    compileOnly("net.kyori","adventure-platform-bukkit","4.4.1") {
         exclude(module= "net.kyori", group= "adventure-api")
     }
-    compileOnly("net.kyori","adventure-text-minimessage","4.21.0")
+    compileOnly("net.kyori","adventure-text-minimessage","4.24.0")
 
     compileOnly("org.incendo", "cloud-paper", "2.0.0-beta.10")
     compileOnly("org.incendo", "cloud-minecraft-extras", "2.0.0-beta.10") {

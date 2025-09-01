@@ -35,73 +35,73 @@ public class LibsManager {
             libraries.add(Library.builder()
                                   .groupId("net{}kyori")
                                   .artifactId("adventure-platform-bukkit")
-                                  .version("4.4.0")
+                                  .version("4.4.1")
                                   .build());
 
             libraries.add(Library.builder()
                                   .groupId("net{}kyori")
                                   .artifactId("adventure-platform-api")
-                                  .version("4.4.0")
+                                  .version("4.4.1")
                                   .build());
 
             libraries.add(Library.builder()
                                   .groupId("net{}kyori")
                                   .artifactId("adventure-text-serializer-bungeecord")
-                                  .version("4.4.0")
+                                  .version("4.4.1")
                                   .build());
 
             libraries.add(Library.builder()
                                   .groupId("net{}kyori")
                                   .artifactId("adventure-text-serializer-legacy")
-                                  .version("4.21.0")
+                                  .version("4.24.0")
                                   .build());
 
             libraries.add(Library.builder()
                                   .groupId("net{}kyori")
                                   .artifactId("adventure-nbt")
-                                  .version("4.21.0")
+                                  .version("4.24.0")
                                   .build());
 
             libraries.add(Library.builder()
                                   .groupId("net{}kyori")
                                   .artifactId("adventure-text-serializer-gson")
-                                  .version("4.21.0")
+                                  .version("4.24.0")
                                   .build());
 
             libraries.add(Library.builder()
                                   .groupId("net{}kyori")
                                   .artifactId("adventure-text-serializer-json")
-                                  .version("4.21.0")
+                                  .version("4.24.0")
                                   .build());
 
             libraries.add(Library.builder()
                                   .groupId("net{}kyori")
                                   .artifactId("adventure-text-serializer-gson-legacy-impl")
-                                  .version("4.21.0")
+                                  .version("4.24.0")
                                   .build());
 
             libraries.add(Library.builder()
                                   .groupId("net{}kyori")
                                   .artifactId("adventure-text-serializer-json-legacy-impl")
-                                  .version("4.21.0")
+                                  .version("4.24.0")
                                   .build());
 
             libraries.add(Library.builder()
                                   .groupId("net{}kyori")
                                   .artifactId("adventure-platform-facet")
-                                  .version("4.4.0")
+                                  .version("4.4.1")
                                   .build());
 
             libraries.add(Library.builder()
                                   .groupId("net{}kyori")
                                   .artifactId("adventure-platform-viaversion")
-                                  .version("4.4.0")
+                                  .version("4.4.1")
                                   .build());
 
             libraries.add(Library.builder()
                                   .groupId("net{}kyori")
                                   .artifactId("adventure-text-minimessage")
-                                  .version("4.21.0")
+                                  .version("4.24.0")
                                   .resolveTransitiveDependencies(true)
                                   .build());
 
