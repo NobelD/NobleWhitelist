@@ -30,7 +30,8 @@ whitelist:
   # Useful if you want to enable the whitelist time later and keep the players who joined in the whitelist.
   auto-register: false
   # This will block if a player joins with the same name as another registered player but with a different uuid.
-  # If you have a server with online and offline uuid players at the same time, ensure that the online player is well registered.
+  # This also allows the whitelist to automatically allow players with different name but the same uuid to join.
+  # If you have a server with online and offline uuid players at the same time, be sure it is well configured.
   enforce-uuid-if-different-name: true
 skip:
   skip-uuid-save: false

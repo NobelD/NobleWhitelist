@@ -5,6 +5,7 @@ import me.nobeld.noblewhitelist.model.PairData;
 import me.nobeld.noblewhitelist.model.base.NWLData;
 import me.nobeld.noblewhitelist.model.base.PlayerWrapper;
 import me.nobeld.noblewhitelist.config.ConfigData;
+import me.nobeld.noblewhitelist.model.checking.CheckingOption;
 import me.nobeld.noblewhitelist.model.whitelist.CheckType;
 import me.nobeld.noblewhitelist.model.whitelist.SuccessData;
 import me.nobeld.noblewhitelist.model.whitelist.SuccessEnum;
@@ -183,16 +184,19 @@ public class WhitelistChecker {
     public PairData<SuccessData, Boolean> canPass(PlayerWrapper player) {
         Optional<WhitelistEntry> entry = this.data.whitelistData().getEntry(player);
 
-        if (entry.isPresent() && this.data.getConfigD().get(ConfigData.WhitelistCF.enforceNameDiffID)) {
+        boolean enforce = this.data.getConfigD().get(ConfigData.WhitelistCF.enforceNameDiffID);
+        if (entry.isPresent() && enforce) {
             CheckType type = checkEntry(entry.get(), player);
             if (type == CheckType.NAME_DIFFERENT_UUID || type == CheckType.NAME_CAPS_DIFFERENT_UUID)
                 return PairData.of(SuccessData.allFalse(player), false);
         }
 
         final SuccessData suc = createSuccess(entry.orElse(null), player);
+        CheckingOption nameCheck = this.data.getConfigD().checkName();
+        boolean shouldSkip = enforce && suc.matchUUID() && (suc.name() == null || !suc.name());
 
         return PairData.of(suc, suc.forCheck(
-                this.data.getConfigD().checkName(),
+                shouldSkip && !nameCheck.isRequired() ? CheckingOption.DISABLED : nameCheck,
                 this.data.getConfigD().checkUUID(),
                 this.data.getConfigD().checkPerm()
                                             ));

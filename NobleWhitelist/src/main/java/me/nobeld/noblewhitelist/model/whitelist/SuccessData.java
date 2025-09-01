@@ -20,20 +20,30 @@ public record SuccessData(PlayerWrapper player, @Nullable Boolean name, @Nullabl
     public boolean isBypass() {
         return perm;
     }
+    public boolean matchName() {
+        return name != null && name;
+    }
+    public boolean matchUUID() {
+        return uuid != null && uuid;
+    }
+    public boolean matchPerm() {
+        return perm;
+    }
+    // TODO clean
     public boolean onlyHasName() {
-        return (name != null && name) && !(uuid != null || perm);
+        return matchName() && !(uuid != null || perm);
     }
     public boolean onlyHasUuid() {
-        return (uuid != null && uuid) && !(name != null || perm);
+        return matchUUID() && !(name != null || perm);
     }
     public boolean onlyHasPerm() {
         return perm && !(name != null || uuid != null);
     }
     public boolean matchByName() {
-        return (name != null && name) && !((uuid != null && !uuid) || perm);
+        return matchName() && !((uuid != null && !uuid) || perm);
     }
     public boolean matchByUuid() {
-        return (uuid != null && uuid) && !((name != null && !name) || perm);
+        return matchUUID() && !((name != null && !name) || perm);
     }
     public boolean matchByPerm() {
         return perm && !((name != null && !name) || (uuid != null && !uuid));
