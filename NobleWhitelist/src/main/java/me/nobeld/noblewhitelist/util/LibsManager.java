@@ -136,7 +136,7 @@ public class LibsManager {
         libraries.add(Library.builder()
                 .groupId("org{}incendo")
                 .artifactId("cloud-paper")
-                .version("2.0.0-beta.10")
+                .version("2.0.0-beta.13")
                 .relocate(reloc("org{}incendo"))
                 .resolveTransitiveDependencies(true)
                 .build());
@@ -152,7 +152,7 @@ public class LibsManager {
         libraries.add(Library.builder()
                 .groupId("org{}incendo")
                 .artifactId("cloud-minecraft-extras")
-                .version("2.0.0-beta.10")
+                .version("2.0.0-beta.13")
                 .relocate(reloc("org{}incendo"))
                 .build());
 

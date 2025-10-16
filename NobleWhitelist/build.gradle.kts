@@ -63,8 +63,8 @@ dependencies {
     }
     compileOnly("net.kyori","adventure-text-minimessage","4.24.0")
 
-    compileOnly("org.incendo", "cloud-paper", "2.0.0-beta.10")
-    compileOnly("org.incendo", "cloud-minecraft-extras", "2.0.0-beta.10") {
+    compileOnly("org.incendo", "cloud-paper", "2.0.0-beta.13")
+    compileOnly("org.incendo", "cloud-minecraft-extras", "2.0.0-beta.13") {
         exclude(module=("adventure-text-minimessage"))
         exclude(module=("adventure-api"))
     }
