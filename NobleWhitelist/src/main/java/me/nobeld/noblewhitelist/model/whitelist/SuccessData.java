@@ -67,45 +67,37 @@ public record SuccessData(PlayerWrapper player, @Nullable Boolean name, @Nullabl
      */
     public boolean forCheck(CheckingOption name, CheckingOption uuid, CheckingOption perm) {
         boolean optional = false;
-        final boolean n;
+        boolean n;
         switch (name) {
             case REQUIRED -> {
                 if (this.name == null || !this.name) return false;
                 n = true;
             }
             case OPTIONAL -> {
-                if (this.name != null) {
-                    n = this.name;
-                    if (n) {
-                        optional = true;
-                    }
-                } else {
-                    n = true;
+                n = this.name != null && this.name;
+                if (n) {
+                    optional = true;
                 }
             }
             case DISABLED -> n = true;
             default -> n = this.name == null || this.name;
         }
-        final boolean u;
+        boolean u;
         switch (uuid) {
             case REQUIRED -> {
                 if (this.uuid == null || !this.uuid) return false;
                 u = true;
             }
             case OPTIONAL -> {
-                if (this.uuid != null) {
-                    u = this.uuid;
-                    if (u && !optional) {
-                        optional = true;
-                    }
-                } else {
-                    u = true;
+                u = this.uuid != null && this.uuid;
+                if (u && !optional) {
+                    optional = true;
                 }
             }
             case DISABLED -> u = true;
             default -> u = this.uuid == null || this.uuid;
         }
-        final boolean p;
+        boolean p;
         switch (perm) {
             case REQUIRED -> {
                 if (!this.perm) return false;
@@ -119,10 +111,14 @@ public record SuccessData(PlayerWrapper player, @Nullable Boolean name, @Nullabl
             case DISABLED -> p = true;
             default -> p = this.perm;
         }
-        if ((name.isOptional() || uuid.isOptional() || perm.isOptional())) {
-            if (!optional) {
-                return name.isRequired() ? n : uuid.isRequired() ? u : perm.isRequired() && p;
-            }
+        if (optional && name.isOptional() && !n) {
+            n = true;
+        }
+        if (optional && uuid.isOptional() && !u) {
+            u = true;
+        }
+        if (optional && perm.isOptional() && !p) {
+            p = true;
         }
         return n && u && p;
     }
