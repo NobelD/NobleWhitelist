@@ -20,12 +20,39 @@ import org.jetbrains.annotations.Nullable;
 
 import java.awt.*;
 import java.time.Instant;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Iterator;
 import java.util.Map;
 import java.util.logging.Level;
 
 import static me.nobeld.noblewhitelist.discord.NWLDiscord.log;
 
 public class DiscordUtil {
+    public static String autoNewLine(Collection<String> coll) {
+        StringBuilder builder = new StringBuilder();
+        Iterator<String> itr = coll.iterator();
+        if (itr.hasNext()) {
+            builder.append(itr.next());
+            while (itr.hasNext()) {
+                builder.append('\n');
+                builder.append(itr.next());
+            }
+        }
+        return builder.toString();
+    }
+    public static String autoNewLine(String... array) {
+        StringBuilder builder = new StringBuilder();
+        Iterator<String> itr = Arrays.stream(array).iterator();
+        if (itr.hasNext()) {
+            builder.append(itr.next());
+            while (itr.hasNext()) {
+                builder.append('\n');
+                builder.append(itr.next());
+            }
+        }
+        return builder.toString();
+    }
     public static MessageCreateData createEmbed(MessageEmbed embed) {
         return new MessageCreateBuilder().addEmbeds(embed).build();
     }

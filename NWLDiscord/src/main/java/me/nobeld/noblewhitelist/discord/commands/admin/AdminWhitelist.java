@@ -6,6 +6,7 @@ import me.nobeld.noblewhitelist.discord.language.CMDDescription;
 import me.nobeld.noblewhitelist.discord.model.NWLDsData;
 import me.nobeld.noblewhitelist.discord.model.command.BaseCommand;
 import me.nobeld.noblewhitelist.discord.model.command.SubCommand;
+import me.nobeld.noblewhitelist.discord.util.DiscordUtil;
 import me.nobeld.noblewhitelist.model.PairData;
 import me.nobeld.noblewhitelist.model.checking.CheckingOption;
 import me.nobeld.noblewhitelist.model.checking.CheckingType;
@@ -43,13 +44,9 @@ public class AdminWhitelist {
                             Map<String, String> m = data.getMessageD().baseHolder(entry);
                             entries.add(parseMessage(data.getMessageD().getMsg(MessageData.PlaceHolders.listEntry), m));
                         }
-                        StringBuilder sb = new StringBuilder();
-                        for (String entry : entries) {
-                            sb.append("$$").append(entry).append("$$");
-                        }
-                        Map<String,String> m = Map.of("count_total", String.valueOf(list.size()),
-                                "page", String.valueOf(page),
-                                "list_entry", sb.toString().replace("$$$$", "\n").replace("$$", ""));
+
+                        String all = DiscordUtil.autoNewLine(entries);
+                        Map<String,String> m = Map.of("count_total", String.valueOf(list.size()), "page", String.valueOf(page), "list_entry", all);
 
                         replyMsg(data, c, MessageData.Command.listPage, m);
                     } else if (page > 1) replyMsg(data, c, MessageData.Error.whitelistPageEmpty, Map.of("page", String.valueOf(page)));

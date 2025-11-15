@@ -6,6 +6,7 @@ import me.nobeld.noblewhitelist.discord.language.CMDDescription;
 import me.nobeld.noblewhitelist.discord.model.NWLDsData;
 import me.nobeld.noblewhitelist.discord.model.command.BaseCommand;
 import me.nobeld.noblewhitelist.discord.model.command.SubCommand;
+import me.nobeld.noblewhitelist.discord.util.DiscordUtil;
 import me.nobeld.noblewhitelist.model.whitelist.WhitelistEntry;
 
 import java.util.ArrayList;
@@ -41,12 +42,8 @@ public class BasicAccounts {
                             Map<String, String> m = data.getMessageD().baseHolder(entry);
                             entries.add(parseMessage(data.getMessageD().getMsg(MessageData.PlaceHolders.accountEntry), m));
                         }
-                        StringBuilder sb = new StringBuilder();
-                        for (String entry : entries) {
-                            sb.append(entry).append("$$");
-                        }
-                        Map<String,String> m = Map.of("count_total", String.valueOf(list.size()),
-                                "account_entry", sb.toString().replace("$$$$", "\n").replace("$$", ""));
+                        String all = DiscordUtil.autoNewLine(entries);
+                        Map<String,String> m = Map.of("count_total", String.valueOf(list.size()), "account_entry", all);
 
                         replyMsg(data, c, MessageData.Command.selfAccounts, m);
                     }

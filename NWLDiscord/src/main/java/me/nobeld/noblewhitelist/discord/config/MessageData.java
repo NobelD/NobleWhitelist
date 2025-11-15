@@ -7,13 +7,16 @@ import de.leonhard.storage.sections.FlatFileSection;
 import me.nobeld.noblewhitelist.config.FileManager;
 import me.nobeld.noblewhitelist.discord.NWLDiscord;
 import me.nobeld.noblewhitelist.discord.model.NWLDsData;
+import me.nobeld.noblewhitelist.discord.util.DiscordUtil;
 import me.nobeld.noblewhitelist.model.storage.ConfigContainer;
 import me.nobeld.noblewhitelist.model.whitelist.WhitelistEntry;
 import org.jetbrains.annotations.NotNull;
 
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
 
@@ -43,13 +46,13 @@ public class MessageData {
     }
     public Map<String, String> baseHolder(@NotNull WhitelistEntry data) {
         Map<String, String> map = new HashMap<>();
-        StringBuilder string = new StringBuilder();
-        if (data.getOptName().isPresent()) string.append(getMsg(PlaceHolders.optionalName)).append("$$");
-        if (data.getOptUUID().isPresent()) string.append("$$").append(getMsg(PlaceHolders.optionalUUID)).append("$$");
-        if (data.hasDiscord()) string.append("$$").append(getMsg(PlaceHolders.optionalID));
+        List<String> list = new ArrayList<>(3);
+        if (data.getOptName().isPresent()) list.add(getMsg(PlaceHolders.optionalName));
+        if (data.getOptUUID().isPresent()) list.add(getMsg(PlaceHolders.optionalUUID));
+        if (data.hasDiscord()) list.add(getMsg(PlaceHolders.optionalID));
 
-        String dat = string.toString().replace("$$$$", "\n").replace("$$", "");
-        if (dat.isEmpty() || dat.isBlank()) dat = getMsg(PlaceHolders.optionalNone);
+        String dat = DiscordUtil.autoNewLine(list);
+        if (dat.isBlank()) dat = getMsg(PlaceHolders.optionalNone);
 
         map.put("player_optional", dat);
         map.put("player_data", getMsg(PlaceHolders.playerData));
