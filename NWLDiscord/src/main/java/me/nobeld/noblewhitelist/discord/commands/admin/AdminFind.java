@@ -18,6 +18,7 @@ import java.util.*;
 import static me.nobeld.noblewhitelist.discord.commands.CommandManager.REQUIREMENTS_KEY;
 import static me.nobeld.noblewhitelist.discord.model.command.BaseCommand.*;
 import static me.nobeld.noblewhitelist.discord.util.DiscordUtil.parseMessage;
+import static me.nobeld.noblewhitelist.temp.CustomStringParser.customStringParser;
 import static org.incendo.cloud.discord.jda5.JDAParser.userParser;
 import static org.incendo.cloud.parser.standard.StringParser.stringParser;
 
@@ -31,7 +32,7 @@ public class AdminFind {
     }
     private SubCommand player() {
         return new SubCommand(b -> b.literal("find", CMDDescription.find())
-                .optional("name", stringParser())
+                .optional("name", customStringParser())
                 .optional("uuid", stringParser())
                 .meta(REQUIREMENTS_KEY, getRequirements(data, ConfigData.CommandsOpt.adminFind))
                 .handler(c -> {

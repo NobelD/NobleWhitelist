@@ -25,7 +25,7 @@ public class WhitelistData {
     public Optional<WhitelistEntry> getEntry(@Nullable String name, @Nullable UUID uuid, @Range(from=-1, to=Long.MAX_VALUE) long id) {
         WhitelistEntry data = null;
         if (uuid != null) data = this.data.getStorage().loadPlayer(uuid);
-        if (data == null && name != null) data = this.data.getStorage().loadPlayer(name);
+        if (data == null && name != null && !name.contains(" ")) data = this.data.getStorage().loadPlayer(name); // TODO temp
         if (data == null && id >= 0) data = this.data.getStorage().loadPlayer(id);
 
         return Optional.ofNullable(data);

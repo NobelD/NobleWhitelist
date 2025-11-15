@@ -21,6 +21,7 @@ import static me.nobeld.noblewhitelist.discord.commands.CommandManager.REQUIREME
 import static me.nobeld.noblewhitelist.discord.model.command.BaseCommand.*;
 import static me.nobeld.noblewhitelist.discord.util.DiscordUtil.getMessage;
 import static me.nobeld.noblewhitelist.discord.util.DiscordUtil.sendMessage;
+import static me.nobeld.noblewhitelist.temp.CustomStringParser.customStringParser;
 import static org.incendo.cloud.parser.standard.StringParser.stringParser;
 
 public class BasicModify {
@@ -36,7 +37,7 @@ public class BasicModify {
     // #TODO system to add more accounts to the same user
     private SubCommand add() {
         return new SubCommand(b -> b.literal("add", CMDDescription.selfAdd())
-                .optional("name", stringParser())
+                .optional("name", customStringParser())
                 .optional("uuid", stringParser())
                 .meta(REQUIREMENTS_KEY, getRequirements(data, ConfigData.CommandsOpt.selfAdd))
                 .handler(c -> {
@@ -50,7 +51,7 @@ public class BasicModify {
                     GenericCommandInteractionEvent e = c.sender().interactionEvent();
                     assert e != null;
 
-                    String name = Optional.ofNullable(e.getOption("name")).map(OptionMapping::getAsString).orElse(null);
+                    String name = Optional.ofNullable(e.getOption("name")).map(OptionMapping::getAsString).filter(s -> !s.contains(" ")).orElse(null);
                     String uuid = Optional.ofNullable(e.getOption("uuid")).map(OptionMapping::getAsString).orElse(null);
 
                     if (noInputtedData(data, c, name, uuid)) return;

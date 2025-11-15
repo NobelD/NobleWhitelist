@@ -12,7 +12,7 @@ import org.bukkit.entity.Player;
 import java.util.List;
 import java.util.UUID;
 
-import static org.incendo.cloud.parser.standard.StringParser.stringParser;
+import static me.nobeld.noblewhitelist.temp.CustomStringParser.customStringParser;
 import static org.incendo.cloud.parser.standard.UUIDParser.uuidParser;
 
 public class RemoveCommand extends OptionCommand {
@@ -45,7 +45,7 @@ public class RemoveCommand extends OptionCommand {
         ) {};
         SubCommand removeName = new SubCommand(b -> b
                 .literal("name")
-                .required("name", stringParser())
+                .required("name", customStringParser())
                 .handler(c -> {
                     final String name = c.get("name");
                     if (plugin.whitelistData().deleteUser(name, null))

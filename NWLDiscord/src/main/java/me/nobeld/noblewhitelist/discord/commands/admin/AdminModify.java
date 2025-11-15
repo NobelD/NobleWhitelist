@@ -20,6 +20,7 @@ import java.util.UUID;
 
 import static me.nobeld.noblewhitelist.discord.commands.CommandManager.REQUIREMENTS_KEY;
 import static me.nobeld.noblewhitelist.discord.model.command.BaseCommand.*;
+import static me.nobeld.noblewhitelist.temp.CustomStringParser.customStringParser;
 import static org.incendo.cloud.discord.jda5.JDAParser.userParser;
 import static org.incendo.cloud.parser.standard.BooleanParser.booleanParser;
 import static org.incendo.cloud.parser.standard.StringParser.stringParser;
@@ -36,7 +37,7 @@ public class AdminModify {
     }
     private SubCommand add() {
         return new SubCommand(b -> b.literal("add", CMDDescription.addUser())
-                .optional("name", stringParser())
+                .optional("name", customStringParser())
                 .optional("uuid", stringParser())
                 .optional("user", userParser())
                 .meta(REQUIREMENTS_KEY, getRequirements(data, ConfigData.CommandsOpt.adminAdd))
@@ -45,7 +46,7 @@ public class AdminModify {
                     GenericCommandInteractionEvent e = c.sender().interactionEvent();
                     assert e != null;
 
-                    String name = Optional.ofNullable(e.getOption("name")).map(OptionMapping::getAsString).orElse(null);
+                    String name = Optional.ofNullable(e.getOption("name")).map(OptionMapping::getAsString).filter(s -> !s.contains(" ")).orElse(null);
                     String uuid = Optional.ofNullable(e.getOption("uuid")).map(OptionMapping::getAsString).orElse(null);
                     User user = Optional.ofNullable(e.getOption("user")).map(OptionMapping::getAsUser).orElse(null);
                     long id = user != null ? user.getIdLong() : -1;
@@ -72,7 +73,7 @@ public class AdminModify {
     }
     private SubCommand remove() {
         return new SubCommand(b -> b.literal("remove", CMDDescription.removeUser())
-                .optional("name", stringParser())
+                .optional("name", customStringParser())
                 .optional("uuid", stringParser())
                 .optional("user", userParser())
                 .meta(REQUIREMENTS_KEY, getRequirements(data, ConfigData.CommandsOpt.adminRemove))
@@ -109,7 +110,7 @@ public class AdminModify {
     }
     private SubCommand link() {
         return new SubCommand(b -> b.literal("link", CMDDescription.linkUser())
-                .optional("name", stringParser())
+                .optional("name", customStringParser())
                 .optional("uuid", stringParser())
                 .optional("user", userParser())
                 .meta(REQUIREMENTS_KEY, getRequirements(data, ConfigData.CommandsOpt.adminLink))
@@ -118,7 +119,7 @@ public class AdminModify {
                     GenericCommandInteractionEvent e = c.sender().interactionEvent();
                     assert e != null;
 
-                    String name = Optional.ofNullable(e.getOption("name")).map(OptionMapping::getAsString).orElse(null);
+                    String name = Optional.ofNullable(e.getOption("name")).map(OptionMapping::getAsString).filter(s -> !s.contains(" ")).orElse(null);
                     String uuid = Optional.ofNullable(e.getOption("uuid")).map(OptionMapping::getAsString).orElse(null);
                     User user = Optional.ofNullable(e.getOption("user")).map(OptionMapping::getAsUser).orElse(null);
                     long id = user != null ? user.getIdLong() : -1;
@@ -151,7 +152,7 @@ public class AdminModify {
     }
     private SubCommand unlink() {
         return new SubCommand(b -> b.literal("unlink", CMDDescription.unlinkUser())
-                .optional("name", stringParser())
+                .optional("name", customStringParser())
                 .optional("uuid", stringParser())
                 .optional("user", userParser())
                 .meta(REQUIREMENTS_KEY, getRequirements(data, ConfigData.CommandsOpt.adminUnLink))
@@ -188,7 +189,7 @@ public class AdminModify {
     private SubCommand toggle() {
         return new SubCommand(b -> b.literal("toggle", CMDDescription.toggleUser())
                 .required("toggle", booleanParser())
-                .optional("name", stringParser())
+                .optional("name", customStringParser())
                 .optional("uuid", stringParser())
                 .optional("user", userParser())
                 .meta(REQUIREMENTS_KEY, getRequirements(data, ConfigData.CommandsOpt.adminToggle))

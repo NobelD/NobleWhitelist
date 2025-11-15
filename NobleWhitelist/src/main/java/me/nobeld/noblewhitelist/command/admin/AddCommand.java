@@ -12,8 +12,8 @@ import org.bukkit.entity.Player;
 import java.util.List;
 import java.util.UUID;
 
+import static me.nobeld.noblewhitelist.temp.CustomStringParser.customStringParser;
 import static org.incendo.cloud.parser.standard.LongParser.longParser;
-import static org.incendo.cloud.parser.standard.StringParser.stringParser;
 import static org.incendo.cloud.parser.standard.UUIDParser.uuidParser;
 
 public class AddCommand extends OptionCommand {
@@ -53,7 +53,7 @@ public class AddCommand extends OptionCommand {
         };
         SubCommand addName = new SubCommand(b -> b
                 .literal("name")
-                .required("name", stringParser())
+                .required("name", customStringParser())
                 .handler(c -> {
                     final String name = c.get("name");
                     plugin.whitelistData().getEntry(name, null, -1)
@@ -68,7 +68,7 @@ public class AddCommand extends OptionCommand {
         };
         SubCommand addFull = new SubCommand(b -> b
                 .literal("full")
-                .required("name", stringParser())
+                .required("name", customStringParser())
                 .required("uuid", uuidParser())
                 .required("discordid", longParser())
                 .handler(c -> {

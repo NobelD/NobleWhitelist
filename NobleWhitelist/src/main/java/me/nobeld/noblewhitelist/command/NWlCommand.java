@@ -1,14 +1,18 @@
 package me.nobeld.noblewhitelist.command;
 
 import com.google.common.cache.CacheBuilder;
+import io.leangen.geantyref.TypeToken;
 import me.nobeld.noblewhitelist.NobleWhitelist;
 import me.nobeld.noblewhitelist.command.admin.*;
 import me.nobeld.noblewhitelist.language.MessageData;
 import me.nobeld.noblewhitelist.model.command.BaseCommand;
+import me.nobeld.noblewhitelist.temp.CustomStringParser;
 import net.kyori.adventure.text.Component;
 import org.bukkit.command.CommandSender;
 import org.incendo.cloud.Command;
 import org.incendo.cloud.SenderMapper;
+import org.incendo.cloud.brigadier.CloudBrigadierManager;
+import org.incendo.cloud.brigadier.argument.BrigadierMappingBuilder;
 import org.incendo.cloud.bukkit.CloudBukkitCapabilities;
 import org.incendo.cloud.context.CommandContext;
 import org.incendo.cloud.description.Description;
@@ -16,13 +20,16 @@ import org.incendo.cloud.execution.ExecutionCoordinator;
 import org.incendo.cloud.minecraft.extras.MinecraftExceptionHandler;
 import org.incendo.cloud.minecraft.extras.MinecraftHelp;
 import org.incendo.cloud.paper.LegacyPaperCommandManager;
+import org.incendo.cloud.parser.standard.StringParser;
 import org.incendo.cloud.processors.cache.GuavaCache;
 import org.incendo.cloud.processors.confirmation.ConfirmationConfiguration;
 import org.incendo.cloud.processors.confirmation.ConfirmationManager;
 import org.jetbrains.annotations.NotNull;
 
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Function;
 import java.util.logging.Level;
 
 public class NWlCommand {
@@ -77,8 +84,33 @@ public class NWlCommand {
 
         confirmationManager = ConfirmationManager.confirmationManager(configuration);
         manager.registerCommandPostProcessor(confirmationManager.createPostprocessor());
+        reflect(manager.brigadierManager());
         start();
     }
+    // TODO temporal, use internals for custom brigadier parser instead
+    @SuppressWarnings({ "unchecked", "DataFlowIssue" })
+    private void reflect(CloudBrigadierManager<CommandSender, ?> manager) {
+        try {
+            Object val = manager.mappings()
+                    .mapping(StringParser.class)
+                    .mapper()
+                    .apply(new StringParser<>(StringParser.StringMode.QUOTED));
+            Method method = BrigadierMappingBuilder.class.getMethod("to", Function.class);
+            method.setAccessible(true);
+            manager.registerMapping(
+                new TypeToken<CustomStringParser<CommandSender>>() {}, b -> {
+                    try {
+                        Function<?, ?> function = e -> val;
+                        method.invoke(b.cloudSuggestions(), function);
+                    } catch (Exception e) {
+                        plugin.getLogger().log(Level.WARNING, "Unable to use custom brigadier mapping", e);
+                    }
+                }
+            );
+        } catch (Throwable e) {
+            plugin.getLogger().log(Level.WARNING, "Unable to use custom brigadier mapping, using normal mapping instead.,,", e);
+        }
+  }
     public @NotNull MinecraftHelp<CommandSender> minecraftHelp() {
         return this.minecraftHelp;
     }
