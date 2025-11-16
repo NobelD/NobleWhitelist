@@ -31,11 +31,11 @@ public class CustomStringParser<C> implements ArgumentParser<C, String> { // TOD
     public ArgumentParseResult<String> parse(@NotNull CommandContext<C> context, @NotNull CommandInput commandInput) {
         final char peek = commandInput.peek();
         if (peek != '\'' && peek != '"') {
-          String str = commandInput.readString();
-          if (str.contains(" ")) {
-            return ArgumentParseResult.failure(new WhitespaceStringParseException(context));
-          }
-          return ArgumentParseResult.success(str);
+            String str = commandInput.readString();
+            if (str.contains(" ")) {
+                return ArgumentParseResult.failure(new WhitespaceStringParseException(context));
+            }
+            return ArgumentParseResult.success(str);
         }
 
         final String string = commandInput.remainingInput();
@@ -62,7 +62,9 @@ public class CustomStringParser<C> implements ArgumentParser<C, String> { // TOD
             inner = singleMatch;
         }
 
-        if (inner == null) {
+        if (inner != null) {
+            commandInput.readString();
+        } else {
             inner = commandInput.peekString();
             if (inner.startsWith("\"") || inner.startsWith("'")) {
                 return ArgumentParseResult.failure(new StringParser.StringParseException(
