@@ -183,7 +183,11 @@ public class WhitelistChecker {
      */
     public PairData<SuccessData, Boolean> canPass(PlayerWrapper player) {
         Optional<WhitelistEntry> entry = this.data.whitelistData().getEntry(player);
+        if (entry.isPresent() && !entry.get().isWhitelisted()) {
+            entry = Optional.empty();
+        }
 
+        
         boolean enforce = this.data.getConfigD().get(ConfigData.WhitelistCF.enforceNameDiffID);
         if (entry.isPresent() && enforce) {
             CheckType type = checkEntry(entry.get(), player);
