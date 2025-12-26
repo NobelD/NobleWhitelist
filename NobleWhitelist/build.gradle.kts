@@ -33,6 +33,7 @@ repositories {
         content {
             includeGroup("com.github.nobeld")
             includeGroup("com.github.nobeld.libby")
+            includeGroup("com.github.nobeld.slf4j-ov")
         }
     }
 }
@@ -48,8 +49,11 @@ dependencies {
         exclude(module=("spigot-api"))
     }
     compileOnly("com.github.nobeld","simplixstorage","3.2.9-rc.5")
-    compileOnly("com.zaxxer", "HikariCP", "5.1.0")
-    compileOnly("org.xerial", "sqlite-jdbc", "3.44.1.0")
+    compileOnly("com.zaxxer", "HikariCP", "7.0.2") {
+        exclude("slf4j-api")
+    }
+    compileOnly("com.github.nobeld.slf4j-ov", "slf4j-jdk14", "ffbbfcf8e2")
+    compileOnly("org.xerial", "sqlite-jdbc", "3.51.1.0")
 
     compileOnly("me.clip", "placeholderapi", "2.11.6") {
         isTransitive = false
@@ -63,8 +67,8 @@ dependencies {
     }
     compileOnly("net.kyori","adventure-text-minimessage","4.24.0")
 
-    compileOnly("org.incendo", "cloud-paper", "2.0.0-beta.13")
-    compileOnly("org.incendo", "cloud-minecraft-extras", "2.0.0-beta.13") {
+    compileOnly("org.incendo", "cloud-paper", "2.0.0-beta.14")
+    compileOnly("org.incendo", "cloud-minecraft-extras", "2.0.0-beta.14") {
         exclude(module=("adventure-text-minimessage"))
         exclude(module=("adventure-api"))
     }
@@ -105,6 +109,7 @@ tasks {
         reloc("io.papermc")
         reloc("com.esotericsoftware")
         reloc("com.zaxxer")
+        reloc("org.slf4j")
         reloc("de.leonhard")
         reloc("org.intellij")
         reloc("org.jetbrains")

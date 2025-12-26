@@ -23,6 +23,7 @@ import me.nobeld.noblewhitelist.temp.PaperAdventure;
 import me.nobeld.noblewhitelist.util.*;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.slf4j.jul.JDK14LoggerFactory;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -51,6 +52,11 @@ public class NobleWhitelist extends JavaPlugin implements NWLData {
         hasPaper = ServerUtil.hasPaper();
         NWLContainer bc = NWLContainer.builder(this)
                 .loadLibs(new BukkitLibraryManager(this), null)
+                .load(() -> {
+                    JDK14LoggerFactory.registerDecorator("me.nobeld.noblewhitelist.*", "NobleWhitelist");
+                    JDK14LoggerFactory.registerDecorator("me.nobeld.noblewhitelist.discord.*", "NWLDiscord");
+                    JDK14LoggerFactory.registerDecorator("me.nobeld.noblewhitelist.libs.com.zaxxer.*", null);
+                })
                 .loadFiles(getDataFolder().getPath(), PairData.of("config.yml", FileManager.FileType.YAML))
                 .loadAdventure()
                 .loadUpdateChecker("NobleWhitelist", "bukkit", ServerUtil.getVersion() > 17 ? Runtime.version().feature() >= 21 ? null : "spigot-j17" : "spigot-mc17")

@@ -128,15 +128,25 @@ public class LibsManager {
         libraries.add(Library.builder()
                 .groupId("com{}zaxxer")
                 .artifactId("HikariCP")
-                .version("5.1.0")
+                .version("7.0.2")
                 .relocate(reloc("com{}zaxxer"))
+                .excludeTransitiveDependency("org{}slf4j", "slf4j-api")
+                .build());
+
+        libraries.add(Library.builder()
+                .groupId("com{}github{}nobeld{}slf4j-ov")
+                .artifactId("slf4j-jdk14")
+                .version("ffbbfcf8e2")
+                .relocate(reloc("org{}slf4j"))
+                .repository("https://jitpack.io")
+                .resolveTransitiveDependencies(true)
                 .build());
 
         //Command libraries
         libraries.add(Library.builder()
                 .groupId("org{}incendo")
                 .artifactId("cloud-paper")
-                .version("2.0.0-beta.13")
+                .version("2.0.0-beta.14")
                 .relocate(reloc("org{}incendo"))
                 .resolveTransitiveDependencies(true)
                 .build());
@@ -152,7 +162,7 @@ public class LibsManager {
         libraries.add(Library.builder()
                 .groupId("org{}incendo")
                 .artifactId("cloud-minecraft-extras")
-                .version("2.0.0-beta.13")
+                .version("2.0.0-beta.14")
                 .relocate(reloc("org{}incendo"))
                 .build());
 

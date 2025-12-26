@@ -57,8 +57,7 @@ public class StorageLoader {
                     HikariConfig databaseConfig = new HikariConfig();
                     databaseConfig.setConnectionTimeout(config.get(ConfigData.StorageCF.storageTimeout) * 1_000L);
                     databaseConfig.setMaxLifetime(config.get(ConfigData.StorageCF.storageLifetime) * 1_000L);
-                    if (storageType.isRemoteDatabase()) {
-                        NobleWhitelist.adv().consoleAudience().sendMessage(AdventureUtil.formatAll("<prefix><green>Connecting to <yellow>remote database <green>for whitelist."));
+                    databaseConfig.setKeepaliveTime(0);
                     if (remote) {
                         databaseConfig.setUsername(config.get(ConfigData.StorageCF.storageUser));
                         databaseConfig.setPassword(config.get(ConfigData.StorageCF.storagePassword));
