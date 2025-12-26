@@ -7,10 +7,13 @@ import me.nobeld.noblewhitelist.command.admin.*;
 import me.nobeld.noblewhitelist.language.MessageData;
 import me.nobeld.noblewhitelist.model.command.BaseCommand;
 import me.nobeld.noblewhitelist.temp.CustomStringParser;
+import me.nobeld.noblewhitelist.temp.internal.LazyBukkitManager;
+import me.nobeld.noblewhitelist.util.AdventureUtil;
+import me.nobeld.noblewhitelist.util.ServerUtil;
 import net.kyori.adventure.text.Component;
 import org.bukkit.command.CommandSender;
 import org.incendo.cloud.Command;
-import org.incendo.cloud.SenderMapper;
+import org.incendo.cloud.CommandManager;
 import org.incendo.cloud.brigadier.CloudBrigadierManager;
 import org.incendo.cloud.brigadier.argument.BrigadierMappingBuilder;
 import org.incendo.cloud.bukkit.CloudBukkitCapabilities;
@@ -34,27 +37,39 @@ import java.util.logging.Level;
 
 public class NWlCommand {
     private final NobleWhitelist plugin;
-    private final LegacyPaperCommandManager<CommandSender> manager;
+    private CommandManager<CommandSender> manager;
     private MinecraftHelp<CommandSender> minecraftHelp;
-    private final ConfirmationManager<CommandSender> confirmationManager;
+    private ConfirmationManager<CommandSender> confirmationManager;
     public NWlCommand(NobleWhitelist plugin) {
         this.plugin = plugin;
-        manager = new LegacyPaperCommandManager<>(
-                plugin,
-                ExecutionCoordinator.simpleCoordinator(),
-                SenderMapper.identity()
-        );
-        boolean registered = false;
-        if (manager.hasCapability(CloudBukkitCapabilities.NATIVE_BRIGADIER)) {
-            try {
-                manager.registerBrigadier();
-                registered = true;
-            } catch (Throwable e) {
-                plugin.logger().log(Level.SEVERE, "Cannot load the native brigadier even when is allowed.", e);
-            }
+    }
+    public boolean isCapable() {
+        return ServerUtil.hasPaper() || !ServerUtil.matchVersion(19);
+    }
+    public void start() {
+        LegacyPaperCommandManager<CommandSender> paper;
+        if (isCapable()) {
+            manager = paper = LegacyPaperCommandManager.createNative(plugin, ExecutionCoordinator.simpleCoordinator());
+        } else {
+            plugin.getAdventure().consoleAudience().sendMessage(AdventureUtil.formatAll("<prefix><yellow>Unable to load brigadier, using lazy fallback instead, commands may not work as expected."));
+            paper = null;
+            manager = LazyBukkitManager.createNative(plugin, ExecutionCoordinator.simpleCoordinator());
         }
-        if (!registered && manager.hasCapability(CloudBukkitCapabilities.ASYNCHRONOUS_COMPLETION)) {
-            manager.registerAsynchronousCompletions();
+        if (paper != null) {
+            try {
+                paper.registerBrigadier();
+            } catch (Throwable e) {
+                String re;
+                if (paper.hasCapability(CloudBukkitCapabilities.NATIVE_BRIGADIER)) {
+                    re = "Cannot load the native brigadier even when is allowed.";
+                } else {
+                    re = "Cannot load the brigadier manager.";
+                }
+                throw new RuntimeException(re, e);
+            }
+            if (paper.hasCapability(CloudBukkitCapabilities.ASYNCHRONOUS_COMPLETION)) {
+                paper.registerAsynchronousCompletions();
+            }
         }
 
         MinecraftExceptionHandler.create(NobleWhitelist.adv()::senderAudience)
@@ -80,12 +95,12 @@ public class NWlCommand {
                         sendMsg(s, MessageData.clearSug2());
                     } else sendMsg(s, MessageData.confirmationRequired());
                 })
-        .build();
+                .build();
 
         confirmationManager = ConfirmationManager.confirmationManager(configuration);
         manager.registerCommandPostProcessor(confirmationManager.createPostprocessor());
-        reflect(manager.brigadierManager());
-        start();
+        if (paper != null)reflect(paper.brigadierManager());
+        register();
     }
     // TODO temporal, use internals for custom brigadier parser instead
     @SuppressWarnings({ "unchecked", "DataFlowIssue" })
@@ -98,19 +113,20 @@ public class NWlCommand {
             Method method = BrigadierMappingBuilder.class.getMethod("to", Function.class);
             method.setAccessible(true);
             manager.registerMapping(
-                new TypeToken<CustomStringParser<CommandSender>>() {}, b -> {
-                    try {
-                        Function<?, ?> function = e -> val;
-                        method.invoke(b.cloudSuggestions(), function);
-                    } catch (Exception e) {
-                        plugin.getLogger().log(Level.WARNING, "Unable to use custom brigadier mapping", e);
+                    new TypeToken<CustomStringParser<CommandSender>>() {
+                    }, b -> {
+                        try {
+                            Function<?, ?> function = e -> val;
+                            method.invoke(b.cloudSuggestions(), function);
+                        } catch (Exception e) {
+                            plugin.getLogger().log(Level.WARNING, "Unable to use custom brigadier mapping", e);
+                        }
                     }
-                }
             );
         } catch (Throwable e) {
-            plugin.getLogger().log(Level.WARNING, "Unable to use custom brigadier mapping, using normal mapping instead.,,", e);
+            plugin.getLogger().log(Level.WARNING, "Unable to use custom brigadier mapping, using normal mapping instead...", e);
         }
-  }
+    }
     public @NotNull MinecraftHelp<CommandSender> minecraftHelp() {
         return this.minecraftHelp;
     }
@@ -123,7 +139,7 @@ public class NWlCommand {
     public void sendMsg(CommandSender sender, Component msg) {
         NobleWhitelist.adv().senderAudience(sender).sendMessage(msg);
     }
-    private void start() {
+    private void register() {
         final Command.Builder<CommandSender> builder = this.manager
                 .commandBuilder("nwhitelist", Description.of("Command for the whitelist management"), "nwl", "noblewl", "nwhitelist")
                 .permission("noblewhitelist.admin");
@@ -131,7 +147,7 @@ public class NWlCommand {
         this.manager.command(builder.literal("confirm", Description.of("Used to confirm an important command"))
                 .permission("noblewhitelist.admin.confirm")
                 .handler(this.confirmationManager.createExecutionHandler()));
-        
+
         List<BaseCommand> commands = new ArrayList<>();
         commands.add(new AddCommand(plugin));
         commands.add(new RemoveCommand(plugin));

@@ -94,10 +94,11 @@ public class NobleWhitelist extends JavaPlugin implements NWLData {
     private void loadExtra() {
         this.api = new NobleWhitelistApi(this);
         Bukkit.getServer().getPluginManager().registerEvents(new Listener(this), this);
+        this.commands = new NWlCommand(this);
         try {
-            this.commands = new NWlCommand(this);
+            commands.start();
         } catch (Throwable e) {
-            logger().log(Level.SEVERE, "Cannot load the commands constructor, no commands will be available.\nConsider to update otherwise report this problem.", e);
+            logger().log(Level.SEVERE, "Cannot load the commands constructor, commands will be disabled.\nConsider to update otherwise report this problem.", e);
         }
     }
     @Override
