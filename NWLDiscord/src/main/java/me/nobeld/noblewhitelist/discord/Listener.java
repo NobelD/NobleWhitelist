@@ -6,6 +6,7 @@ import me.nobeld.noblewhitelist.discord.util.DiscordUtil;
 import me.nobeld.noblewhitelist.discord.config.ConfigData;
 import me.nobeld.noblewhitelist.discord.config.MessageData;
 import me.nobeld.noblewhitelist.model.BPlayer;
+import me.nobeld.noblewhitelist.temp.SchedulerUtil;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -42,7 +43,7 @@ public class Listener implements org.bukkit.event.Listener {
     public void onPlayerJoin(PlayerJoinEvent event) {
         Player player = event.getPlayer();
         if (!player.isOp()) return;
-        Bukkit.getScheduler().runTaskAsynchronously(data, () ->
+        SchedulerUtil.asyncExecutor(data).execute(() ->
                 data.getUptChecker().sendStatus(BPlayer.of(player).getAsAudience(), data.getConfigD().get(ConfigData.notifyUpdate), true));
     }
 }

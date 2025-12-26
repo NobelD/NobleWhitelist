@@ -40,7 +40,10 @@ repositories {
 
 dependencies {
     compileOnly("io.papermc.paper", "paper-api", "1.20.4-R0.1-SNAPSHOT")
-    implementation("io.papermc", "paperlib", "1.0.7")
+    implementation("com.github.nobeld.libby", "libby-paper", "2.0.0-beta.1") {
+        exclude(module=("spigot-api"))
+        exclude(module=("libby-core"))
+    }
     implementation("com.github.nobeld.libby", "libby-bukkit", "2.0.0-beta.1") {
         exclude(module=("spigot-api"))
         exclude(module=("libby-core"))
@@ -94,10 +97,14 @@ tasks {
                 "name" to project.name,
                 "version" to project.version,
                 "description" to project.description,
-                "apiVersion" to "1.18"
+                "apiVersion" to "1.18",
+                "paperApiVersion" to "1.19"
         )
         inputs.properties(props)
         filesMatching("plugin.yml") {
+            expand(props)
+        }
+        filesMatching("paper-plugin.yml") {
             expand(props)
         }
     }
@@ -106,7 +113,6 @@ tasks {
         fun reloc(pkg: String) = relocate(pkg, "me.nobeld.noblewhitelist.libs.$pkg")
 
         reloc("com.alessiodp.libby")
-        reloc("io.papermc")
         reloc("com.esotericsoftware")
         reloc("com.zaxxer")
         reloc("org.slf4j")

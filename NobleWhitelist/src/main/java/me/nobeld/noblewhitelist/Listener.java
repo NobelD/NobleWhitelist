@@ -6,6 +6,7 @@ import me.nobeld.noblewhitelist.model.BPlayer;
 import me.nobeld.noblewhitelist.model.PairData;
 import me.nobeld.noblewhitelist.model.whitelist.SuccessData;
 import me.nobeld.noblewhitelist.model.whitelist.VanillaWhitelistType;
+import me.nobeld.noblewhitelist.temp.SchedulerUtil;
 import me.nobeld.noblewhitelist.util.AdventureUtil;
 import me.nobeld.noblewhitelist.config.ConfigData;
 import net.kyori.adventure.text.Component;
@@ -75,7 +76,7 @@ public class Listener implements org.bukkit.event.Listener {
             data.whitelistChecker().parseJoinData(BPlayer.of(player), d -> Bukkit.getPluginManager().callEvent(new AutoWhitelistEvent(player, d)));
         }
         if ((player.isOp() || player.hasPermission("noblewhitelist.admin.update"))) {
-            Bukkit.getScheduler().runTaskAsynchronously(data, () ->
+            SchedulerUtil.asyncExecutor(data).execute(() ->
                     data.getUptChecker().sendStatus(data.getAdventure().playerAudience(player), data.getConfigD().get(ConfigData.ServerCF.notifyUpdate), true));
         }
     }

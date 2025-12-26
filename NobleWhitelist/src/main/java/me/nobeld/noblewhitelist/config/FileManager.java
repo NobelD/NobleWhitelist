@@ -9,6 +9,7 @@ import de.leonhard.storage.internal.exceptions.SimplixValidationException;
 import de.leonhard.storage.internal.settings.ConfigSettings;
 import de.leonhard.storage.internal.settings.DataType;
 import de.leonhard.storage.internal.settings.ErrorHandler;
+import me.nobeld.noblewhitelist.NobleWhitelist;
 import me.nobeld.noblewhitelist.model.whitelist.WhitelistEntry;
 import me.nobeld.noblewhitelist.util.UUIDUtil;
 import org.jetbrains.annotations.Nullable;
@@ -123,7 +124,7 @@ public class FileManager {
     private static SimplixBuilder createBuilder(Path path, @Nullable String resource, @Nullable InputStream stream, ConfigSettings settings, DataType type) {
         SimplixBuilder b = SimplixBuilder.fromPath(path);
         if (resource != null) {
-            b.addInputStreamFromResource(resource);
+            b.addInputStream(NobleWhitelist.class.getClassLoader().getResourceAsStream(resource));
         } else if (stream != null) {
             b.addInputStream(stream);
         }

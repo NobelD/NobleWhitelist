@@ -8,6 +8,7 @@ import me.nobeld.noblewhitelist.discord.model.NWLDContainer;
 import me.nobeld.noblewhitelist.discord.model.NWLDsData;
 import me.nobeld.noblewhitelist.model.PairData;
 import me.nobeld.noblewhitelist.model.base.NWLData;
+import me.nobeld.noblewhitelist.temp.SchedulerUtil;
 import me.nobeld.noblewhitelist.util.ServerUtil;
 import me.nobeld.noblewhitelist.util.SpigotMetrics;
 import me.nobeld.noblewhitelist.util.UpdateChecker;
@@ -112,7 +113,7 @@ public class NWLDiscord extends JavaPlugin implements NWLDsData {
     }
     @Override
     public void enableMsg(Runnable runnable) {
-        Bukkit.getScheduler().scheduleSyncDelayedTask(this, runnable);
+        SchedulerUtil.asyncExecutor(this).execute(runnable);
     }
     @Override
     public InputStream resourceStream(String name) {

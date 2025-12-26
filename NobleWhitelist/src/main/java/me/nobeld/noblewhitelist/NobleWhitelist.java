@@ -1,6 +1,7 @@
 package me.nobeld.noblewhitelist;
 
 import com.alessiodp.libby.BukkitLibraryManager;
+import com.alessiodp.libby.PaperLibraryManager;
 import me.nobeld.noblewhitelist.api.NWLMiniExpansion;
 import me.nobeld.noblewhitelist.api.NWLPAPIExpansion;
 import me.nobeld.noblewhitelist.api.NobleWhitelistApi;
@@ -32,7 +33,6 @@ import java.util.logging.Logger;
 
 public class NobleWhitelist extends JavaPlugin implements NWLData {
     private static NobleWhitelist plugin;
-    private static boolean hasPaper;
     private NWlCommand commands;
     private WhitelistData whitelistData;
     private WhitelistChecker whitelistChecker;
@@ -49,9 +49,8 @@ public class NobleWhitelist extends JavaPlugin implements NWLData {
         // #TODO fix static classes and adventure
         plugin = this;
         if (!ServerUtil.canRun(this)) return;
-        hasPaper = ServerUtil.hasPaper();
         NWLContainer bc = NWLContainer.builder(this)
-                .loadLibs(new BukkitLibraryManager(this), null)
+                .loadLibs(ServerUtil.isPaperPlugin(this) ? new PaperLibraryManager(this) : new BukkitLibraryManager(this), null)
                 .load(() -> {
                     JDK14LoggerFactory.registerDecorator("me.nobeld.noblewhitelist.*", "NobleWhitelist");
                     JDK14LoggerFactory.registerDecorator("me.nobeld.noblewhitelist.discord.*", "NWLDiscord");
@@ -140,7 +139,7 @@ public class NobleWhitelist extends JavaPlugin implements NWLData {
         plugin.getLogger().log(level, msg, ex);
     }
     public static boolean hasPaper() {
-        return hasPaper;
+        return ServerUtil.hasPaper();
     }
     @Override
     public StorageType getStorageType() {
