@@ -14,7 +14,10 @@
       "spigot": "1.2.17",
       "spigot-j17": "1.2.17",
       "spigot-mc17": "1.2.7"
-    }
+    },
+    "critical": [
+      "1.2.10"
+    ]
   },
   "NWLDiscord": {
     "url": "https://modrinth.com/plugin/noble-whitelist-discord-integration",

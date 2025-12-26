@@ -129,9 +129,7 @@ public class NWLContainer {
             data.getAdventure().consoleAudience().sendMessage(AdventureUtil.formatAll("<prefix><green>Loaded <yellow>" + total + " <green>whitelist entries."));
             if (!type.isDatabase() && total >= 100) data.getAdventure().consoleAudience().sendMessage(AdventureUtil.formatAll("<prefix><green>Mind in use database as storage type since there is a lot of entries."));
 
-            if (config.get(ConfigData.ServerCF.notifyUpdate)) {
-                update.sendStatus(data.getAdventure().consoleAudience(), false);
-            }
+            update.sendStatus(data.getAdventure().consoleAudience(), config.get(ConfigData.ServerCF.notifyUpdate), false);
             return this;
         }
         public Builder load(Runnable runnable) {

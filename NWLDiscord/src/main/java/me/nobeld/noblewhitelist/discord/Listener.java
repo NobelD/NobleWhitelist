@@ -41,7 +41,8 @@ public class Listener implements org.bukkit.event.Listener {
     @EventHandler
     public void onPlayerJoin(PlayerJoinEvent event) {
         Player player = event.getPlayer();
-        if (!player.isOp() || !data.getConfigD().get(ConfigData.notifyUpdate)) return;
-        Bukkit.getScheduler().runTaskAsynchronously(data, () -> data.getUptChecker().sendStatus(BPlayer.of(player).getAsAudience(), true));
+        if (!player.isOp()) return;
+        Bukkit.getScheduler().runTaskAsynchronously(data, () ->
+                data.getUptChecker().sendStatus(BPlayer.of(player).getAsAudience(), data.getConfigD().get(ConfigData.notifyUpdate), true));
     }
 }

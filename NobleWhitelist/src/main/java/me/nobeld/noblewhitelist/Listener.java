@@ -74,11 +74,10 @@ public class Listener implements org.bukkit.event.Listener {
         if (!data.isBlocked()) {
             data.whitelistChecker().parseJoinData(BPlayer.of(player), d -> Bukkit.getPluginManager().callEvent(new AutoWhitelistEvent(player, d)));
         }
-        if (
-                (player.isOp() || player.hasPermission("noblewhitelist.admin.update")) &&
-                data.getConfigD().get(ConfigData.ServerCF.notifyUpdate)
-        )
-            Bukkit.getScheduler().runTaskAsynchronously(data, () -> data.getUptChecker().sendStatus(data.getAdventure().playerAudience(player), true));
+        if ((player.isOp() || player.hasPermission("noblewhitelist.admin.update"))) {
+            Bukkit.getScheduler().runTaskAsynchronously(data, () ->
+                    data.getUptChecker().sendStatus(data.getAdventure().playerAudience(player), data.getConfigD().get(ConfigData.ServerCF.notifyUpdate), true));
+        }
     }
     @EventHandler
     public void onPlayerCommand(PlayerCommandPreprocessEvent event) {

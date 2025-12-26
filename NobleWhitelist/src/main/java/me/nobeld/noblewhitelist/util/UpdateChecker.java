@@ -13,9 +13,7 @@ import org.jetbrains.annotations.Nullable;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.util.ArrayList;
-import java.util.Objects;
-import java.util.Optional;
+import java.util.*;
 import java.util.logging.Level;
 
 public class UpdateChecker {
@@ -28,6 +26,7 @@ public class UpdateChecker {
     private final String subType;
     private final String extraType;
     private long lastCheck = 0;
+    private boolean isCritical = false;
     private Version latest;
     @Nullable
     private Version latestExtra = null;
@@ -63,6 +62,17 @@ public class UpdateChecker {
         String url = containsToString(type, "url");
         if (url != null) {
             this.downloadUrl = url;
+        }
+        try {
+            Set<String> versions = new HashSet<>();
+            for (JsonElement e : type.get("critical").getAsJsonArray()) {
+                versions.add(e.getAsString());
+            }
+            if (versions.contains(version.asString())) {
+                isCritical = true;
+            }
+        } catch (Throwable e) {
+            data.logger().log(Level.WARNING, "Unable to parse the critical versions, security concerns may exist, be sure to check the wiki or updates!");
         }
         if (!type.has("latest")) {
             return UpdateStatus.NO_DATA;
@@ -132,51 +142,59 @@ public class UpdateChecker {
             return UpdateStatus.NO_DATA;
         } catch (Throwable ex) {
             NobleWhitelist.log(Level.WARNING, "An error occurred while checking for updates: " + ex.getClass().getCanonicalName() + " - " + ex.getMessage());
+            NobleWhitelist.log(Level.WARNING, "Skip this error if you have poor or no internet connection, if the update service is not down check the source for updates!");
             return UpdateStatus.CANT_REACH;
         } finally {
             if (con != null) con.disconnect();
         }
     }
-    public boolean sendStatus(Audience audience, boolean isPlayer) {
-        return sendStatus(audience, "<prefix>", isPlayer);
+    public boolean sendStatus(Audience audience, boolean softSkip, boolean cooldown) {
+        return sendStatus(audience, "<prefix>", softSkip, cooldown);
     }
-    public boolean sendStatus(Audience audience, String prefix, boolean isPlayer) {
-        UpdateStatus status = githubCheck(isPlayer);
+    public boolean sendStatus(Audience audience, String prefix, boolean softSkip, boolean cooldown) {
+        UpdateStatus status = githubCheck(cooldown);
 
-        if (!status.canPrint()) return false;
-
-        String version = this.version.asString();
-        String latest = this.latest.asString();
-        switch (status) {
-            case AVAILABLE_EXTRA -> {
-                String latestExtra = Objects.requireNonNull(this.latestExtra, "invalid").asString();
-                audience.sendMessage(AdventureUtil.formatAll(prefix + "<#F1B65C>There is a new update for <gold>" + name));
-                audience.sendMessage(AdventureUtil.formatAll(prefix + "<#F1B65C>Your version: <#FF8B4D>" + version + " <yellow>| <#F1B65C>Latest: <#6FEF22>" + latestExtra));
-                audience.sendMessage(AdventureUtil.formatAll(prefix + "<#F1B65C>It also seems it is the latest available for you server, check FAQ for more info!"));
-                audience.sendMessage(AdventureUtil.formatAll(prefix + "<#F1B65C>Download it at: <#75CDFF>" + downloadUrl));
+        if (isCritical) {
+            audience.sendMessage(AdventureUtil.formatAll(prefix + "<bold><#FF2414>\\<!> <#FF6176>Your version was marked as critical, you may want to update to a safer version asap!</bold>"));
+            audience.sendMessage(AdventureUtil.formatAll(prefix + "<#F1B65C>There is a new update for <gold>" + name));
+            audience.sendMessage(AdventureUtil.formatAll(prefix + "<#F1B65C>Your version: <#FF8B4D>" + version + " <yellow>| <#F1B65C>Latest: <#6FEF22>" + latest));
+            audience.sendMessage(AdventureUtil.formatAll(prefix + "<#F1B65C>Download it at: <#75CDFF>" + downloadUrl));
+        } else if (status.shouldPrint(softSkip)) {
+            String version = this.version.asString();
+            String latest = this.latest.asString();
+            switch (status) {
+                case AVAILABLE_EXTRA -> {
+                    String latestExtra = Objects.requireNonNull(this.latestExtra, "invalid").asString();
+                    audience.sendMessage(AdventureUtil.formatAll(prefix + "<#F1B65C>There is a new update for <gold>" + name));
+                    audience.sendMessage(AdventureUtil.formatAll(prefix + "<#F1B65C>Your version: <#FF8B4D>" + version + " <yellow>| <#F1B65C>Latest: <#6FEF22>" + latestExtra));
+                    audience.sendMessage(AdventureUtil.formatAll(prefix + "<#F1B65C>It also seems it is the latest available for you server, check FAQ for more info!"));
+                    audience.sendMessage(AdventureUtil.formatAll(prefix + "<#F1B65C>Download it at: <#75CDFF>" + downloadUrl));
+                }
+                case SAME_EXTRA -> {
+                    String latestExtra = Objects.requireNonNull(this.latestExtra, "invalid").asString();
+                    audience.sendMessage(AdventureUtil.formatAll(prefix + "<#F1B65C>It seems there is a new version but is not available for your server. <gold>(<#FF8B4D>" + latestExtra + " - <#6FEF22>" + latest + "<gold>)"));
+                    audience.sendMessage(AdventureUtil.formatAll(prefix + "<#F1B65C>Nothing to worry but you may be missing some new features, check FAQ for more info!"));
+                    audience.sendMessage(AdventureUtil.formatAll(prefix + "<#F1B65C>Wiki link: <#75CDFF>" + getUsefulLinks().wiki));
+                }
+                case AVAILABLE_RELEASE -> {
+                    audience.sendMessage(AdventureUtil.formatAll(prefix + "<#F1B65C>There is a new update for <gold>" + name + "<#F1B65C>"));
+                    audience.sendMessage(AdventureUtil.formatAll(prefix + "<#F1B65C>You are using an experimental version, consider to update to the stable version!"));
+                    audience.sendMessage(AdventureUtil.formatAll(prefix + "<#F1B65C>Your version: <#FF8B4D>" + version + " <yellow>| <#F1B65C>Latest: <#6FEF22>" + latest));
+                    audience.sendMessage(AdventureUtil.formatAll(prefix + "<#F1B65C>Download it at: <#75CDFF>" + downloadUrl));
+                }
+                case AVAILABLE_OTHER -> {
+                    audience.sendMessage(AdventureUtil.formatAll(prefix + "<#F1B65C>It seems that you are not using the latest version of <gold>" + name));
+                    audience.sendMessage(AdventureUtil.formatAll(prefix + "<#F1B65C>Your version: <#FF8B4D>" + version + " <yellow>| <#F1B65C>Latest: <#6FEF22>" + latest));
+                    audience.sendMessage(AdventureUtil.formatAll(prefix + "<#F1B65C>Download it at: <#75CDFF>" + downloadUrl));
+                }
+                default -> {
+                    audience.sendMessage(AdventureUtil.formatAll(prefix + "<#F1B65C>There is a new update for <gold>" + name));
+                    audience.sendMessage(AdventureUtil.formatAll(prefix + "<#F1B65C>Your version: <#FF8B4D>" + version + " <yellow>| <#F1B65C>Latest: <#6FEF22>" + latest));
+                    audience.sendMessage(AdventureUtil.formatAll(prefix + "<#F1B65C>Download it at: <#75CDFF>" + downloadUrl));
+                }
             }
-            case SAME_EXTRA -> {
-                String latestExtra = Objects.requireNonNull(this.latestExtra, "invalid").asString();
-                audience.sendMessage(AdventureUtil.formatAll(prefix + "<#F1B65C>It seems there is a new version but is not available for your server. <gold>(<#FF8B4D>" + latestExtra + " - <#6FEF22>" + latest + "<gold>)"));
-                audience.sendMessage(AdventureUtil.formatAll(prefix + "<#F1B65C>Nothing to worry but you may be missing some new features, check FAQ for more info!"));
-                audience.sendMessage(AdventureUtil.formatAll(prefix + "<#F1B65C>Wiki link: <#75CDFF>" + getUsefulLinks().wiki));
-            }
-            case AVAILABLE_RELEASE -> {
-                audience.sendMessage(AdventureUtil.formatAll(prefix + "<#F1B65C>There is a new update for <gold>" + name + "<#F1B65C>"));
-                audience.sendMessage(AdventureUtil.formatAll(prefix + "<#F1B65C>You are using an experimental version, consider to update to the stable version!"));
-                audience.sendMessage(AdventureUtil.formatAll(prefix + "<#F1B65C>Your version: <#FF8B4D>" + version + " <yellow>| <#F1B65C>Latest: <#6FEF22>" + latest));
-                audience.sendMessage(AdventureUtil.formatAll(prefix + "<#F1B65C>Download it at: <#75CDFF>" + downloadUrl));
-            }
-            case AVAILABLE_OTHER -> {
-                audience.sendMessage(AdventureUtil.formatAll(prefix + "<#F1B65C>It seems that you are not using the latest version of <gold>" + name));
-                audience.sendMessage(AdventureUtil.formatAll(prefix + "<#F1B65C>Your version: <#FF8B4D>" + version + " <yellow>| <#F1B65C>Latest: <#6FEF22>" + latest));
-                audience.sendMessage(AdventureUtil.formatAll(prefix + "<#F1B65C>Download it at: <#75CDFF>" + downloadUrl));
-            }
-            default -> {
-                audience.sendMessage(AdventureUtil.formatAll(prefix + "<#F1B65C>There is a new update for <gold>" + name));
-                audience.sendMessage(AdventureUtil.formatAll(prefix + "<#F1B65C>Your version: <#FF8B4D>" + version + " <yellow>| <#F1B65C>Latest: <#6FEF22>" + latest));
-                audience.sendMessage(AdventureUtil.formatAll(prefix + "<#F1B65C>Download it at: <#75CDFF>" + downloadUrl));
-            }
+        } else {
+            return false;
         }
         return true;
     }
@@ -272,6 +290,10 @@ public class UpdateChecker {
 
         public boolean canPrint() {
             return canUpdate() || this == SAME_EXTRA;
+        }
+
+        public boolean shouldPrint(boolean softSkip) {
+            return !softSkip && canPrint();
         }
 
         public boolean isSame() {
