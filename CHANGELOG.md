@@ -1,7 +1,7 @@
 # Changelog
 
 ## Main 1.2.18 - Ds 1.1.9 | 2025-12-26
-#20
+
 ### Added:
 - Added native support to paper and folia.
 - Added a bukkit command manager fallback in case it cannot load. (it seems since 1.19 bukkit/spigot users have been not able to execute commands)
