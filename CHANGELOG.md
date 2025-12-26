@@ -12,7 +12,7 @@
 - Updated the update checker to show critical versions.
 
 ### Fixed:
-- Fixed is whitelist function not being called. (#20)
+- Fixed is whitelist function not being called. ([#20](https://github.com/NobelD/NobleWhitelist/issues/20))
 - Use StringJoiner instead of StringBuilder to join strings. (lol)
 
 ## Main 1.2.17 - Ds 1.1.8 (No changes) | 2025-11-16
@@ -23,7 +23,7 @@
 ## Main 1.2.16 - Ds 1.1.8 | 2025-11-15
 
 ### Changes:
-- Now some special characters and symbols are allowed in commands. (#19)
+- Now some special characters and symbols are allowed in commands. ([#19](https://github.com/NobelD/NobleWhitelist/issues/19))
 - Some code cleanup related to splitting lines. 
 
 ### Fixes:
@@ -37,7 +37,7 @@
 ## Main 1.2.14 - Ds 1.1.7 (No changes) | 2025-10-17
 
 ### Changes:
-- Updated dependencies to support newer minecraft versions. (#18)
+- Updated dependencies to support newer minecraft versions. ([#18](https://github.com/NobelD/NobleWhitelist/issues/18))
 
 ### Fixed:
 - Fixed not correctly processing different names (name change)e.
@@ -48,7 +48,7 @@
 - Updated dependencies to support newer minecraft versions.
 
 ### Fixed:
-- Fixed not correctly processing different names (name change) when the entry has the player uuid but a different name. (#17)
+- Fixed not correctly processing different names (name change) when the entry has the player uuid but a different name. ([#17](https://github.com/NobelD/NobleWhitelist/issues/17))
 
 ## Main 1.2.12 - Ds 1.1.7 | 2025-05-20
 
@@ -57,20 +57,20 @@
 
 ### Changes:
 - Some code cleanup, specially to the join listener.
-- Now the plugins and the discord integration properly runs in spigot, it also now supports bukkit. (#16)
+- Now the plugins and the discord integration properly runs in spigot, it also now supports bukkit. ([#16](https://github.com/NobelD/NobleWhitelist/issues/16))
 - Now the plugin will not download the adventure library if it is running on a paper server.
 
 ## Main 1.2.11 - Ds 1.1.6 (No changes) | 2025-05-10
 
 ### Fixed:
-- Modified the checking to properly check empty values. (#10)
+- Modified the checking to properly check empty values. ([#15](https://github.com/NobelD/NobleWhitelist/issues/15))
 
 ## Main 1.2.10 - Ds 1.1.6 (No changes) | 2025-05-03
 
 This version is not secure since the way it handles empty values allowed players to join if not registered, update to 1.2.11 for the fix.
 
 ### Fixed:
-- Fixed checking not being able to properly compare some values and incorrectly checking empty values. (#10)
+- Fixed checking not being able to properly compare some values and incorrectly checking empty values. ([#15](https://github.com/NobelD/NobleWhitelist/issues/15))
 
 ## Main 1.2.9 - Ds 1.1.6 (No changes) | 2025-02-28
 
@@ -78,7 +78,7 @@ This version is not secure since the way it handles empty values allowed players
 - Added early value for the update checker when the plugin drops support for java 17.
 
 ### Fixed:
-- Fixed incorrect values being used by the uuid and permission when using optional checking. (#13)
+- Fixed incorrect values being used by the uuid and permission when using optional checking. ([#13](https://github.com/NobelD/NobleWhitelist/issues/13))
 
 ## Main 1.2.8 - Ds 1.1.6 | 2025-02-14
 
@@ -96,7 +96,7 @@ This versions ends support for 1.17 (which in most cases it was unable to run, r
 - Ds: Now some messages have better colors.
 - Ds: Added more options to the send command.
 - Ds: Modified link and unlink commands to be more precise.
-- Ds: Now the emojis can also be defined with colons as in discord (Ex: :cat2:)
+- Ds: Now the emojis can also be defined with colons as in discord (Ex: `:cat2:`)
 
 ### Fixed:
 - Fixed
@@ -126,7 +126,7 @@ This version was supposed to drop java 17, but it will have support until 2.0 re
 - Some code cleanup, specially for the update checker.
 
 ### Fixed:
-- Fixed sometimes checking options being skipped/not processed when checking if a player can join. (#8)
+- Fixed sometimes checking options being skipped/not processed when checking if a player can join. ([#8](https://github.com/NobelD/NobleWhitelist/issues/8))
 - Fixed incorrect config call when loading the fail action for the storage.
 - Fixed in some rare cases where if a banned player or if the server is full, it will allow players to join if they meet the requirements.
 
@@ -155,7 +155,7 @@ This version was supposed to drop java 17, but it will have support until 2.0 re
 - Now it will show how much time took the libraries to load. 
 
 ### Fixed:
-- Fixed config not being present when reloading a database. (#5)
+- Fixed config not being present when reloading a database. ([#5](https://github.com/NobelD/NobleWhitelist/issues/5))
 - Now exceptions will correctly be logged.
 - Ds: Fixed some placeholders.
 
@@ -253,7 +253,7 @@ This version was supposed to drop java 17, but it will have support until 2.0 re
 ## 1.0.3 | 2023-10-27
 
 ### Added:
-- Added settings to manage when a special char is found. (#1)
+- Added settings to manage when a special char is found. ([#1](https://github.com/NobelD/NobleWhitelist/issues/1))
 - Added settings to control the number of entries needed when using the list command to show reduced data.
 
 ### Changes:
