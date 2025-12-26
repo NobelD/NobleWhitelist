@@ -287,7 +287,7 @@ public class UpdateChecker {
         @Nullable
         @Contract("null -> null")
         public static Version create(String str) {
-            if (str == null || str.isEmpty() || str.isBlank()) {
+            if (str == null || str.isBlank()) {
                 return null;
             }
             String[] type = str.trim().split("-", 2);

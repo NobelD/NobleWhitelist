@@ -54,15 +54,15 @@ public class WhitelistEntry {
     }
     @Nullable
     public synchronized String getName() {
-        if (name == null || name.isBlank() || name.isEmpty()) name = null;
+        if (name == null || name.isBlank()) name = null;
         return name;
     }
     public synchronized Optional<String> getOptName() {
-        if (name == null || name.isBlank() || name.isEmpty()) name = null;
+        if (name == null || name.isBlank()) name = null;
         return Optional.ofNullable(name);
     }
     public synchronized void setName(@Nullable String name) {
-        if (name == null || name.isBlank() || name.isEmpty()) name = null;
+        if (name == null || name.isBlank()) name = null;
         this.name = name;
     }
     public synchronized long getDiscordID() {

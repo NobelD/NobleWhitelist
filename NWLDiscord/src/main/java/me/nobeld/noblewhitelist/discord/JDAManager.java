@@ -37,7 +37,7 @@ public class JDAManager {
     public JDAManager(NWLDsData data, ConfigData config) {
         this.data = data;
         token = config.configFile().getString("discord.bot-token");
-        if ((token == null || token.isBlank() || token.isEmpty())) {
+        if (token == null || token.isBlank()) {
             NobleWhitelist.adv().consoleAudience().sendMessage(AdventureUtil.formatAll("<prefix><red>There is no discord bot defined to use."));
             NobleWhitelist.adv().consoleAudience().sendMessage(AdventureUtil.formatAll("<prefix><red>Some features will be disabled."));
             return;
@@ -232,7 +232,7 @@ public class JDAManager {
         return getChannel(channel);
     }
     public TextChannel getChannel(String channel) {
-        if (channel == null || channel.isEmpty() || channel.isBlank() || channel.equalsIgnoreCase("none")) return null;
+        if (channel == null || channel.isBlank() || channel.equalsIgnoreCase("none")) return null;
         return getNWLChannel(channel);
     }
     public TextChannel getNWLChannel(String channel) {
@@ -240,7 +240,7 @@ public class JDAManager {
         for (String s : channels) {
             if (!s.equalsIgnoreCase(channel)) continue;
             String i = data.getConfigD().configFile().getString(ConfigData.channelsID.path() + "." + s);
-            if (i == null || i.isEmpty() || i.isBlank()) return null;
+            if (i == null || i.isBlank()) return null;
             try {
                 id = Long.parseLong(i.trim());
             } catch (NumberFormatException e) {

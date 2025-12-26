@@ -50,11 +50,16 @@ public class StorageLoader {
                     storageInst = new FileToml();
                 }
                 default -> {
+                    boolean remote = storageType.isRemoteDatabase();
+                    NobleWhitelist.adv().consoleAudience().sendMessage(AdventureUtil.formatAll(remote
+                            ? "<prefix><green>Loading connection to <yellow>remote database <green>for database access."
+                            : "<prefix><green>Loading <yellow>local <green>database."));
                     HikariConfig databaseConfig = new HikariConfig();
                     databaseConfig.setConnectionTimeout(config.get(ConfigData.StorageCF.storageTimeout) * 1_000L);
                     databaseConfig.setMaxLifetime(config.get(ConfigData.StorageCF.storageLifetime) * 1_000L);
                     if (storageType.isRemoteDatabase()) {
                         NobleWhitelist.adv().consoleAudience().sendMessage(AdventureUtil.formatAll("<prefix><green>Connecting to <yellow>remote database <green>for whitelist."));
+                    if (remote) {
                         databaseConfig.setUsername(config.get(ConfigData.StorageCF.storageUser));
                         databaseConfig.setPassword(config.get(ConfigData.StorageCF.storagePassword));
 
@@ -73,7 +78,6 @@ public class StorageLoader {
                                 databaseConfig
                         );
                     } else {
-                        NobleWhitelist.adv().consoleAudience().sendMessage(AdventureUtil.formatAll("<prefix><green>Loading <yellow>local <green>database."));
                         storageInst = new DatabaseSQLite(data.name(), getThreadFactory(data), databaseConfig);
                     }
                     ((DatabaseSQL) storageInst).createTables();
