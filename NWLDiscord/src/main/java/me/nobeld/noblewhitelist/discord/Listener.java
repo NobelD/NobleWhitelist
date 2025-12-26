@@ -7,7 +7,6 @@ import me.nobeld.noblewhitelist.discord.config.ConfigData;
 import me.nobeld.noblewhitelist.discord.config.MessageData;
 import me.nobeld.noblewhitelist.model.BPlayer;
 import me.nobeld.noblewhitelist.temp.SchedulerUtil;
-import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.player.PlayerJoinEvent;

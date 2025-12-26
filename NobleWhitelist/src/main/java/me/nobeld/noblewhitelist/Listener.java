@@ -47,19 +47,20 @@ public class Listener implements org.bukkit.event.Listener {
             return;
         }
         PairData<SuccessData, Boolean> pair = data.whitelistChecker().canPass(BPlayer.of(player));
-        Bukkit.getPluginManager().callEvent(new WhitelistPassEvent(
-                player, data.getConfigD().get(ConfigData.WhitelistCF.whitelistActive),
-                pair.getSecond(), pair.getFirst(), msg, event)
+        WhitelistPassEvent e = new WhitelistPassEvent(
+              player,
+              data.getConfigD().get(ConfigData.WhitelistCF.whitelistActive),
+              pair.getSecond(),
+              pair.getFirst(),
+              msg,
+              event
         );
-    }
-    @EventHandler
-    public void onWhitelist(WhitelistPassEvent event) {
-        if (event.isCancelled()) return;
-        if (!event.isWhitelistEnabled() || event.canPass()) {
-            event.getJoinEvent().allow();
-            return;
+        if (!e.callEvent()) return;
+        if (!e.isWhitelistEnabled() || e.canPass()) {
+            e.getJoinEvent().allow();
+        } else {
+            disallowJoin(e.getJoinEvent(), e.getMessage());
         }
-        disallowJoin(event.getJoinEvent(), event.getMessage());
     }
     @SuppressWarnings("deprecation")
     private void disallowJoin(PlayerLoginEvent event, Component msg) {

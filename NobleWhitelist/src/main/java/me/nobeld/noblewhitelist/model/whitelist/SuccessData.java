@@ -4,9 +4,12 @@ import me.nobeld.noblewhitelist.model.base.PlayerWrapper;
 import me.nobeld.noblewhitelist.model.checking.CheckingOption;
 import org.jetbrains.annotations.Nullable;
 
-public record SuccessData(PlayerWrapper player, @Nullable Boolean name, @Nullable Boolean uuid, boolean perm) {
+public record SuccessData(PlayerWrapper player, @Nullable Boolean name, @Nullable Boolean uuid, boolean perm, @Nullable Boolean disabled) {
     public boolean hasAny() {
         return (name != null && name) || (uuid != null && uuid) || perm;
+    }
+    public boolean matchAll() {
+        return hasAll() && isEnabled();
     }
     public boolean hasAll() {
         return (name != null && name) && (uuid != null && uuid) && perm;
@@ -54,8 +57,33 @@ public record SuccessData(PlayerWrapper player, @Nullable Boolean name, @Nullabl
     public boolean hasNoEmpty() {
         return name != null && uuid != null;
     }
+    public boolean isEnabled() {
+        return disabled != null && !disabled;
+    }
+    public boolean isMaybeEnabled() {
+        return disabled == null || !disabled;
+    }
 
     /**
+     * Checks the values and parses the check options, then determines if this data is allowed to join.
+     *
+     * @param name the check for the name
+     * @param uuid the check for the uuid
+     * @param perm the check for the perm
+     * @return case 1 - one or more options are required, so their value should exist, otherwise returns false.<br>
+     * case 2 - one or more options are optional, so at least one of these should exist, otherwise returns false.<br>
+     * case 3 - one or more options that are disabled will not be considered for checking.<br>
+     * case 4 - if all the options are disabled always will return true.
+     */
+    public boolean forValues(CheckingOption name, CheckingOption uuid, CheckingOption perm) {
+        if (!isEnabled()) {
+            return false;
+        }
+        return forCheck(name, uuid, perm);
+    }
+
+    /**
+     * Parses the check options and determines if this data is allowed to join.
      *
      * @param name the check for the name
      * @param uuid the check for the uuid
@@ -132,9 +160,9 @@ public record SuccessData(PlayerWrapper player, @Nullable Boolean name, @Nullabl
         return SuccessEnum.NONE;
     }
     public static SuccessData allFalse(PlayerWrapper player) {
-        return new SuccessData(player, false, false, false);
+        return new SuccessData(player, false, false, false, null);
     }
     public static SuccessData allEmpty(PlayerWrapper player) {
-        return new SuccessData(player, null, null, false);
+        return new SuccessData(player, null, null, false, null);
     }
 }

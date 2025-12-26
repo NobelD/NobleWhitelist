@@ -55,6 +55,7 @@ public class WhitelistChecker {
     public SuccessData createSuccess(@Nullable WhitelistEntry entry, @NotNull PlayerWrapper player) {
         Boolean name = null;
         Boolean uuid = null;
+        Boolean disabled = null;
         if (entry != null) {
             if (entry.getOptName().isPresent()) {
                 name = entry.getOptName().get().equalsIgnoreCase(player.getName());
@@ -62,10 +63,11 @@ public class WhitelistChecker {
             if (entry.getOptUUID().isPresent()) {
                 uuid = entry.getOptUUID().get().equals(player.getUUID());
             }
+            disabled = !entry.isWhitelisted();
         }
         boolean perm = permissionCheck(player);
 
-        return new SuccessData(player, name, uuid, perm);
+        return new SuccessData(player, name, uuid, perm, disabled);
     }
     /**
      * Checks and gives information about a player
@@ -195,7 +197,7 @@ public class WhitelistChecker {
         CheckingOption nameCheck = this.data.getConfigD().checkName();
         boolean shouldSkip = enforce && suc.matchUUID() && (suc.name() == null || !suc.name());
 
-        return PairData.of(suc, suc.forCheck(
+        return PairData.of(suc, suc.forValues(
                 shouldSkip && !nameCheck.isRequired() ? CheckingOption.DISABLED : nameCheck,
                 this.data.getConfigD().checkUUID(),
                 this.data.getConfigD().checkPerm()
