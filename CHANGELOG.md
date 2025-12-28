@@ -1,5 +1,10 @@
 # Changelog
 
+## Main 1.2.19 - Ds 1.1.9 (No Changes) | 2025-12-28
+
+### Fixed:
+- Fixed registering async tab complete even if native brigadier is present. ([#21](https://github.com/NobelD/NobleWhitelist/issues/21))
+
 ## Main 1.2.18 - Ds 1.1.9 | 2025-12-26
 
 ### Added:
