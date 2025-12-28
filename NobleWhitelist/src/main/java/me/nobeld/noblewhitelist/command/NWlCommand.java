@@ -56,18 +56,13 @@ public class NWlCommand {
             manager = LazyBukkitManager.createNative(plugin, ExecutionCoordinator.simpleCoordinator());
         }
         if (paper != null) {
-            try {
-                paper.registerBrigadier();
-            } catch (Throwable e) {
-                String re;
-                if (paper.hasCapability(CloudBukkitCapabilities.NATIVE_BRIGADIER)) {
-                    re = "Cannot load the native brigadier even when is allowed.";
-                } else {
-                    re = "Cannot load the brigadier manager.";
+            if (paper.hasCapability(CloudBukkitCapabilities.NATIVE_BRIGADIER)) {
+                try {
+                    paper.registerBrigadier();
+                } catch (Throwable e) {
+                    throw new RuntimeException("Cannot load the native brigadier even when is allowed.", e);
                 }
-                throw new RuntimeException(re, e);
-            }
-            if (paper.hasCapability(CloudBukkitCapabilities.ASYNCHRONOUS_COMPLETION)) {
+            } else if (paper.hasCapability(CloudBukkitCapabilities.ASYNCHRONOUS_COMPLETION)) {
                 paper.registerAsynchronousCompletions();
             }
         }
