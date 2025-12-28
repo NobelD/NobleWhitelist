@@ -29,6 +29,8 @@
       "spigot": "1.1.9",
       "spigot-j17": "1.1.9",
       "spigot-mc17": "1.1.5"
-    }
+    },
+    "critical": [
+    ]
   }
 }
