@@ -6,6 +6,8 @@ import com.google.gson.JsonParser;
 import me.nobeld.noblewhitelist.NobleWhitelist;
 import me.nobeld.noblewhitelist.model.base.BaseVersioning;
 import net.kyori.adventure.audience.Audience;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.JoinConfiguration;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -154,45 +156,48 @@ public class UpdateChecker {
     public boolean sendStatus(Audience audience, String prefix, boolean softSkip, boolean cooldown) {
         UpdateStatus status = githubCheck(cooldown);
 
+        List<Component> messages = new ArrayList<>();
         if (isCritical) {
-            audience.sendMessage(AdventureUtil.formatAll(prefix + "<bold><#FF2414>\\<!> <#FF6176>Your version was marked as critical, you may want to update to a safer version asap!</bold>"));
-            audience.sendMessage(AdventureUtil.formatAll(prefix + "<#F1B65C>There is a new update for <gold>" + name));
-            audience.sendMessage(AdventureUtil.formatAll(prefix + "<#F1B65C>Your version: <#FF8B4D>" + version + " <yellow>| <#F1B65C>Latest: <#6FEF22>" + latest));
-            audience.sendMessage(AdventureUtil.formatAll(prefix + "<#F1B65C>Download it at: <#75CDFF>" + downloadUrl));
+            messages.add(AdventureUtil.formatAll(prefix + "<bold><#FF2414>\\<!> <#FF6176>Your version was marked as critical, you may want to update to a safer version asap!</bold>"));
+            messages.add(AdventureUtil.formatAll(prefix + "<#F1B65C>There is a new update for <gold>" + name));
+            messages.add(AdventureUtil.formatAll(prefix + "<#F1B65C>Your version: <#FF8B4D>" + version + " <yellow>| <#F1B65C>Latest: <#6FEF22>" + latest));
+            messages.add(AdventureUtil.formatAll(prefix + "<#F1B65C>Download it at: <#75CDFF>" + downloadUrl));
+            audience.sendMessage(Component.join(JoinConfiguration.newlines(), messages));
         } else if (status.shouldPrint(softSkip)) {
             String version = this.version.asString();
             String latest = this.latest.asString();
             switch (status) {
                 case AVAILABLE_EXTRA -> {
                     String latestExtra = Objects.requireNonNull(this.latestExtra, "invalid").asString();
-                    audience.sendMessage(AdventureUtil.formatAll(prefix + "<#F1B65C>There is a new update for <gold>" + name));
-                    audience.sendMessage(AdventureUtil.formatAll(prefix + "<#F1B65C>Your version: <#FF8B4D>" + version + " <yellow>| <#F1B65C>Latest: <#6FEF22>" + latestExtra));
-                    audience.sendMessage(AdventureUtil.formatAll(prefix + "<#F1B65C>It also seems it is the latest available for you server, check FAQ for more info!"));
-                    audience.sendMessage(AdventureUtil.formatAll(prefix + "<#F1B65C>Download it at: <#75CDFF>" + downloadUrl));
+                    messages.add(AdventureUtil.formatAll(prefix + "<#F1B65C>There is a new update for <gold>" + name));
+                    messages.add(AdventureUtil.formatAll(prefix + "<#F1B65C>Your version: <#FF8B4D>" + version + " <yellow>| <#F1B65C>Latest: <#6FEF22>" + latestExtra));
+                    messages.add(AdventureUtil.formatAll(prefix + "<#F1B65C>It also seems it is the latest available for you server, check FAQ for more info!"));
+                    messages.add(AdventureUtil.formatAll(prefix + "<#F1B65C>Download it at: <#75CDFF>" + downloadUrl));
                 }
                 case SAME_EXTRA -> {
                     String latestExtra = Objects.requireNonNull(this.latestExtra, "invalid").asString();
-                    audience.sendMessage(AdventureUtil.formatAll(prefix + "<#F1B65C>It seems there is a new version but is not available for your server. <gold>(<#FF8B4D>" + latestExtra + " - <#6FEF22>" + latest + "<gold>)"));
-                    audience.sendMessage(AdventureUtil.formatAll(prefix + "<#F1B65C>Nothing to worry but you may be missing some new features, check FAQ for more info!"));
-                    audience.sendMessage(AdventureUtil.formatAll(prefix + "<#F1B65C>Wiki link: <#75CDFF>" + getUsefulLinks().wiki));
+                    messages.add(AdventureUtil.formatAll(prefix + "<#F1B65C>It seems there is a new version but is not available for your server. <gold>(<#FF8B4D>" + latestExtra + " - <#6FEF22>" + latest + "<gold>)"));
+                    messages.add(AdventureUtil.formatAll(prefix + "<#F1B65C>Nothing to worry but you may be missing some new features, check FAQ for more info!"));
+                    messages.add(AdventureUtil.formatAll(prefix + "<#F1B65C>Wiki link: <#75CDFF>" + getUsefulLinks().wiki));
                 }
                 case AVAILABLE_RELEASE -> {
-                    audience.sendMessage(AdventureUtil.formatAll(prefix + "<#F1B65C>There is a new update for <gold>" + name + "<#F1B65C>"));
-                    audience.sendMessage(AdventureUtil.formatAll(prefix + "<#F1B65C>You are using an experimental version, consider to update to the stable version!"));
-                    audience.sendMessage(AdventureUtil.formatAll(prefix + "<#F1B65C>Your version: <#FF8B4D>" + version + " <yellow>| <#F1B65C>Latest: <#6FEF22>" + latest));
-                    audience.sendMessage(AdventureUtil.formatAll(prefix + "<#F1B65C>Download it at: <#75CDFF>" + downloadUrl));
+                    messages.add(AdventureUtil.formatAll(prefix + "<#F1B65C>There is a new update for <gold>" + name + "<#F1B65C>"));
+                    messages.add(AdventureUtil.formatAll(prefix + "<#F1B65C>You are using an experimental version, consider to update to the stable version!"));
+                    messages.add(AdventureUtil.formatAll(prefix + "<#F1B65C>Your version: <#FF8B4D>" + version + " <yellow>| <#F1B65C>Latest: <#6FEF22>" + latest));
+                    messages.add(AdventureUtil.formatAll(prefix + "<#F1B65C>Download it at: <#75CDFF>" + downloadUrl));
                 }
                 case AVAILABLE_OTHER -> {
-                    audience.sendMessage(AdventureUtil.formatAll(prefix + "<#F1B65C>It seems that you are not using the latest version of <gold>" + name));
-                    audience.sendMessage(AdventureUtil.formatAll(prefix + "<#F1B65C>Your version: <#FF8B4D>" + version + " <yellow>| <#F1B65C>Latest: <#6FEF22>" + latest));
-                    audience.sendMessage(AdventureUtil.formatAll(prefix + "<#F1B65C>Download it at: <#75CDFF>" + downloadUrl));
+                    messages.add(AdventureUtil.formatAll(prefix + "<#F1B65C>It seems that you are not using the latest version of <gold>" + name));
+                    messages.add(AdventureUtil.formatAll(prefix + "<#F1B65C>Your version: <#FF8B4D>" + version + " <yellow>| <#F1B65C>Latest: <#6FEF22>" + latest));
+                    messages.add(AdventureUtil.formatAll(prefix + "<#F1B65C>Download it at: <#75CDFF>" + downloadUrl));
                 }
                 default -> {
-                    audience.sendMessage(AdventureUtil.formatAll(prefix + "<#F1B65C>There is a new update for <gold>" + name));
-                    audience.sendMessage(AdventureUtil.formatAll(prefix + "<#F1B65C>Your version: <#FF8B4D>" + version + " <yellow>| <#F1B65C>Latest: <#6FEF22>" + latest));
-                    audience.sendMessage(AdventureUtil.formatAll(prefix + "<#F1B65C>Download it at: <#75CDFF>" + downloadUrl));
+                    messages.add(AdventureUtil.formatAll(prefix + "<#F1B65C>There is a new update for <gold>" + name));
+                    messages.add(AdventureUtil.formatAll(prefix + "<#F1B65C>Your version: <#FF8B4D>" + version + " <yellow>| <#F1B65C>Latest: <#6FEF22>" + latest));
+                    messages.add(AdventureUtil.formatAll(prefix + "<#F1B65C>Download it at: <#75CDFF>" + downloadUrl));
                 }
             }
+            audience.sendMessage(Component.join(JoinConfiguration.newlines(), messages));
         } else {
             return false;
         }
@@ -203,16 +208,18 @@ public class UpdateChecker {
     }
     public void sendSupport(Audience audience, String prefix) {
         getUsefulLinks();
-        audience.sendMessage(AdventureUtil.formatAll(prefix + "<#FF9CBB><bold>Useful links about the plugin:"));
-        audience.sendMessage(AdventureUtil.formatAll(prefix + "<#F1B65C>Repository: <#F07DF0>" + links.repository));
-        audience.sendMessage(AdventureUtil.formatAll(prefix + "<#F1B65C>Issues: <#F07DF0>" + links.issues));
-        audience.sendMessage(AdventureUtil.formatAll(prefix + "<#F1B65C>Wiki: <#F07DF0>" + links.wiki));
+        List<Component> messages = new ArrayList<>();
+        messages.add(AdventureUtil.formatAll(prefix + "<#FF9CBB><bold>Useful links about the plugin:"));
+        messages.add(AdventureUtil.formatAll(prefix + "<#F1B65C>Repository: <#F07DF0>" + links.repository));
+        messages.add(AdventureUtil.formatAll(prefix + "<#F1B65C>Issues: <#F07DF0>" + links.issues));
+        messages.add(AdventureUtil.formatAll(prefix + "<#F1B65C>Wiki: <#F07DF0>" + links.wiki));
         if (links.support != null && !links.support.equals(links.discord)) {
-            audience.sendMessage(AdventureUtil.formatAll(prefix + "<#F1B65C>Support: " + links.support));
+            messages.add(AdventureUtil.formatAll(prefix + "<#F1B65C>Support: <#E29EFF>" + links.support));
         }
         if (links.discord != null) {
-            audience.sendMessage(AdventureUtil.formatAll(prefix + "<#F1B65C>Discord Support Server: " + links.discord));
+            messages.add(AdventureUtil.formatAll(prefix + "<#F1B65C>Discord Support Server: <#E29EFF>" + links.discord));
         }
+        audience.sendMessage(Component.join(JoinConfiguration.newlines(), messages));
     }
     public String getName() {
         return name;
