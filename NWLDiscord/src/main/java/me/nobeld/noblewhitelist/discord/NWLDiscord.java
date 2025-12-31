@@ -6,6 +6,9 @@ import me.nobeld.noblewhitelist.config.FileManager;
 import me.nobeld.noblewhitelist.discord.config.ConfigData;
 import me.nobeld.noblewhitelist.discord.model.NWLDContainer;
 import me.nobeld.noblewhitelist.discord.model.NWLDsData;
+import me.nobeld.noblewhitelist.discord.temp.BukkitLoad;
+import me.nobeld.noblewhitelist.discord.temp.FoliaLoad;
+import me.nobeld.noblewhitelist.discord.temp.ServerLoadDelegator;
 import me.nobeld.noblewhitelist.model.PairData;
 import me.nobeld.noblewhitelist.model.base.NWLData;
 import me.nobeld.noblewhitelist.temp.SchedulerUtil;
@@ -29,6 +32,7 @@ public class NWLDiscord extends JavaPlugin implements NWLDsData {
     private MessageData message;
     private JDAManager jdaManager;
     private UpdateChecker checker;
+    private ServerLoadDelegator loadDelegator;
     @Override
     public void onEnable() {
         plugin = this;
@@ -42,7 +46,7 @@ public class NWLDiscord extends JavaPlugin implements NWLDsData {
         }
         NWLDContainer bc = NWLDContainer.builder(this).loadLibs(new BukkitLibraryManager(this), null)
                 .loadFiles(getDataFolder().getPath(), PairData.of("config.yml", FileManager.FileType.YAML), PairData.of("messages.yml", FileManager.FileType.YAML))
-                .load(() -> Bukkit.getServer().getPluginManager().registerEvents(new Listener(this), this))
+                .load(this::loadListener)
                 .loadJDA()
                 .loadUpdateChecker("NWLDiscord", "bukkit", ServerUtil.getVersion() > 17 ? Runtime.version().feature() >= 21 ? null : "spigot-j17" : "spigot-mc17")
                 .printMessage()
@@ -63,6 +67,15 @@ public class NWLDiscord extends JavaPlugin implements NWLDsData {
         jdaManager = bc.getJDAManager();
 
         jdaManager.enableCommands();
+    }
+    private void loadListener() {
+        Bukkit.getServer().getPluginManager().registerEvents(new Listener(this), this);
+        if (ServerUtil.hasFolia()) {
+            loadDelegator = new FoliaLoad();
+            Bukkit.getServer().getPluginManager().registerEvents((FoliaLoad) loadDelegator, this);
+        } else {
+            loadDelegator = new BukkitLoad();
+        }
     }
     @Override
     public void onDisable() {
@@ -113,7 +126,7 @@ public class NWLDiscord extends JavaPlugin implements NWLDsData {
     }
     @Override
     public void enableMsg(Runnable runnable) {
-        SchedulerUtil.asyncExecutor(this).execute(runnable);
+        loadDelegator.delegateAsync(this, runnable);
     }
     @Override
     public InputStream resourceStream(String name) {
