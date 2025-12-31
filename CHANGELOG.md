@@ -1,5 +1,16 @@
 # Changelog
 
+## Main 1.2.20 - Ds 1.1.10 | 2025-12-31
+
+### Changes:
+- Now the update checker sends their messages as a single message to avoid being mixed with other messages.
+- Exposed internal library manager as a workaround for the discord plugin. (sorry I didn't expect native paper to broke things!)
+
+### Fixed:
+- Ds: Fixed discord plugin not being able to load libraries.
+- Ds: Fixed discord plugin incorrectly scheduling their tasks on paper.
+
+
 ## Main 1.2.19 - Ds 1.1.9 (No Changes) | 2025-12-28
 
 ### Fixed:
