@@ -8,11 +8,11 @@
     "url": "https://modrinth.com/plugin/noble-whitelist",
     "id": "hBuYjABw",
     "latest": {
-      "core": "1.2.19",
-      "bukkit": "1.2.19",
+      "core": "1.2.20",
+      "bukkit": "1.2.20",
 
-      "spigot": "1.2.19",
-      "spigot-j17": "1.2.19",
+      "spigot": "1.2.20",
+      "spigot-j17": "1.2.20",
       "spigot-mc17": "1.2.7"
     },
     "critical": [
