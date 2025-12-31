@@ -65,8 +65,8 @@ public class NWLDContainer {
         protected Builder(NWLDsData data) {
             this.data = data;
         }
-        public Builder loadLibs(LibraryManager manager, @Nullable List<Library> additional) {
-            new LibsManager(manager, additional);
+        public Builder loadLibs(LibraryManager manager, @Nullable me.nobeld.noblewhitelist.util.LibsManager base, @Nullable List<Library> additional) {
+            new LibsManager(manager, base, additional);
             return this;
         }
         public Builder loadFiles(String path, PairData<String, FileManager.FileType> config, PairData<String, FileManager.FileType> message) {

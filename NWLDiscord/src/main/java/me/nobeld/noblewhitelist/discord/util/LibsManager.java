@@ -7,6 +7,7 @@ import com.alessiodp.libby.relocation.Relocation;
 import me.nobeld.noblewhitelist.discord.NWLDiscord;
 
 import javax.annotation.Nullable;
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -14,26 +15,26 @@ import java.util.logging.Level;
 
 public class LibsManager {
     private final LibraryManager manager;
-    public LibsManager(final LibraryManager manager, @Nullable List<Library> additional) {
+    public LibsManager(final LibraryManager manager, @Nullable me.nobeld.noblewhitelist.util.LibsManager base, @Nullable List<Library> additional) {
         this.manager = manager;
         manager.setLogLevel(LogLevel.WARN);
         manager.addMavenCentral();
 
-        NWLDiscord.log(Level.INFO, "Loading libraries, this could took a while...");
+        NWLDiscord.log(Level.INFO, "Loading libraries, this might take a little while...");
         long time = System.currentTimeMillis();
-        loadLibraries(additional);
+        loadLibraries(additional, base);
         NWLDiscord.log(Level.INFO, "Libraries loaded. (took " + (System.currentTimeMillis() - time) + "ms)");
     }
-    private Relocation reloc(String path) {
+    private static Relocation reloc(String path) {
         return new Relocation(path, "me{}nobeld{}noblewhitelist{}discord{}libs{}" + path);
     }
-    private Relocation nwlreloc(String path) {
+    private static Relocation nwlreloc(String path) {
         return new Relocation(path, "me{}nobeld{}noblewhitelist{}libs{}" + path);
     }
-    public void loadLibraries(@Nullable List<Library> additional) {
+    public void loadLibraries(@Nullable List<Library> additional, @Nullable me.nobeld.noblewhitelist.util.LibsManager base) {
         Set<Library> libraries = new HashSet<>();
-
-        libraries.add(Library.builder()
+        List<Library> extra = new ArrayList<>(5);
+        extra.add(Library.builder()
                 .groupId("org{}incendo")
                 .artifactId("cloud-jda5")
                 .version("1.0.0-beta.3")
@@ -49,28 +50,28 @@ public class LibsManager {
                 .relocate(reloc("org{}json"))
                 .build());
 
-        libraries.add(Library.builder()
+        extra.add(Library.builder()
                 .groupId("org{}incendo")
                 .artifactId("cloud-discord-common")
                 .version("1.0.0-beta.3")
                 .relocate(nwlreloc("org{}incendo"))
                 .build());
 
-        libraries.add(Library.builder()
+        extra.add(Library.builder()
                 .groupId("org{}incendo")
                 .artifactId("cloud-processors-requirements")
                 .version("1.0.0-rc.1")
                 .relocate(nwlreloc("org{}incendo"))
                 .build());
 
-        libraries.add(Library.builder()
+        extra.add(Library.builder()
                 .groupId("org{}incendo")
                 .artifactId("cloud-processors-common")
                 .version("1.0.0-rc.1")
                 .relocate(nwlreloc("org{}incendo"))
                 .build());
 
-        libraries.add(Library.builder()
+        extra.add(Library.builder()
                 .groupId("net.dv8tion")
                 .artifactId("JDA")
                 .version("5.3.0")
@@ -85,6 +86,11 @@ public class LibsManager {
                 .relocate(reloc("com{}vdurmont{}emoji"))
                 .relocate(reloc("org{}json"))
                 .build());
+        if (base == null) {
+            libraries.addAll(extra);
+        } else {
+            base.loadExtra(extra);
+        }
 
         libraries.add(Library.builder()
                 .groupId("com{}github{}minndevelopment")

@@ -1,6 +1,7 @@
 package me.nobeld.noblewhitelist.discord;
 
 import com.alessiodp.libby.BukkitLibraryManager;
+import com.alessiodp.libby.PaperLibraryManager;
 import me.nobeld.noblewhitelist.NobleWhitelist;
 import me.nobeld.noblewhitelist.config.FileManager;
 import me.nobeld.noblewhitelist.discord.config.ConfigData;
@@ -11,7 +12,7 @@ import me.nobeld.noblewhitelist.discord.temp.FoliaLoad;
 import me.nobeld.noblewhitelist.discord.temp.ServerLoadDelegator;
 import me.nobeld.noblewhitelist.model.PairData;
 import me.nobeld.noblewhitelist.model.base.NWLData;
-import me.nobeld.noblewhitelist.temp.SchedulerUtil;
+import me.nobeld.noblewhitelist.util.LibsManager;
 import me.nobeld.noblewhitelist.util.ServerUtil;
 import me.nobeld.noblewhitelist.util.SpigotMetrics;
 import me.nobeld.noblewhitelist.util.UpdateChecker;
@@ -44,7 +45,16 @@ public class NWLDiscord extends JavaPlugin implements NWLDsData {
             Bukkit.getPluginManager().disablePlugin(this);
             return;
         }
-        NWLDContainer bc = NWLDContainer.builder(this).loadLibs(new BukkitLibraryManager(this), null)
+        if (ServerUtil.isPaperPlugin((JavaPlugin) pl) != ServerUtil.isPaperPlugin(this)) {
+            this.getLogger().log(Level.SEVERE, "It seems the base plugin and this plugin does not match for the same software.");
+            this.getLogger().log(Level.SEVERE, "You may want to ensure the plugins are not corrupted or using an older version.");
+            Bukkit.getPluginManager().disablePlugin(this);
+            return;
+        }
+        boolean paper = ServerUtil.isPaperPlugin(this);
+        LibsManager baseLibrary = paper ? NobleWhitelist.getPlugin().getLibraryManager() : null;
+        NWLDContainer bc = NWLDContainer.builder(this)
+                .loadLibs(ServerUtil.isPaperPlugin(this) ? new PaperLibraryManager(this) : new BukkitLibraryManager(this), baseLibrary, null)
                 .loadFiles(getDataFolder().getPath(), PairData.of("config.yml", FileManager.FileType.YAML), PairData.of("messages.yml", FileManager.FileType.YAML))
                 .load(this::loadListener)
                 .loadJDA()

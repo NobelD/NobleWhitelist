@@ -39,6 +39,10 @@ dependencies {
     compileOnly(project(":NobleWhitelist"))
     compileOnly("io.papermc.paper", "paper-api", "1.20.4-R0.1-SNAPSHOT")
 
+    compileOnly("com.github.nobeld.libby", "libby-paper", "2.0.0-beta.1") {
+        exclude(module=("spigot-api"))
+        exclude(module=("libby-core"))
+    }
     compileOnly("com.github.nobeld.libby", "libby-bukkit", "2.0.0-beta.1") {
         exclude(module=("spigot-api"))
         exclude(module=("libby-core"))
