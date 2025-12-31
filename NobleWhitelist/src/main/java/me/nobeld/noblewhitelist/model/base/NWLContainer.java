@@ -28,7 +28,8 @@ public class NWLContainer {
     private final StorageType type;
     private final WhitelistData wlData;
     private final WhitelistChecker wlChecker;
-    protected NWLContainer(ConfigData config, MessageData message, UpdateChecker update, DataGetter storage, StorageType type, WhitelistData wlData, WhitelistChecker wlChecker) {
+    private final LibsManager libsManager;
+    protected NWLContainer(ConfigData config, MessageData message, UpdateChecker update, DataGetter storage, StorageType type, WhitelistData wlData, WhitelistChecker wlChecker, LibsManager libsManager) {
         this.config = config;
         this.message = message;
         this.update = update;
@@ -36,6 +37,7 @@ public class NWLContainer {
         this.type = type;
         this.wlData = wlData;
         this.wlChecker = wlChecker;
+        this.libsManager = libsManager;
     }
     public static Builder builder(NWLData data) {
         return new Builder(data);
@@ -68,6 +70,9 @@ public class NWLContainer {
     public WhitelistChecker getWlChecker() {
         return wlChecker;
     }
+    public LibsManager getLibsmanager() {
+        return libsManager;
+    }
 
     /**
      * Order of the builder, internal use only.
@@ -89,11 +94,12 @@ public class NWLContainer {
         private StorageType type = StorageType.NONE;
         private WhitelistData wlData = null;
         private WhitelistChecker wlChecker = null;
+        private LibsManager libsManager = null;
         protected Builder(NWLData data) {
             this.data = data;
         }
         public Builder loadLibs(LibraryManager manager, @Nullable List<Library> additional) {
-            new LibsManager(manager, additional);
+            libsManager = new LibsManager(manager, additional);
             return this;
         }
         public Builder loadFiles(String path, PairData<String, FileManager.FileType> config) {
@@ -137,7 +143,7 @@ public class NWLContainer {
             return this;
         }
         public NWLContainer build() {
-            return new NWLContainer(config, message, update, storage, type, wlData, wlChecker);
+            return new NWLContainer(config, message, update, storage, type, wlData, wlChecker, libsManager);
         }
     }
 }

@@ -20,7 +20,7 @@ public class LibsManager {
         manager.addMavenCentral();
         manager.addRepository("https://repo.papermc.io/repository/maven-public/");
 
-        NobleWhitelist.log(Level.INFO, "Loading libraries, this could took a while...");
+        NobleWhitelist.log(Level.INFO, "Loading libraries, this might take a little while...");
         long time = System.currentTimeMillis();
         loadLibraries(additional);
         NobleWhitelist.log(Level.INFO, "Libraries loaded. (took " + (System.currentTimeMillis() - time) + "ms)");
@@ -178,5 +178,9 @@ public class LibsManager {
         if (additional != null && !additional.isEmpty()) libraries.addAll(additional);
 
         libraries.forEach(manager::loadLibrary);
+    }
+
+    public void loadExtra(List<Library> extra) {
+        extra.forEach(manager::loadLibrary);
     }
 }

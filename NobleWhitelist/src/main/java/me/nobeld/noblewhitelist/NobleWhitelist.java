@@ -42,6 +42,7 @@ public class NobleWhitelist extends JavaPlugin implements NWLData {
     private StorageType storageType = StorageType.NONE;
     private ConfigData configData;
     private MessageData messageData;
+    private LibsManager libraryManager;
     private static BukkitAdventureLike adventure = null;
     private boolean blocked = false;
     @Override
@@ -90,6 +91,7 @@ public class NobleWhitelist extends JavaPlugin implements NWLData {
         this.storageType = bc.getType();
         this.whitelistData = bc.getWlData();
         this.whitelistChecker = bc.getWlChecker();
+        this.libraryManager = bc.getLibsmanager();
     }
     private void loadExtra() {
         this.api = new NobleWhitelistApi(this);
@@ -149,6 +151,12 @@ public class NobleWhitelist extends JavaPlugin implements NWLData {
     @Override
     public DataGetter getStorage() {
         return this.storage;
+    }
+    public LibsManager getLibraryManager() {
+        if (!ServerUtil.isPaperPlugin(this)) {
+            throw new IllegalStateException("You may only use this library manager on paper");
+        }
+        return libraryManager;
     }
     @Override
     public BukkitAdventureLike getAdventure() {
