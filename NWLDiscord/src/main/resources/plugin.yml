@@ -7,6 +7,7 @@ website: https://github.com/NobelD/NobleWhitelist
 api-version: '$apiVersion'
 prefix: NWLDiscord
 depend: [NobleWhitelist]
+folia-supported: true
 permissions:
   noblewhitelist.discord:
     description: "Permission to manage the plugin"

@@ -7,6 +7,7 @@ website: https://github.com/NobelD/NobleWhitelist
 api-version: '$apiVersion'
 prefix: NobleWhitelist
 load: STARTUP
+folia-supported: true
 permissions:
   noblewhitelist.admin:
     description: "Permission to use commands"
