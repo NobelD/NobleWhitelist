@@ -10,7 +10,6 @@
 - Ds: Fixed discord plugin not being able to load libraries.
 - Ds: Fixed discord plugin incorrectly scheduling their tasks on paper.
 
-
 ## Main 1.2.19 - Ds 1.1.9 (No Changes) | 2025-12-28
 
 ### Fixed:
