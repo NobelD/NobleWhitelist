@@ -61,11 +61,19 @@ public class NobleWhitelist extends JavaPlugin implements NWLData {
                 .loadAdventure()
                 .loadUpdateChecker("NobleWhitelist", "bukkit", ServerUtil.getVersion() > 17 ? Runtime.version().feature() >= 21 ? null : "spigot-j17" : "spigot-mc17")
                 .load(() -> {
-                    if (Bukkit.getPluginManager().getPlugin("PlaceholderAPI") != null) {
-                        new NWLPAPIExpansion(this).register();
+                    try {
+                        if (Bukkit.getPluginManager().getPlugin("PlaceholderAPI") != null) {
+                            new NWLPAPIExpansion(this).register();
+                        }
+                    } catch (Throwable e) {
+                        logger().log(Level.SEVERE, "An error occurred while trying to load PlaceholderAPI integration!", e);
                     }
-                    if (Bukkit.getPluginManager().getPlugin("MiniPlaceholders") != null) {
-                        new NWLMiniExpansion(this);
+                    try {
+                        if (Bukkit.getPluginManager().getPlugin("MiniPlaceholders") != null && NWLMiniExpansion.isCompatible()) {
+                            NWLMiniExpansion.register(this);
+                        }
+                    } catch (Throwable e) {
+                        logger().log(Level.SEVERE, "An error occurred while trying to load MiniPlaceholders integration!", e);
                     }
                 })
                 .loadStorage()

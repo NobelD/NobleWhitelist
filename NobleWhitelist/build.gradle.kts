@@ -61,7 +61,7 @@ dependencies {
     compileOnly("me.clip", "placeholderapi", "2.11.6") {
         isTransitive = false
     }
-    compileOnly("io.github.miniplaceholders", "miniplaceholders-api", "2.2.3") {
+    compileOnly("io.github.miniplaceholders", "miniplaceholders-api", "2.2.3") { // TODO update once java 21
         isTransitive = false
     }
 

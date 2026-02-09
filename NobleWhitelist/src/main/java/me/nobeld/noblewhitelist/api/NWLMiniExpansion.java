@@ -1,6 +1,7 @@
 package me.nobeld.noblewhitelist.api;
 
 import io.github.miniplaceholders.api.Expansion;
+import io.github.miniplaceholders.api.MiniPlaceholders;
 import me.nobeld.noblewhitelist.NobleWhitelist;
 import me.nobeld.noblewhitelist.model.BPlayer;
 import me.nobeld.noblewhitelist.util.ServerUtil;
@@ -11,7 +12,17 @@ import org.bukkit.entity.Player;
 import java.util.Objects;
 
 public class NWLMiniExpansion {
-    public NWLMiniExpansion(NobleWhitelist plugin) {
+    public static boolean isCompatible() { // TODO, currently behaviour is not enable if version 3.0 or greater
+        try {
+            MiniPlaceholders.class.getMethod("getPlatform");
+            return true;
+        } catch (NoSuchMethodException ignored) {
+            // ignore if new version
+        }
+        return false;
+    }
+
+    public static void register(NobleWhitelist plugin) {
         Expansion expansion = Expansion.builder("nwhitelist")
                 .globalPlaceholder("whitelist_active", (q, c) -> Tag.selfClosingInserting(Component.text(ServerUtil.toS(plugin.getApi().whitelist()))))
                 .audiencePlaceholder("is_whitelisted", (a, q, c) -> {
