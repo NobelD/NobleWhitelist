@@ -1,5 +1,10 @@
 # Changelog
 
+## Main 1.2.21 - Ds 1.1.10 (No Changes) | 2026-02-09
+
+### Fixed:
+- The placeholders integrations now will silently fail if they cannot load. (This is a temporary workaround since mini placeholders api from version 3.0 and greater requires java 21 and this plugin uses java 17)
+
 ## Main 1.2.20 - Ds 1.1.10 | 2025-12-31
 
 ### Changes:
