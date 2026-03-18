@@ -21,7 +21,7 @@ public class MessageData {
     // Config
     @Nullable
     private static String parseString(@Nullable String string) {
-        return string == null || string.isBlank() || string.isEmpty() ? null : string;
+        return string == null || string.isBlank() ? null : string;
     }
     public Component warningNameConsole(String name) {
         return AdventureUtil.formatName(parseString(data.getConfigD().get(ConfigData.MessagesCF.nameChangeConsole)), name);
@@ -37,7 +37,7 @@ public class MessageData {
         return AdventureUtil.formatAll("<prefix><#FBC36F>The server is empty and no player was " + (type ? "added" : "removed") + ".");
     }
     public static Component serverActually(boolean type) {
-        return AdventureUtil.formatAll("<prefix><#FBC36F>All online players are actually " + (type ? "added to" : "removed from") + " the whitelist.");
+        return AdventureUtil.formatAll("<prefix><#FBC36F>All the online players are " + (type ? "already" : "not") + " present in the whitelist.");
     }
     public static Component serverAmount(boolean type, int total) {
         return AdventureUtil.formatAll("<prefix><#FBC36F>Successfully " + (type ? "added" : "removed") + " <#8CDEFF>" + total + " <#FBC36F>players.");
@@ -84,13 +84,13 @@ public class MessageData {
         return AdventureUtil.formatAll("<prefix><#FF9CBB><bold>NWhitelist status:");
     }
     public static Component statusVersion(String version) {
-        return AdventureUtil.formatAll("<prefix><#FBC36F>Version: <#F07DF0>" + version);
+        return AdventureUtil.formatAll("<prefix><#FBC36F>Plugin Version: <#F07DF0>" + version);
     }
     public static Component statusWhitelistSize(long size) {
         return AdventureUtil.formatAll("<prefix><#FBC36F>Whitelist size: <#F07DF0>" + size);
     }
     public static Component statusWhitelistActive(boolean fase) {
-        return AdventureUtil.formatAll("<prefix><#FBC36F>Whitelist: <#8CDEFF>" + (fase ? "<#FF6040>on" : "<#969FA5>off"));
+        return AdventureUtil.formatAll("<prefix><#FBC36F>Whitelist state: <#8CDEFF>" + (fase ? "<#FF6040>on" : "<#969FA5>off"));
     }
     public static Component statusNameCheck(CheckingOption check) {
         return AdventureUtil.formatAll("<prefix><#FBC36F>Name Check: <#F07DF0>" + check.msg());
@@ -99,7 +99,7 @@ public class MessageData {
         return AdventureUtil.formatAll("<prefix><#FBC36F>UUID Check: <#F07DF0>" + check.msg());
     }
     public static Component statusPermCheck(CheckingOption check) {
-        return AdventureUtil.formatAll("<prefix><#FBC36F>Perm Check: <#F07DF0>" + check.msg());
+        return AdventureUtil.formatAll("<prefix><#FBC36F>Permission Check: <#F07DF0>" + check.msg());
     }
     public static Component statusStorageType(StorageType storage) {
         return AdventureUtil.formatAll("<prefix><#FBC36F>Storage Type: <#F07DF0>" + storage.name());
@@ -112,58 +112,58 @@ public class MessageData {
         return AdventureUtil.formatAll("<prefix><#FBC36F>The provided player was added to the whitelist.");
     }
     public static Component playerSelfAdded() {
-        return AdventureUtil.formatAll("<prefix><#FBC36F>You was added to the whitelist.");
+        return AdventureUtil.formatAll("<prefix><#FBC36F>You were added to the whitelist.");
     }
     public static Component playerAdded(String name) {
-        return AdventureUtil.formatAll("<prefix><#FBC36F>The player <#99EAFE>" + name + " <#FBC36F>was added to the whitelist.");
+        return AdventureUtil.formatAll("<prefix><#FBC36F>Player <#99EAFE>" + name + " <#FBC36F>was added to the whitelist.");
     }
     public static Component playerAdded(UUID uuid) {
-        return AdventureUtil.formatAll("<prefix><#FBC36F>The uuid <#99EAFE>" + uuid.toString() + " <#FBC36F>was added to the whitelist.");
+        return AdventureUtil.formatAll("<prefix><#FBC36F>Uuid <#99EAFE>" + uuid.toString() + " <#FBC36F>was added to the whitelist.");
     }
     public static Component playerSelfRemoved() {
-        return AdventureUtil.formatAll("<prefix><#FBC36F>You has been removed from the whitelist.");
+        return AdventureUtil.formatAll("<prefix><#FBC36F>You have been removed from the whitelist.");
     }
     public static Component playerRemoved(String name) {
-        return AdventureUtil.formatAll("<prefix><#FBC36F>The player <#99EAFE>" + name + " <#FBC36F>was removed from the whitelist.");
+        return AdventureUtil.formatAll("<prefix><#FBC36F>Player <#99EAFE>" + name + " <#FBC36F>was removed from the whitelist.");
     }
     public static Component playerRemoved(UUID uuid) {
-        return AdventureUtil.formatAll("<prefix><#FBC36F>The uuid <#99EAFE>" + uuid.toString() + " <#FBC36F>was removed from the whitelist.");
+        return AdventureUtil.formatAll("<prefix><#FBC36F>Uuid <#99EAFE>" + uuid.toString() + " <#FBC36F>was removed from the whitelist.");
     }
     public static Component playerAlready(String name) {
-        return AdventureUtil.formatAll("<prefix><#FBC36F>The player <#99EAFE>" + name + " <#FBC36F>is already in the whitelist.");
+        return AdventureUtil.formatAll("<prefix><#FBC36F>Player <#99EAFE>" + name + " <#FBC36F>is already present in the whitelist.");
     }
     public static Component playerAlready() {
-        return AdventureUtil.formatAll("<prefix><#FBC36F>Any of the data from this player is already registered.");
+        return AdventureUtil.formatAll("<prefix><#FBC36F>Cannot register the player since some inputted data is already present!");
     }
     public static Component playerSelfAlready() {
-        return AdventureUtil.formatAll("<prefix><#FBC36F>You are already added to the whitelist.");
+        return AdventureUtil.formatAll("<prefix><#FBC36F>You are already present in the whitelist!");
     }
     public static Component playerAlready(UUID uuid) {
-        return AdventureUtil.formatAll("<prefix><#FBC36F>The uuid <#99EAFE>" + uuid.toString() + " <#FBC36F>is already in the whitelist.");
+        return AdventureUtil.formatAll("<prefix><#FBC36F>Uuid <#99EAFE>" + uuid.toString() + " <#FBC36F>is already present in the whitelist.");
     }
     public static Component playerSelfNotFound() {
-        return AdventureUtil.formatAll("<prefix><#FBC36F>You are not in the whitelist.");
+        return AdventureUtil.formatAll("<prefix><#FBC36F>You are not present in the whitelist.");
     }
     public static Component playerNotFound(String name) {
-        return AdventureUtil.formatAll("<prefix><#FBC36F>The player <#99EAFE>" + name + " <#FBC36F>is not in the whitelist.");
+        return AdventureUtil.formatAll("<prefix><#FBC36F>Player <#99EAFE>" + name + " <#FBC36F>is not present in the whitelist.");
     }
     public static Component playerNotFound(UUID uuid) {
-        return AdventureUtil.formatAll("<prefix><#FBC36F>The player <#99EAFE>" + uuid.toString() + " <#FBC36F>is not in the whitelist.");
+        return AdventureUtil.formatAll("<prefix><#FBC36F>Player <#99EAFE>" + uuid.toString() + " <#FBC36F>is not present in the whitelist.");
     }
     public static Component playerNotFound(long id) {
         return AdventureUtil.formatAll("<prefix><#FBC36F>There is no player linked to this user id: <#99EAFE>" + id + " <#FBC36F>.");
     }
     public static Component playerToggledAlready(boolean canjoin) {
-        return AdventureUtil.formatAll("<prefix><#FBC36F>Nothing changed, the player join is already: <#F07DF0>" + canjoin);
+        return AdventureUtil.formatAll("<prefix><#FBC36F>Nothing changed, the player join status is already <#F07DF0>" + canjoin);
     }
     public static Component playerToggled(String name, boolean canjoin) {
-        return AdventureUtil.formatAll("<prefix><#FBC36F>The join for the player <#99EAFE>" + name + " <#FBC36F>was changed to: <#F07DF0>" + canjoin);
+        return AdventureUtil.formatAll("<prefix><#FBC36F>The join status for the player <#99EAFE>" + name + " <#FBC36F>was changed to: <#F07DF0>" + canjoin);
     }
     public static Component playerToggled(UUID uuid, boolean canjoin) {
-        return AdventureUtil.formatAll("<prefix><#FBC36F>The join for the player <#99EAFE>" + uuid.toString() + " <#FBC36F>was changed to: <#F07DF0>" + canjoin);
+        return AdventureUtil.formatAll("<prefix><#FBC36F>The join status for the player <#99EAFE>" + uuid.toString() + " <#FBC36F>was changed to: <#F07DF0>" + canjoin);
     }
     public static Component playerToggled(long id, boolean canjoin) {
-        return AdventureUtil.formatAll("<prefix><#FBC36F>The join for the user with id <#99EAFE>" + id + " <#FBC36F> was changed to: <#F07DF0>" + canjoin);
+        return AdventureUtil.formatAll("<prefix><#FBC36F>The join status for the user with id <#99EAFE>" + id + " <#FBC36F> was changed to: <#F07DF0>" + canjoin);
     }
     public static Component whitelistAlready(boolean status) {
         return AdventureUtil.formatAll("<prefix><#FBC36F>The whitelist is already <#99EAFE>" + (status ? "on" : "off") + ".");
@@ -175,7 +175,7 @@ public class MessageData {
         return AdventureUtil.formatAll("<prefix><#FBC36F>Use <#FF6040>/nwl confirm <#FBC36F>to confirm this action.");
     }
     public static Component confirmationNoMore() {
-        return AdventureUtil.formatAll("<prefix><#8CDEFF>You don't have any pending confirmation.");
+        return AdventureUtil.formatAll("<prefix><#8CDEFF>You don't have any pending confirmations.");
     }
     public static Component playerAbout(WhitelistEntry data) {
         if (data.isSaved()) return AdventureUtil.formatAll("<prefix><#FF9CBB>Result data found: <#B490F0>- <#99EAFE>Index<#65A8FF>: <#F07DF0>" + data.getRowId());
@@ -202,12 +202,16 @@ public class MessageData {
         return AdventureUtil.formatAll("<prefix><#FBC36F>Can join: " + color + data.isWhitelisted());
     }
     public static Component permissionInf1(NWLData data) {
-        return AdventureUtil.formatAll("<prefix><#FBC36F>Only OP: <#FF6040>" + (data.getConfigD().get(ConfigData.WhitelistCF.onlyOpPerm) ? "enabled" : "disabled" ));
+        return AdventureUtil.formatAll("<prefix><#FBC36F>Only OP: " + (data.getConfigD().get(ConfigData.WhitelistCF.onlyOpPerm) ? "<#FF6040>enabled" : "<#969FA5>disabled"));
     }
     public static Component permissionInf2(NWLData data) {
         int min = data.getConfigD().get(ConfigData.WhitelistCF.permissionMinimum);
-        if (min <= -1) return AdventureUtil.formatAll("<prefix><#FBC36F>Permission minimum: <#FF6040>disabled");
+        if (min <= -1) return AdventureUtil.formatAll("<prefix><#FBC36F>Permission minimum: <#969FA5>disabled");
         return AdventureUtil.formatAll("<prefix><#FBC36F>Permission minimum: <#FF6040>" + min);
+    }
+    public static Component permissionInf3(NWLData data) {
+        boolean e = data.getConfigD().get(ConfigData.WhitelistCF.useCustomPermission);
+        return AdventureUtil.formatAll("<prefix><#FBC36F>Custom permission: " + (e ? ("<#FF6040>" + data.getConfigD().get(ConfigData.WhitelistCF.customPermission)) : " <#969FA5>disabled") );
     }
     public static Component permissionChanged(int minimum) {
         if (minimum <= -1) return AdventureUtil.formatAll("<prefix><#FBC36F>The permission minimum was disabled (-1)");
@@ -226,12 +230,16 @@ public class MessageData {
         String color = op ? "<#90FC4E>" : "<#F46C4E>";
         return AdventureUtil.formatAll("<prefix><#FBC36F>OP Player: " + color + op);
     }
-    public static Component permissionCheckByPass(boolean has) {
+    public static Component permissionCheckCustom(boolean has) {
         String color = has ? "<#90FC4E>" : "<#F46C4E>";
-        return AdventureUtil.formatAll("<prefix><#FBC36F>Full Bypass: " + color + has);
+        return AdventureUtil.formatAll("<prefix><#FBC36F>Custom Permission: " + color + has);
     }
-    public static Component permissionCheckByPassMin(boolean has, int compared) {
+    public static Component permissionCheckGlobal(boolean has) {
         String color = has ? "<#90FC4E>" : "<#F46C4E>";
-        return AdventureUtil.formatAll("<prefix><#FBC36F>Min Bypass: " + color + has + " <#4E71AD>(<#76F2D6>" + compared + "<#4E71AD>)");
+        return AdventureUtil.formatAll("<prefix><#FBC36F>Global Permission: " + color + has);
+    }
+    public static Component permissionCheckLimit(boolean has, int compared) {
+        String color = has ? "<#90FC4E>" : "<#F46C4E>";
+        return AdventureUtil.formatAll("<prefix><#FBC36F>Limit Permission: " + color + has + " <#4E71AD>(<#76F2D6>" + compared + "<#4E71AD>)");
     }
 }

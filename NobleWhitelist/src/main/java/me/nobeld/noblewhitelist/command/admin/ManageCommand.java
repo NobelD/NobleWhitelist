@@ -61,6 +61,7 @@ public class ManageCommand {
                     .handler(c -> {
                         BaseCommand.sendMsg(c, MessageData.permissionInf1(plugin));
                         BaseCommand.sendMsg(c, MessageData.permissionInf2(plugin));
+                        BaseCommand.sendMsg(c, MessageData.permissionInf3(plugin));
                     })
             ) {
             };
@@ -78,13 +79,17 @@ public class ManageCommand {
                     .optional("minimum", integerParser(-1))
                     .handler(c -> {
                         final PlayerWrapper player = BPlayer.of(c.get("player"));
-                        int defined = plugin.getConfigD().get(ConfigData.WhitelistCF.permissionMinimum);
-                        int min = c.getOrDefault("minimum", defined);
 
                         BaseCommand.sendMsg(c, MessageData.permissionCheckHeader(player.getName()));
                         BaseCommand.sendMsg(c, MessageData.permissionCheckOP(player.isOp()));
-                        BaseCommand.sendMsg(c, MessageData.permissionCheckByPass(player.hasPermission("noblewhitelist.bypass")));
-                        BaseCommand.sendMsg(c, MessageData.permissionCheckByPassMin(player.hasPermission("noblewhitelist.bypass.", min), min));
+                        if (plugin.getConfigD().get(ConfigData.WhitelistCF.useCustomPermission)) {
+                            BaseCommand.sendMsg(c, MessageData.permissionCheckCustom(player.hasPermission(plugin.getConfigD().get(ConfigData.WhitelistCF.customPermission))));
+                        } else {
+                            int defined = plugin.getConfigD().get(ConfigData.WhitelistCF.permissionMinimum);
+                            int min = c.getOrDefault("minimum", defined);
+                            BaseCommand.sendMsg(c, MessageData.permissionCheckGlobal(player.hasPermission("noblewhitelist.bypass")));
+                            BaseCommand.sendMsg(c, MessageData.permissionCheckLimit(player.hasPermission("noblewhitelist.bypass.", min), min));
+                        }
                     })
             ) {
             };

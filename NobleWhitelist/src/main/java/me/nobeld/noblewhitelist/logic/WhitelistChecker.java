@@ -5,7 +5,6 @@ import me.nobeld.noblewhitelist.model.PairData;
 import me.nobeld.noblewhitelist.model.base.NWLData;
 import me.nobeld.noblewhitelist.model.base.PlayerWrapper;
 import me.nobeld.noblewhitelist.config.ConfigData;
-import me.nobeld.noblewhitelist.model.checking.CheckingOption;
 import me.nobeld.noblewhitelist.model.whitelist.CheckType;
 import me.nobeld.noblewhitelist.model.whitelist.SuccessData;
 import me.nobeld.noblewhitelist.model.whitelist.SuccessEnum;
@@ -70,19 +69,25 @@ public class WhitelistChecker {
 
         return new SuccessData(player, name, uuid, perm, disabled);
     }
+    public CheckType checkEntry(PlayerWrapper player) {
+        return checkEntry(player, false);
+    }
     /**
      * Checks and gives information about a player
      * @param player player to compare
      * @return result of the check or invalid of the player does not have data
      */
-    public CheckType checkEntry(PlayerWrapper player) {
+    public CheckType checkEntry(PlayerWrapper player, boolean skipName) {
         if (player == null) return CheckType.INVALID;
         Optional<WhitelistEntry> entry = data.whitelistData().getEntry(player);
         if (entry.isEmpty()) return CheckType.INVALID;
-        return checkEntry(entry.get(), player);
+        return checkEntry(entry.get(), player, skipName);
     }
     public CheckType checkEntry(@NotNull WhitelistEntry entry, @NotNull PlayerWrapper player) {
-        return checkEntry(entry, player, false);
+        return checkEntry(entry, player, false, false);
+    }
+    public CheckType checkEntry(@NotNull WhitelistEntry entry, @NotNull PlayerWrapper player, boolean skipName) {
+        return checkEntry(entry, player, false, skipName);
     }
     /**
      * Checks and gives information about an entry and a player
@@ -90,33 +95,32 @@ public class WhitelistChecker {
      * @param player player to compare
      * @return result of the check
      */
-    public CheckType checkEntry(@NotNull WhitelistEntry entry, @NotNull PlayerWrapper player, boolean ignoreUUID) {
+    public CheckType checkEntry(@NotNull WhitelistEntry entry, @NotNull PlayerWrapper player, boolean ignoreUUID, boolean skipName) {
+        short uuidResult; // -1 null, 1 match, 0 different
+        if (ignoreUUID || entry.getUUID() == null) {
+            uuidResult = -1;
+        } else if (player.getUUID().equals(entry.getUUID())) {
+            uuidResult = 1;
+        } else {
+            uuidResult = 0;
+        }
+
+        if (uuidResult == 1 && skipName) {
+            return CheckType.SKIPPED_NAME;
+        }
         String enName = entry.getName();
-        if (enName == null) return CheckType.NO_NAME;
+        if (enName == null) {
+            return uuidResult == 1 ? CheckType.MISSING_NAME : CheckType.NONE;
+        }
         String plName = player.getName();
-        UUID enUUID = ignoreUUID ? null : entry.getUUID();
-        UUID plUUID = player.getUUID();
 
-        if (enUUID == null) {
-            if (enName.equals(plName)) return CheckType.NO_UUID;
-            else if (enName.equalsIgnoreCase(plName)) return CheckType.NO_UUID_NAME_CAPS;
-            else return CheckType.NOT_MATCH;
+        if (plName.equals(enName)) {
+            return uuidResult == -1 ? CheckType.MISSING_UUID : uuidResult == 1 ? CheckType.FINE : CheckType.DIFFERENT_UUID;
+        } else if (plName.equalsIgnoreCase(enName)) {
+            return uuidResult == -1 ? CheckType.MISSING_UUID_AND_CAPS : uuidResult == 1 ? CheckType.CAPITALIZATION : CheckType.DIFFERENT_UUID_AND_CAPS;
+        } else {
+            return uuidResult == 1 ? CheckType.DIFFERENT_NAME : CheckType.NONE;
         }
-        if (data.getConfigD().get(ConfigData.WhitelistCF.skipName)) {
-            if (enUUID.equals(plUUID)) return CheckType.SKIPPED_NAME;
-            else return CheckType.NOT_MATCH;
-        }
-
-        if (enName.equals(plName)) {
-            if (!enUUID.equals(plUUID)) return CheckType.NAME_DIFFERENT_UUID;
-            else return CheckType.NORMAL;
-
-        } else if (enName.equalsIgnoreCase(plName)) {
-            if (!enUUID.equals(plUUID)) return CheckType.NAME_CAPS_DIFFERENT_UUID;
-            else return CheckType.NAME_CAPS;
-        }
-        if (enUUID.equals(plUUID)) return CheckType.UUID_NO_NAME;
-        return CheckType.NORMAL;
     }
     /**
      * Updates and replaces the data of a player
@@ -139,29 +143,30 @@ public class WhitelistChecker {
         String name = player.getName();
         UUID uuid = ignoreUUID ? null : player.getUUID();
 
-        switch (data.whitelistChecker().checkEntry(entry, player, ignoreUUID)) {
-            case UUID_NO_NAME -> {
-                entry.setName(name);
+        boolean skipName = data.getConfigD().get(ConfigData.WhitelistCF.skipName);
+        CheckType type = data.whitelistChecker().checkEntry(entry, player, ignoreUUID, skipName);
+        if (type == CheckType.DIFFERENT_NAME && !skipName) { // update name and sent notify of name change
+            entry.setName(name);
+            data.getStorage().save(entry);
+            NobleWhitelist.adv().consoleAudience().sendMessage(data.getMessageD().warningNameConsole(name));
+            player.sendMessage(data.getMessageD().warningNamePlayer(name));
+        } else if (type == CheckType.MISSING_UUID_AND_CAPS) { // update uuid and name because of capitalization
+            boolean b = !skipName || uuid != null;
+            if (!skipName) entry.setName(name);
+            if (uuid != null) entry.setUuid(uuid);
+            if (b) data.getStorage().save(entry);
+        } else if (type == CheckType.MISSING_UUID) { // update uuid if needed
+            if (uuid != null) {
+                entry.setUuid(uuid);
                 data.getStorage().save(entry);
-                NobleWhitelist.adv().consoleAudience().sendMessage(data.getMessageD().warningNameConsole(name));
-                player.sendMessage(data.getMessageD().warningNamePlayer(name));
-                return true;
             }
-            case NO_UUID_NAME_CAPS, NO_UUID -> {
-                entry.setName(name);
-                if (uuid != null) entry.setUuid(uuid);
-                data.getStorage().save(entry);
-                return true;
-            }
-            case NO_NAME, NAME_CAPS -> {
-                entry.setName(name);
-                data.getStorage().save(entry);
-                return true;
-            }
-            default -> {
-                return false;
-            }
+        } else if (type == CheckType.CAPITALIZATION && !skipName) { // update name capitalization
+            entry.setName(name);
+            data.getStorage().save(entry);
+        } else {
+            return false;
         }
+        return true;
     }
 
     /**
@@ -193,19 +198,15 @@ public class WhitelistChecker {
             );
         }
 
-        boolean enforce = this.data.getConfigD().get(ConfigData.WhitelistCF.enforceNameDiffID);
-        if (entry.isPresent() && enforce) {
-            CheckType type = checkEntry(entry.get(), player);
-            if (type == CheckType.NAME_DIFFERENT_UUID || type == CheckType.NAME_CAPS_DIFFERENT_UUID)
-                return PairData.of(SuccessData.allFalse(player), false);
+        // TODO this is a temporary fix because storage calls are not filtered at all
+        if (entry.isPresent()) {
+            var u = entry.get().getUUID();
+            if (u != null && !player.getUUID().equals(u)) return PairData.of(SuccessData.allFalse(player), false);
         }
 
         final SuccessData suc = createSuccess(entry.orElse(null), player);
-        CheckingOption nameCheck = this.data.getConfigD().checkName();
-        boolean shouldSkip = enforce && suc.matchUUID() && (suc.name() == null || !suc.name());
-
         return PairData.of(suc, suc.forValues(
-                shouldSkip && !nameCheck.isRequired() ? CheckingOption.DISABLED : nameCheck,
+                this.data.getConfigD().checkName(),
                 this.data.getConfigD().checkUUID(),
                 this.data.getConfigD().checkPerm()
                                             ));

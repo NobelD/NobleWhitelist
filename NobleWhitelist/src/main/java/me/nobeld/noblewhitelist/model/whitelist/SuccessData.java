@@ -14,7 +14,7 @@ public record SuccessData(PlayerWrapper player, @Nullable Boolean name, @Nullabl
     public boolean hasAll() {
         return (name != null && name) && (uuid != null && uuid) && perm;
     }
-    public boolean isNormal() {
+    public boolean hasFullEntry() {
         return (name != null && name) && (uuid != null && uuid);
     }
     public boolean isWhitelisted() {
@@ -76,7 +76,7 @@ public record SuccessData(PlayerWrapper player, @Nullable Boolean name, @Nullabl
      * case 4 - if all the options are disabled always will return true.
      */
     public boolean forValues(CheckingOption name, CheckingOption uuid, CheckingOption perm) {
-        if (!isEnabled()) {
+        if (!isMaybeEnabled()) {
             return false;
         }
         return forCheck(name, uuid, perm);
@@ -151,12 +151,18 @@ public record SuccessData(PlayerWrapper player, @Nullable Boolean name, @Nullabl
         return n && u && p;
     }
 
-    public SuccessEnum successEnum() {
+    public SuccessEnum successEnum() { // TODO cover more cases (perm combinations)
+        if (!isMaybeEnabled()) return SuccessEnum.NOT_ACTIVE;
         if (hasAll()) return SuccessEnum.ALL;
-        if (isNormal()) return SuccessEnum.NORMAL;
-        if (matchByName()) return SuccessEnum.ONLY_NAME;
-        if (matchByUuid()) return SuccessEnum.ONLY_UUID;
-        if (matchByPerm()) return SuccessEnum.BYPASS;
+        if (hasFullEntry()) return SuccessEnum.ENTRY;
+        if (perm) {
+            if (matchName()) return SuccessEnum.NAME_PERMISSION;
+            if (matchUUID()) return SuccessEnum.UUID_PERMISSION;
+            return SuccessEnum.ONLY_PERMISSION;
+        } else {
+            if (matchByName()) return SuccessEnum.ONLY_NAME;
+            if (matchByUuid()) return SuccessEnum.ONLY_UUID;
+        }
         return SuccessEnum.NONE;
     }
     public static SuccessData allFalse(PlayerWrapper player) {

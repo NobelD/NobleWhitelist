@@ -9,87 +9,121 @@ package me.nobeld.noblewhitelist.model.whitelist;
  */
 public enum CheckType {
     /**
-     * <pre>
-     * Name - true
-     * Caps - true
-     * UUID - true
-     * </pre>
+     * Some of the inputted data were invalid.
      */
-    NORMAL,
+    INVALID,
     /**
      * <pre>
-     * Name - true
-     * Caps - skipped
-     * UUID - true
+     * No name nor uuid matches. (they may have been skipped, or they are empty)
+     * > Name - false
+     * > Caps - false
+     * > UUID - false
+     * </pre>
+     */
+    NONE,
+    /**
+     * <pre>
+     * Name and uuid matches.
+     * > Name - true
+     * > Caps - true
+     * > UUID - true
+     * </pre>
+     */
+    FINE,
+    /**
+     * <pre>
+     * Name and uuid matches, name capitalization does not match.
+     * > Name - true
+     * > Caps - false
+     * > UUID - true
+     * </pre>
+     */
+    CAPITALIZATION,
+    /**
+     * <pre>
+     * Name is not present, uuid matches.
+     * > Name - false (null)
+     * > Caps - false
+     * > UUID - true
+     * </pre>
+     */
+    MISSING_NAME,
+    /**
+     * <pre>
+     * Name check skipped, uuid matches.
+     * > Name - skipped
+     * > Caps - skipped
+     * > UUID - true
      * </pre>
      */
     SKIPPED_NAME,
     /**
      * <pre>
-     * Name - false (null)
-     * Caps - false
-     * UUID - true
+     * Name does not match, uuid matches.
+     * > Name - false
+     * > Caps - false
+     * > UUID - true
      * </pre>
      */
-    NO_NAME,
+    DIFFERENT_NAME,
     /**
      * <pre>
-     * Name - true
-     * Caps - true
-     * UUID - false (null)
+     * Name matches, uuid is not present. (or skipped)
+     * > Name - true
+     * > Caps - true
+     * > UUID - false (null)
      * </pre>
      */
-    NO_UUID,
+    MISSING_UUID,
     /**
      * <pre>
-     * Name - true
-     * Caps - false
-     * UUID - false (null)
+     * Name matches but not their capitalization, uuid is not present. (or skipped)
+     * > Name - true
+     * > Caps - false
+     * > UUID - false (null)
      * </pre>
      */
-    NO_UUID_NAME_CAPS,
+    MISSING_UUID_AND_CAPS,
     /**
      * <pre>
-     * Name - false (null)
-     * Caps - false
-     * UUID - false (null)
+     * Name matches, uuid is present but different.
+     * > Name - true
+     * > Caps - true
+     * > UUID - false (different)
      * </pre>
      */
-    NOT_MATCH,
+    DIFFERENT_UUID,
     /**
      * <pre>
-     * Name - true
-     * Caps - false
-     * UUID - true
+     * Name matches but not their capitalization, uuid is present but different.
+     * > Name - true
+     * > Caps - false
+     * > UUID - false (different)
      * </pre>
      */
-    NAME_CAPS,
-    /**
-     * <pre>
-     * Name - true
-     * Caps - true
-     * UUID - false (different)
-     * </pre>
-     */
-    NAME_DIFFERENT_UUID,
-    /**
-     * <pre>
-     * Name - true
-     * Caps - false
-     * UUID - false (different)
-     * </pre>
-     */
-    NAME_CAPS_DIFFERENT_UUID,
-    /**
-     * <pre>
-     * Name - false (null)
-     * Caps - false
-     * UUID - true
-     * </pre>
-     */
-    UUID_NO_NAME,
-    /**
-     * Some of the inputed data were is invalid.
-     */
-    INVALID
+    DIFFERENT_UUID_AND_CAPS
+    ;
+    public boolean isFine() {
+        return this == FINE || this == CAPITALIZATION || this == SKIPPED_NAME;
+    }
+
+    public boolean isValid() {
+        return isFine() || this == MISSING_NAME || this == MISSING_UUID || this == MISSING_UUID_AND_CAPS || this == DIFFERENT_NAME;
+    }
+
+    public boolean noCaps() {
+        return this == CAPITALIZATION || this == MISSING_UUID_AND_CAPS || this == DIFFERENT_UUID_AND_CAPS;
+    }
+
+    public boolean hasMissing() {
+        return this == MISSING_NAME || this == MISSING_UUID || this == MISSING_UUID_AND_CAPS;
+    }
+
+    public boolean hasSoftIssues() {
+        return this == DIFFERENT_UUID || this == DIFFERENT_UUID_AND_CAPS;
+    }
+
+    public boolean hasHardIssues() {
+        return hasSoftIssues() || this == DIFFERENT_NAME;
+    }
 }
