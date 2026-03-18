@@ -7,7 +7,7 @@ plugins {
 }
 
 group = "me.nobeld.noblewhitelist"
-version = "1.2.21"
+version = "1.2.22"
 description = "A simple plugin for whitelist management."
 
 java {

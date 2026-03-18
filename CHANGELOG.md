@@ -1,5 +1,18 @@
 # Changelog
 
+## Main 1.2.22 - Ds 1.1.10 (No Changes) | 2026-03-18
+
+### Added:
+- New "debug" command to test and check the result of a player when trying to join.
+
+### Changes:
+- Some code cleaning, improved readability.
+- "enforce-uuid-if-different-name" config option is now unused, now it will always be enforced for security reasons.
+
+### Fixed:
+- Permission check was not able to allow player to join if no entry was associated to the player.
+- Fixed grammar and how some options are explained from the config file.
+
 ## Main 1.2.21 - Ds 1.1.10 (No Changes) | 2026-02-09
 
 ### Fixed:
