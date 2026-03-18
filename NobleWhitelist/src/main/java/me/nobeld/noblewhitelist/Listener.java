@@ -20,6 +20,8 @@ import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerLoginEvent;
 import org.bukkit.event.server.ServerCommandEvent;
 
+import java.util.logging.Level;
+
 public class Listener implements org.bukkit.event.Listener {
     private final NobleWhitelist data;
     public Listener(NobleWhitelist data) {
@@ -27,6 +29,7 @@ public class Listener implements org.bukkit.event.Listener {
     }
     @EventHandler(priority = EventPriority.HIGHEST)
     public void onLogin(PlayerLoginEvent event) {
+        if (data.isDebug()) data.getLogger().log(Level.INFO,  "Processing player: " + event.getPlayer());
         switch (event.getResult()) {
             case ALLOWED -> {
                 // proceed
@@ -43,10 +46,12 @@ public class Listener implements org.bukkit.event.Listener {
         Player player = event.getPlayer();
         Component msg = data.getMessageD().kickMsg(player.getName());
         if (data.isBlocked()) {
+            if (data.isDebug()) data.getLogger().log(Level.INFO, "Unable to load because the plugin is currently blocked.");
             disallowJoin(event, msg);
             return;
         }
-        PairData<SuccessData, Boolean> pair = data.whitelistChecker().canPass(BPlayer.of(player));
+        BPlayer b = BPlayer.of(player);
+        PairData<SuccessData, Boolean> pair = data.whitelistChecker().canPass(b);
         WhitelistPassEvent e = new WhitelistPassEvent(
               player,
               data.getConfigD().get(ConfigData.WhitelistCF.whitelistActive),
@@ -57,8 +62,10 @@ public class Listener implements org.bukkit.event.Listener {
         );
         if (!e.callEvent()) return;
         if (!e.isWhitelistEnabled() || e.canPass()) {
+            if (data.isDebug()) data.logger().log(Level.INFO, "Player " + b + " is allowed to join with result of: " + e.getType());
             e.getJoinEvent().allow();
         } else {
+            if (data.isDebug()) data.logger().log(Level.INFO, "Player " + b + " is NOT allowed to join with result of: " + e.getType());
             disallowJoin(e.getJoinEvent(), e.getMessage());
         }
     }

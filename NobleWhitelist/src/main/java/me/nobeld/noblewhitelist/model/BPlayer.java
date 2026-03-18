@@ -5,6 +5,7 @@ import me.nobeld.noblewhitelist.model.base.PlayerWrapper;
 import net.kyori.adventure.audience.Audience;
 import net.kyori.adventure.text.Component;
 import org.bukkit.entity.Player;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.UUID;
 
@@ -61,5 +62,14 @@ public record BPlayer(Player player) implements PlayerWrapper {
     public Audience getAsAudience() {
         if (NobleWhitelist.hasPaper()) return player;
         return NobleWhitelist.adv().playerAudience(player);
+    }
+
+    @NotNull
+    @Override
+    public String toString() {
+        return "BPlayer{" +
+                "name='" + getName() +
+                "',uuid=" + getUUID() +
+                '}';
     }
 }

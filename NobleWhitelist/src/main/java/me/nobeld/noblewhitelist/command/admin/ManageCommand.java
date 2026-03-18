@@ -8,6 +8,7 @@ import me.nobeld.noblewhitelist.model.base.PlayerWrapper;
 import me.nobeld.noblewhitelist.model.command.BaseCommand;
 import me.nobeld.noblewhitelist.model.command.OptionCommand;
 import me.nobeld.noblewhitelist.model.command.SubCommand;
+import net.kyori.adventure.text.Component;
 import org.bukkit.command.CommandSender;
 import org.incendo.cloud.context.CommandContext;
 
@@ -15,6 +16,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static org.incendo.cloud.bukkit.parser.PlayerParser.playerParser;
+import static org.incendo.cloud.parser.standard.BooleanParser.booleanParser;
 import static org.incendo.cloud.parser.standard.IntegerParser.integerParser;
 
 public class ManageCommand {
@@ -36,6 +38,15 @@ public class ManageCommand {
         });
         commands.add(new SubCommand(b -> b.literal("off").permission("noblewhitelist.admin.off")
                 .handler(c -> toggleStatus(plugin, c, false))
+        ) {
+        });
+        // TODO temporal
+        commands.add(new SubCommand(b -> b.literal("debug").required("value", booleanParser()).permission("noblewhitelist.admin.debug")
+                .handler(c -> {
+                    boolean v = c.get("value");
+                    NobleWhitelist.getPlugin().setDebug(v);
+                    BaseCommand.sendMsg(c, Component.text("Debug changed to: " + v));
+                })
         ) {
         });
         commands.add(new Perm(plugin));

@@ -33,6 +33,7 @@ import java.util.logging.Logger;
 
 public class NobleWhitelist extends JavaPlugin implements NWLData {
     private static NobleWhitelist plugin;
+    private boolean debug;
     private NWlCommand commands;
     private WhitelistData whitelistData;
     private WhitelistChecker whitelistChecker;
@@ -222,5 +223,12 @@ public class NobleWhitelist extends JavaPlugin implements NWLData {
     @Override
     public Logger logger() {
         return getLogger();
+    }
+    // TODO temp
+    public void setDebug(boolean val) {
+        this.debug = val;
+    }
+    public boolean isDebug() {
+        return this.debug;
     }
 }

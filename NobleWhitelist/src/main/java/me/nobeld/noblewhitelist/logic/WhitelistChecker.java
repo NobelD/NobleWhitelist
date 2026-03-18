@@ -16,6 +16,7 @@ import org.jetbrains.annotations.Nullable;
 import java.util.Optional;
 import java.util.UUID;
 import java.util.function.Consumer;
+import java.util.logging.Level;
 
 public class WhitelistChecker {
     private final NWLData data;
@@ -185,6 +186,12 @@ public class WhitelistChecker {
      */
     public PairData<SuccessData, Boolean> canPass(PlayerWrapper player) {
         Optional<WhitelistEntry> entry = this.data.whitelistData().getEntry(player);
+        if (NobleWhitelist.getPlugin().isDebug()) {
+            data.logger().log(Level.INFO,
+                    entry.map(e -> "Starting check with entry: " + e + " for player: " + player)
+                            .orElse("Starting check with no entry for player: " + player)
+            );
+        }
 
         boolean enforce = this.data.getConfigD().get(ConfigData.WhitelistCF.enforceNameDiffID);
         if (entry.isPresent() && enforce) {

@@ -107,4 +107,15 @@ public class WhitelistEntry {
         map.put("row", this.isSaved() ? String.valueOf(this.getRowId()) : "none");
         return map;
     }
+
+    @Override
+    public String toString() {
+        return "WhitelistEntry{" +
+                "rowId=" + rowId +
+                ", uuid=" + uuid +
+                ", name='" + name + '\'' +
+                ", discordID=" + discordID +
+                ", isWhitelisted=" + isWhitelisted +
+                '}';
+    }
 }
