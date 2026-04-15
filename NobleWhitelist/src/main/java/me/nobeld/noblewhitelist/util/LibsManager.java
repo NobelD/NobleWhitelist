@@ -12,6 +12,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.logging.Level;
 
+// TODO adventure version, match adventure platform bukkit
 public class LibsManager {
     private final LibraryManager manager;
     public LibsManager(LibraryManager manager, @Nullable List<Library> additional) {
@@ -146,7 +147,7 @@ public class LibsManager {
         libraries.add(Library.builder()
                 .groupId("org{}incendo")
                 .artifactId("cloud-paper")
-                .version("2.0.0-beta.14")
+                .version("2.0.0-beta.15")
                 .relocate(reloc("org{}incendo"))
                 .resolveTransitiveDependencies(true)
                 .build());
@@ -162,7 +163,7 @@ public class LibsManager {
         libraries.add(Library.builder()
                 .groupId("org{}incendo")
                 .artifactId("cloud-minecraft-extras")
-                .version("2.0.0-beta.14")
+                .version("2.0.0-beta.15")
                 .relocate(reloc("org{}incendo"))
                 .build());
 

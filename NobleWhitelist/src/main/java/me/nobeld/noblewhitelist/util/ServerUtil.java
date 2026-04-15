@@ -13,39 +13,70 @@ import java.util.regex.MatchResult;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+/*
+Version parser format
+
+1.21.11
+> major   -> 21
+> version -> 11
+> patch   -> none
+
+26.1.2
+> major   -> 26
+> version -> 1
+> patch   -> 2
+ */
 public class ServerUtil {
     static {
-        Pattern versionPattern = Pattern.compile("(?i)\\(MC: (\\d)\\.(\\d+)\\.?(\\d+)?(?: Pre-Release )?(\\d)?\\)");
+        Pattern versionPattern = Pattern.compile("(?i)\\(MC: (\\d+)\\.?(\\d+)\\.?(\\d+)?(?: Pre-Release )?(\\d)?\\)");
         Matcher matcher = versionPattern.matcher(Bukkit.getVersion());
+        int major = 0;
         int version = 0;
-        int patchVersion = 0;
-        int preReleaseVersion = 0;
+        int patch = 0;
+        int preRelease = 0;
         if (matcher.find()) {
             MatchResult matchResult = matcher.toMatchResult();
+            try {
+                major = Integer.parseInt(matchResult.group(1), 10);
+            } catch (Exception ignored) {
+            }
             try {
                 version = Integer.parseInt(matchResult.group(2), 10);
             } catch (Exception ignored) {
             }
             if (matchResult.groupCount() >= 3) {
                 try {
-                    patchVersion = Integer.parseInt(matchResult.group(3), 10);
+                    patch = Integer.parseInt(matchResult.group(3), 10);
                 } catch (Exception ignored) {
                 }
             }
             if (matchResult.groupCount() >= 4) {
                 try {
-                    preReleaseVersion = Integer.parseInt(matcher.group(4));
+                    preRelease = Integer.parseInt(matcher.group(4));
                 } catch (Exception ignored) {
                 }
             }
         }
-        minecraftVersion = version;
-        minecraftPatchVersion = patchVersion;
-        minecraftPreReleaseVersion = preReleaseVersion;
+        if (major == 1) {
+            minecraftVersionMajor = version;
+            minecraftVersion = patch;
+            minecraftVersionPatch = 0;
+        } else {
+            minecraftVersionMajor = major;
+            minecraftVersion = version;
+            minecraftVersionPatch = patch;
+        }
+        minecraftPreReleaseVersion = preRelease;
+        StringBuilder builder = new StringBuilder();
+        builder.append(ServerUtil.minecraftVersionMajor).append('.').append(ServerUtil.minecraftVersion);
+        if (ServerUtil.minecraftVersionPatch > 0) builder.append('.').append(ServerUtil.minecraftVersionPatch);
+        minecraftVersionString = builder.toString();
     }
+    private static final int minecraftVersionMajor;
     private static final int minecraftVersion;
-    private static final int minecraftPatchVersion;
+    private static final int minecraftVersionPatch;
     private static final int minecraftPreReleaseVersion;
+    private static final String minecraftVersionString;
     private static final boolean craftBukkit = hasClass("org.bukkit.Bukkit");
     private static final boolean spigot = hasClass("org.spigotmc.SpigotConfig");
     private static final boolean paper = hasClass("com.destroystokyo.paper.PaperConfig");
@@ -66,14 +97,29 @@ public class ServerUtil {
     public static boolean hasAdventure() {
         return adventure;
     }
+    public static String getVersionString() {
+        return minecraftVersionString;
+    }
+    public static int getMajorVersion() {
+        return minecraftVersionMajor;
+    }
     public static int getVersion() {
         return minecraftVersion;
     }
     public static int getPatchVersion() {
-        return minecraftPatchVersion;
+        return minecraftVersionPatch;
     }
-    public static boolean matchVersion(int version) {
-        return minecraftVersion >= version;
+    public static int getPreReleaseVersion() {
+        return minecraftPreReleaseVersion;
+    }
+    public static boolean matchVersion(int major) {
+        return minecraftVersionMajor >= major;
+    }
+    public static boolean matchVersion(int major, int version) {
+        return minecraftVersionMajor > major || (minecraftVersionMajor == major && minecraftVersion >= version);
+    }
+    public static boolean matchVersion(int major, int version, int patch) {
+        return minecraftVersionMajor > major || (minecraftVersionMajor == major && (minecraftVersion > version || (minecraftVersion == version && minecraftVersionPatch >= patch)));
     }
     public static boolean allowsPaperPlugin() {
         return paper && ServerUtil.matchVersion(19, 3);
@@ -92,11 +138,7 @@ public class ServerUtil {
 
         return paperClClazz.isAssignableFrom(cl.getClass());
     }
-    public static boolean matchVersion(int version, int patch) {
-      int v = minecraftVersion;
-      return v > version || (v == version && minecraftPatchVersion >= patch);
-    }
-    public static void incompatibleVer(JavaPlugin plugin, String string, String ver) {
+    public static void incompatibleWarning(JavaPlugin plugin, String string, String ver) {
         plugin.getLogger().log(Level.SEVERE, "You are running the server on " + string + ", this version is not compatible and the plugin will be disabled, consider updating to minimum " + ver + ".");
     }
     public static boolean hasClass(String clazz) {
@@ -119,8 +161,8 @@ public class ServerUtil {
         return b ? "yes" : "no";
     }
     public static boolean canRun(NobleWhitelist plugin) {
-        if (minecraftVersion < 18) {
-           incompatibleVer(plugin, Bukkit.getVersion(), "1.18.x");
+        if (!matchVersion(18)) {
+           incompatibleWarning(plugin, getVersionString(), "1.18.x");
            Bukkit.getPluginManager().disablePlugin(plugin);
            return false;
         }
