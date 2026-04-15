@@ -2,6 +2,7 @@ package me.nobeld.noblewhitelist.model.base;
 
 import com.alessiodp.libby.Library;
 import com.alessiodp.libby.LibraryManager;
+import me.nobeld.noblewhitelist.NobleWhitelist;
 import me.nobeld.noblewhitelist.config.ConfigData;
 import me.nobeld.noblewhitelist.config.FileManager;
 import me.nobeld.noblewhitelist.language.MessageData;
@@ -42,12 +43,12 @@ public class NWLContainer {
     public static Builder builder(NWLData data) {
         return new Builder(data);
     }
-    public static void closeData(NWLData data) {
+    public static void closeData(NobleWhitelist data) {
         if (data.getConfigD() != null) data.getConfigD().reloadConfig();
         if (data.getStorageType().isDatabase()) {
             if (data.getStorage() != null) ((DatabaseSQL)data.getStorage()).close();
         }
-        if (data.getAdventure() != null) data.getAdventure().closeAdventure();
+        if (data.hasAdventure()) data.getAdventure().closeAdventure();
     }
     public ConfigData getConfig() {
         return config;
@@ -131,7 +132,7 @@ public class NWLContainer {
         }
         public Builder printMessage() {
             long total = storage.getTotal();
-            data.getAdventure().consoleAudience().sendMessage(AdventureUtil.formatAll("<prefix><green>Plugin successfully activated!"));
+            data.getAdventure().consoleAudience().sendMessage(AdventureUtil.formatAll("<prefix><green>Plugin is now running!"));
             data.getAdventure().consoleAudience().sendMessage(AdventureUtil.formatAll("<prefix><green>Loaded <yellow>" + total + " <green>whitelist entries."));
             if (!type.isDatabase() && total >= 100) data.getAdventure().consoleAudience().sendMessage(AdventureUtil.formatAll("<prefix><green>Mind in use database as storage type since there is a lot of entries."));
 

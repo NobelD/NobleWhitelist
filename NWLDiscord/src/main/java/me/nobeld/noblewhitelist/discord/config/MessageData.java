@@ -91,7 +91,7 @@ public class MessageData {
         public static final ConfigContainer<String> disabled = new ConfigContainer<>("placeholders.status-disabled", "");
         public static final ConfigContainer<String> accountEntry = new ConfigContainer<>("placeholders.account-entry", "");
         public static final ConfigContainer<String> listEntry = new ConfigContainer<>("placeholders.list-entry", "");
-        public static final ConfigContainer<String> checkingDisabled = new ConfigContainer<>("placeholders.checking-none", "");
+        public static final ConfigContainer<String> checkingDisabled = new ConfigContainer<>("placeholders.checking-disabled", "");
         public static final ConfigContainer<String> checkingOptional = new ConfigContainer<>("placeholders.checking-optional", "");
         public static final ConfigContainer<String> checkingRequired = new ConfigContainer<>("placeholders.checking-required", "");
     }

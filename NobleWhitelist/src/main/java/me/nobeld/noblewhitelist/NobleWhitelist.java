@@ -179,6 +179,9 @@ public class NobleWhitelist extends JavaPlugin implements NWLData {
         }
         return adventure;
     }
+    public boolean hasAdventure() {
+        return adventure != null;
+    }
     @Override
     public ConfigData getConfigD() {
         return configData;

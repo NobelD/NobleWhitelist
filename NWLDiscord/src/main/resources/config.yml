@@ -1,26 +1,30 @@
 # More information: https://github.com/NobelD/NobleWhitelist/wiki
+# TODO modify and messages grammar
 discord:
+  # The token of your bot, be sure to not share it with anyone!
   bot-token: ""
+  # The server id for the bot.
   server-id: ""
-# You can add more channels later with their respective id.
-# While the channels id can be dynamically changed, the channel itself needs to restart the plugin to be reloaded.
+# A list of user defined channels, consists of a custom name and the channel id, this does not require the same name of the channel
+# You can add more channels as you want, keep in mind channel ids are dynamically reloaded, but new channel entries requires restarting the server.
+# Other sections may require you to provide a channel name, these are defined here.
 channel:
   primary: 0000000000000000000
   staff: 0000000000000000000
 special:
   # Makes the commands only visible for users who have the server manage permission.
-  # If disabled all the users can see the commands and description (still can't be used without the necessary role)
-  # Restart the server to apply changes.
+  # If disabled all the users can see the commands and description (but they are still not allowed to execute it without the necessary roles)
   admin-only-server-manage: true
-  # Gives the roles to the whitelisted user.
+  # Allows the bot to automatically give a custom role to a newly registered user.
   give-role-on-register: false
-  # Removes the roles from the user if unregisters.
+  # Allows the bot to automatically remove the whitelisted role from an unregistered user.
   remove-role-on-unregister: false
 role:
-  # Add the option to use "everyone" as role, this allows to the command be executed by everyone even if it does not have roles.
+  # Enables the use of "everyone" as a role name to pass any user.
   enable-everyone-role: false
-  # The roles cannot be added more as channels, these are fixed.
-  # But you can still change it without reloading.
+  # A fixed list of role ids, consist of a sub list of roles for each role name.
+  # You can modify, add or remove the ids, and they will be dynamically reloaded, but the roles name are fixed.
+  # Other sections may require you to provide a role, these are the only available (and everyone role if enabled)
   user:
     - 0000000000000000000
     - 0000000000000000000
@@ -29,21 +33,35 @@ role:
   admin:
     - 0000000000000000000
     - 0000000000000000000
-  # This role will be given to the user when registers and will be used to check if the user has the whitelist role.
+  # The main whitelisted role to add to the users if it is enabled.
   whitelisted: 0000000000000000000
-  # This extra roles will be given when the whitelist role is given and are not checked.
+  # Extra roles to be added along the main whitelist role, these roles are not enforced to the user, and it may not be added in some rare cases.
   sub-whitelisted:
     - 0000000000000000000
+# Channels to announce certain actions, you need to put a channel name defined in this file.
+# You can use "none" to disable each announce message.
 announce-channel:
+  # When the server starts.
   start: none
+  # When the server stops.
   stop: none
+  # When a user is registered by the register command.
   notify-self-register: staff
+  # When a user is removed by the unregister command.
   notify-self-remove: staff
+  # When a user has a role added.
   notify-role-add: none
+  # When a user has a role removed.
   notify-role-remove: none
+  # If auto register enabled, when a player was automatically added to the whitelist.
   notify-wl-auto: none
+  # When a player is allowed to join if the whitelist is enabled.
   notify-wl-join: none
+  # When a player is denied to join if the whitelist is enabled.
   notify-wl-try: none
+# Defines the command behaviour.
+# Only users with the roles will be allowed to execute the commands.
+# Commands will only work in the specified channels.
 command:
   #/whitelist add
   basic-add-self:
@@ -177,4 +195,5 @@ command:
 version:
   # Notify when there is a new update.
   notify-update: true
+  # DO NOT MODIFY, THIS MAY FORCE CHANGES AND CREATE ERRORS
   version: 2

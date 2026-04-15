@@ -26,7 +26,7 @@ discord:
       body:
         color: 88FF8A
         content: |-
-          The user <user_mention> has self registered to the whitelist:
+          The user <user_mention> has issued a command and it has been added to the whitelist.
           
           <player_optional>
     notify-self-remove:
@@ -34,7 +34,7 @@ discord:
       body:
         color: FFC288
         content: |-
-          The user <user_mention> has self unregistered from the whitelist:
+          The user <user_mention> has issued a command and it has been removed from the whitelist.
           
           **Player name:** `<name>`
           **Player uuid:** <uuid>
@@ -44,19 +44,19 @@ discord:
       body:
         color: 88D7FF
         content: |-
-          The user <user_mention> had the whitelisted role added.
+          The user <user_mention> got the whitelist roles added.
     notify-role-remove:
       type: embed
       body:
         color: FFA287
         content: |-
-          The user <user_mention> had the whitelisted role removed.
+          The user <user_mention> got the whitelist roles removed.
     notify-wl-join:
       type: embed
       body:
         color: 88D7FF
         content: |-
-          A player joined the server:
+          A player was allowed to join the server:
           
           **Player name:** `<name>`
           **Player uuid:** <uuid>
@@ -65,7 +65,7 @@ discord:
       body:
         color: FFA287
         content: |-
-          A player tried to enter the server:
+          A player was denied to join the server:
           
           **Player name:** `<name>`
           **Player uuid:** <uuid>
@@ -74,7 +74,7 @@ discord:
       body:
         color: 88D7FF
         content: |-
-          A player was auto registered to the whitelist:
+          A player has been automatically added to the whitelist:
           
           **Player name:** `<name>`
           **Player uuid:** <uuid>
@@ -90,33 +90,33 @@ discord:
     invalid-guild:
       type: message
       ephemeral: true
-      content: You are not allowed to execute this command on this guild or is an invalid guild.
+      content: You are not allowed to execute this command on this guild or it is an invalid guild.
     invalid-member:
       type: message
       ephemeral: true
       content: |-
         This command can only be executed by valid users.
-        Try again the command, if still fails notify this to an administrator.
+        Try executing the command again, if this still fails, notify an administrator.
     user-self-already:
       type: message
       ephemeral: true
-      content: You already has an account registered.
+      content: You're already present in the whitelist.
     user-already:
       type: message
       ephemeral: true
-      content: This user is already registered.
+      content: This user is already present in the whitelist.
     user-not-found:
       type: message
       ephemeral: true
-      content: No player was encountered.
+      content: No player was found.
     no-inputted-data:
       type: message
       ephemeral: true
-      content: You need to input at least 1 option for the command.
+      content: You need to provide at least 1 argument to execute this command.
     insufficient-data:
       type: message
       ephemeral: true
-      content: You need to input the necessary options to use this command.
+      content: You need to input the necessary arguments to use this command.
     invalid-uuid:
       type: message
       ephemeral: true
@@ -128,27 +128,27 @@ discord:
     self-no-accounts:
       type: message
       ephemeral: true
-      content: You don't have any account registered.
+      content: You are not present in the whitelist.
     self-no-more-accounts:
       type: message
       ephemeral: true
-      content: You can't register more accounts.
+      content: You cannot register more accounts to the whitelist.
     user-no-accounts:
       type: message
       ephemeral: true
-      content: This user don't have any account registered.
+      content: This user is not present in the whitelist.
     already-self-linked:
       type: message
       ephemeral: true
-      content: You are already linked to a player.
+      content: Your account is already linked to a whitelist entry!
     already-user-linked:
       type: message
       ephemeral: true
-      content: This user is already linked to a player, unlink it before linking to another.
+      content: This user is already linked to a whitelist entry, unlink it before trying to link it to another entry.
     already-toggled:
       type: message
       ephemeral: true
-      content: "Nothing changed, the user toggle already was: <toggle>"
+      content: "Nothing changed, the user join status was already: <toggle>"
     whitelist-empty:
       type: message
       ephemeral: true
@@ -163,7 +163,7 @@ discord:
       body:
         color: AFFF5A
         content: |-
-          These are the accounts linked to you:
+          List of your registered accounts:
           
           <account_entry>
     user-accounts:
@@ -171,7 +171,7 @@ discord:
       body:
         color: AFFF5A
         content: |-
-          These are the accounts linked to the user:
+          List of the user accounts:
           
           <account_entry>
     add-user:
@@ -179,32 +179,36 @@ discord:
       body:
         color: AFFF5A
         content: |-
-          You has successfully registered this player to the whitelist.
+          The user was successfully added to the whitelist.
           
+          Account info:
           <player_optional>
     self-add:
       type: embed
       body:
         color: AFFF5A
         content: |-
-          You has been successfully registered to the whitelist.
+          You were added to the whitelist.
           
+          Account info:
           <player_optional>
     remove-user:
       type: embed
       body:
         color: FF685E
         content: |-
-          This player was removed from the whitelist.
+          The user was successfully removed from the whitelist.
           
+          Account info:
           <player_optional>
     self-remove:
       type: embed
       body:
         color: FF685E
         content: |-
-          This account was removed.
+          You were removed from the whitelist.
           
+          Account info:
           <player_optional>
     whitelist-off:
       type: embed
@@ -236,7 +240,7 @@ discord:
       body:
         color: 77FFF7
         content: |-
-          List of entries (Page: <page>)
+          List of whitelist entries: [Page: <page>]
           
           <list_entry>
     perm-status:
@@ -246,15 +250,15 @@ discord:
         color: 77FFF7
         content: |-
           Permission status:
-          Only OP: <only_op>
-          Perm Minimum: <perm_min>
+          Only Operator: <only_op>
+          Permission Limit: <perm_min>
     perm-set:
       type: embed
       ephemeral: true
       body:
         color: 77FFF7
         content: |-
-          Permission minimum was set to: <perm_min>
+          Permission limit was set to: <perm_min>
     checking-status:
       type: embed
       ephemeral: true
@@ -278,7 +282,7 @@ discord:
       body:
         color: FF72AC
         content: |-
-          This player was found with the defined data.
+          A player was found with the following information:
           
           **Player name:** `<name>`
           **Player uuid:** <uuid>
@@ -289,7 +293,7 @@ discord:
       body:
         color: FF72AC
         content: |-
-          You are now linked to this account.
+          You have linked this account to you:
           
           <player_optional>
     user-link:
@@ -313,6 +317,6 @@ discord:
       body:
         color: FF72AC
         content: |-
-          The player join was toggled to: <toggle>
+          The player join status was changed to: <toggle>
           
           <player_optional>
