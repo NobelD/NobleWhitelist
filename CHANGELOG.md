@@ -1,5 +1,17 @@
 # Changelog
 
+## Main 1.2.23 - Ds 1.1.11 | 2026-03-18
+
+### Changes:
+- Updated version detector to work with the new version format.
+- Updated libraries to support 26.1+
+- Ds: Update to match main plugin modifications.
+
+### Fixed:
+- Fixed typos.
+- Ds: Fixed typos.
+- Ds: Fixed disabled checking placeholder not having the correct path.
+
 ## Main 1.2.22 - Ds 1.1.10 (No Changes) | 2026-03-18
 
 ### Added:
