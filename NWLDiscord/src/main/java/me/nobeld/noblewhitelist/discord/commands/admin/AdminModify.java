@@ -87,7 +87,7 @@ public class AdminModify {
                     User user = Optional.ofNullable(e.getOption("user")).map(OptionMapping::getAsUser).orElse(null);
                     long id = user != null ? user.getIdLong() : -1;
 
-                    if (noInputtedData(data, c, name, uuid)) return;
+                    if (noInputtedData(data, c, name, uuid, id)) return;
                     UUID realuuid;
                     PairData<Boolean, UUID> pair = invalidUUID(data, c, uuid);
                     if (pair.getFirst()) return;
@@ -166,7 +166,7 @@ public class AdminModify {
                     User user = Optional.ofNullable(e.getOption("user")).map(OptionMapping::getAsUser).orElse(null);
                     long id = user != null ? user.getIdLong() : -1;
 
-                    if (insufficientData(data, c, name, uuid, id)) return;
+                    if (noInputtedData(data, c, name, uuid, id)) return;
                     UUID realuuid;
                     PairData<Boolean, UUID> pair = invalidUUID(data, c, uuid);
                     if (pair.getFirst()) return;
