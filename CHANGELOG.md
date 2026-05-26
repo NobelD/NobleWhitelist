@@ -1,5 +1,10 @@
 # Changelog
 
+## Main 1.2.23 (No Changes) - Ds 1.1.12 | 2026-05-26
+
+### Changes:
+- Ds: Some commands now allows using the user id as their only parameter.
+
 ## Main 1.2.23 - Ds 1.1.11 | 2026-03-18
 
 ### Changes:
