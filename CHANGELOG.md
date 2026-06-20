@@ -1,5 +1,10 @@
 # Changelog
 
+## Main 1.2.24 - Ds 1.1.12 (No Changes) | 2026-06-20
+
+### Changes:
+- Updated library cloud for proper 26.2 support.
+
 ## Main 1.2.23 (No Changes) - Ds 1.1.12 | 2026-05-26
 
 ### Changes:
