@@ -95,7 +95,7 @@ public class MessageData {
         public static final ConfigContainer<String> checkingOptional = new ConfigContainer<>("placeholders.checking-optional", "");
         public static final ConfigContainer<String> checkingRequired = new ConfigContainer<>("placeholders.checking-required", "");
         public static final ConfigContainer<String> modalInputLabel = new ConfigContainer<>("placeholders.modal-input-label", "Player Name");
-        public static final ConfigContainer<String> modalInputPlaceholder = new ConfigContainer<>("placeholders.modal-input-label", "Place your name here");
+        public static final ConfigContainer<String> modalInputPlaceholder = new ConfigContainer<>("placeholders.modal-input-placeholder", "Place your name here");
         public static final ConfigContainer<String> modalLabel = new ConfigContainer<>("placeholders.modal-input-label", "Whitelist Menu");
     }
     public static class Channel {
