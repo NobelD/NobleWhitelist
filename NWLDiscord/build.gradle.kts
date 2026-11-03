@@ -7,7 +7,7 @@ plugins {
 }
 
 group = "me.nobeld.noblewhitelist.discord"
-version = "1.1.13"
+version = "1.1.14"
 description = "Discord integration for the NobleWhitelist plugin."
 
 java {

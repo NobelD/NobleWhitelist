@@ -1,5 +1,11 @@
 # Changelog
 
+## Main 1.2.27 - Ds 1.1.14 (No Changes) | 2026-11-03
+
+### Changes:
+- The vanilla whitelist now reflects the noble whitelist active status, only if the vanilla whitelist setting is set to override.
+- Ds: Fixed modal input placeholder message path.
+
 ## Main 1.2.25-26 - Ds 1.1.13 | 2026-09-20
 
 ### Added:
