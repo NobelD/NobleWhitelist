@@ -101,6 +101,9 @@ public class NobleWhitelist extends JavaPlugin implements NWLData {
         this.whitelistData = bc.getWlData();
         this.whitelistChecker = bc.getWlChecker();
         this.libraryManager = bc.getLibsmanager();
+        Bukkit.getScheduler().scheduleSyncDelayedTask(this, () ->
+                getConfigD().syncWhitelist()
+        );
     }
     private void loadExtra() {
         this.api = new NobleWhitelistApi(this);
@@ -233,5 +236,15 @@ public class NobleWhitelist extends JavaPlugin implements NWLData {
     }
     public boolean isDebug() {
         return this.debug;
+    }
+    public void checkSyncVanillaWhitelist(boolean value) {
+        var vanilla = getConfigD().getEnumUpper(ConfigData.WhitelistCF.vanillaWhitelistType);
+        if (vanilla.shouldIgnore()) {
+            syncWhitelist(value);
+        }
+    }
+    public static void syncWhitelist(boolean value) {
+        if (value != Bukkit.getServer().hasWhitelist())
+            Bukkit.getServer().setWhitelist(value);
     }
 }

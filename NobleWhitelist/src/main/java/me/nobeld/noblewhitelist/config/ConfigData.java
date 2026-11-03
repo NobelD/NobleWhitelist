@@ -19,6 +19,7 @@ public class ConfigData {
     private final String path;
     private final String name;
     private final FileManager.FileType type;
+    private boolean canReload = false;
     public ConfigData(String path, String name, FileManager.FileType type) {
         this.path = path;
         this.name = name;
@@ -26,7 +27,22 @@ public class ConfigData {
     }
     public void registerConfig() {
         Path filePath = Paths.get(path + FileManager.separator() + name);
-        configFile = FileManager.registerFile(type, filePath, name);
+        configFile = FileManager.registerFile(type, filePath, name, this::onReload);
+        canReload = true;
+    }
+    public void onReload(FlatFile file) {
+        if (!canReload) return;
+        syncWhitelist(file);
+    }
+    public void syncWhitelist() {
+        syncWhitelist(configFile());
+    }
+    public static void syncWhitelist(FlatFile file) {
+        var vanilla = getEnumUpper(file, WhitelistCF.vanillaWhitelistType);
+        if (vanilla.shouldIgnore()) {
+            var value = file.get(WhitelistCF.whitelistActive.path(), WhitelistCF.whitelistActive.def());
+            NobleWhitelist.syncWhitelist(value);
+        }
     }
     public void reloadConfig() {
         configFile().forceReload();
@@ -87,8 +103,11 @@ public class ConfigData {
         }
     }
     public <X extends Enum<X>> X getEnumUpper(ConfigContainer<X> container) {
+        return getEnumUpper(configFile(), container);
+    }
+    public static  <X extends Enum<X>> X getEnumUpper(FlatFile file, ConfigContainer<X> container) {
         try {
-            String str = configFile().getString(container.path());
+            String str = file.getString(container.path());
             return Enum.valueOf(container.def().getDeclaringClass(), str.toUpperCase());
         } catch (Throwable e) {
             if (e instanceof Exception ex) {

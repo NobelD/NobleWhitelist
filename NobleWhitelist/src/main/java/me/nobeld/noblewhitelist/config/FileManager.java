@@ -17,6 +17,7 @@ import org.jetbrains.annotations.Nullable;
 import java.io.InputStream;
 import java.nio.file.FileSystems;
 import java.nio.file.Path;
+import java.util.function.Consumer;
 
 public class FileManager {
     public static String separator() {
@@ -38,6 +39,19 @@ public class FileManager {
     /**
      * Create a new instance of a Yaml File.
      * @param path where the file will be saved.
+     * @param resource the name of the resource from the plugin.
+     * @return The yaml file instance.
+     * @throws SimplixValidationException if the resource is not founded or another related error.
+     */
+    public static Yaml registerYaml(Path path, String resource, Consumer<FlatFile> reloadConsumer) throws SimplixValidationException {
+        Yaml yaml = createBuilder(path, resource, null, ConfigSettings.PRESERVE_COMMENTS, DataType.SORTED, ErrorHandler.KEEP_OR_EMPTY)
+                .reloadCallback(reloadConsumer).createYaml().addDefaultsFromInputStream();
+        yaml.forceReload();
+        return yaml;
+    }
+    /**
+     * Create a new instance of a Yaml File.
+     * @param path where the file will be saved.
      * @param stream input stream of the resource
      * @return The yaml file instance.
      * @throws SimplixValidationException if the resource is not founded or another related error.
@@ -45,6 +59,20 @@ public class FileManager {
     public static Yaml registerYaml(Path path, InputStream stream) throws SimplixValidationException {
         Yaml yaml = createBuilder(path, null, stream, ConfigSettings.PRESERVE_COMMENTS, DataType.SORTED, ErrorHandler.KEEP_OR_EMPTY)
                 .createYaml();
+        yaml.addDefaultsFromInputStream();
+        yaml.forceReload();
+        return yaml;
+    }
+    /**
+     * Create a new instance of a Yaml File.
+     * @param path where the file will be saved.
+     * @param stream input stream of the resource
+     * @return The yaml file instance.
+     * @throws SimplixValidationException if the resource is not founded or another related error.
+     */
+    public static Yaml registerYaml(Path path, InputStream stream, Consumer<FlatFile> reloadConsumer) throws SimplixValidationException {
+        Yaml yaml = createBuilder(path, null, stream, ConfigSettings.PRESERVE_COMMENTS, DataType.SORTED, ErrorHandler.KEEP_OR_EMPTY)
+                .reloadCallback(reloadConsumer).createYaml();
         yaml.addDefaultsFromInputStream();
         yaml.forceReload();
         return yaml;
@@ -59,6 +87,19 @@ public class FileManager {
     public static Json registerJson(Path path, String resource) throws SimplixValidationException {
         Json json = createBuilder(path, resource, null, ConfigSettings.SKIP_COMMENTS, DataType.SORTED, ErrorHandler.KEEP_OR_EMPTY)
                 .createJson();
+        json.forceReload();
+        return json;
+    }
+    /**
+     * Create a new instance of a Json File.
+     * @param path where the file will be saved.
+     * @param resource the name of the resource from the plugin.
+     * @return The json file instance.
+     * @throws SimplixValidationException if the resource is not founded or another related error.
+     */
+    public static Json registerJson(Path path, String resource, Consumer<FlatFile> reloadConsumer) throws SimplixValidationException {
+        Json json = createBuilder(path, resource, null, ConfigSettings.SKIP_COMMENTS, DataType.SORTED, ErrorHandler.KEEP_OR_EMPTY)
+                .reloadCallback(reloadConsumer).createJson();
         json.forceReload();
         return json;
     }
@@ -91,6 +132,19 @@ public class FileManager {
     /**
      * Create a new instance of a Toml File.
      * @param path where the file will be saved.
+     * @param resource the name of the resource from the plugin.
+     * @return The toml file instance.
+     * @throws SimplixValidationException if the resource is not founded or another related error.
+     */
+    public static Toml registerToml(Path path, String resource, Consumer<FlatFile> reloadConsumer) throws SimplixValidationException {
+        Toml toml = createBuilder(path, resource, null, ConfigSettings.SKIP_COMMENTS, DataType.SORTED, ErrorHandler.KEEP_OR_EMPTY)
+                .reloadCallback(reloadConsumer).createToml();
+        toml.forceReload();
+        return toml;
+    }
+    /**
+     * Create a new instance of a Toml File.
+     * @param path where the file will be saved.
      * @param stream input stream of the resource
      * @return The toml file instance.
      * @throws SimplixValidationException if the resource is not founded or another related error.
@@ -111,6 +165,13 @@ public class FileManager {
         return switch (type) {
             case JSON -> registerJson(path, resource);
             case YAML -> registerYaml(path, resource);
+            case TOML -> registerToml(path, resource);
+        };
+    }
+    public static FlatFile registerFile(FileType type, Path path, String resource, Consumer<FlatFile> reloadConsumer) {
+        return switch (type) {
+            case JSON -> registerJson(path, resource, reloadConsumer);
+            case YAML -> registerYaml(path, resource, reloadConsumer);
             case TOML -> registerToml(path, resource);
         };
     }

@@ -27,6 +27,7 @@ public class ManageCommand {
             BaseCommand.sendMsg(ctx, MessageData.whitelistAlready(activate));
         } else {
             plugin.getConfigD().set(ConfigData.WhitelistCF.whitelistActive, activate);
+            plugin.checkSyncVanillaWhitelist(activate);
             BaseCommand.sendMsg(ctx, MessageData.whitelistChanged(activate));
         }
     }
